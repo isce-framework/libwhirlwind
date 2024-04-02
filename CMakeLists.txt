@@ -23,7 +23,7 @@ add_subdirectory(ext SYSTEM)
 # Create a `version.hpp` file in the source tree from the input `version.hpp.in`
 # template file when CMake configures the project.
 configure_file(
-  ${CMAKE_CURRENT_LIST_DIR}/cmake/version.hpp.in
+  ${CMAKE_CURRENT_LIST_DIR}/include/whirlwind/common/version.hpp.in
   ${CMAKE_CURRENT_LIST_DIR}/include/whirlwind/common/version.hpp @ONLY
 )
 
