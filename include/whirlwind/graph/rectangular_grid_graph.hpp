@@ -7,6 +7,7 @@
 
 #include <range/v3/view/cartesian_product.hpp>
 #include <range/v3/view/iota.hpp>
+#include <range/v3/view/transform.hpp>
 
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/compatibility.hpp>
@@ -145,7 +146,13 @@ public:
     {
         auto ii = ranges::views::iota(dim_type{0}, num_rows());
         auto jj = ranges::views::iota(dim_type{0}, num_cols());
-        return ranges::views::cartesian_product(std::move(ii), std::move(jj));
+
+        auto to_vertex = [](const auto& vertex) -> vertex_type {
+            return vertex_type(std::get<0>(vertex), std::get<1>(vertex));
+        };
+
+        return ranges::views::cartesian_product(std::move(ii), std::move(jj)) |
+               ranges::views::transform(std::move(to_vertex));
     }
 
     /**

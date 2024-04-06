@@ -7,6 +7,7 @@
 
 #include <range/v3/view/iota.hpp>
 #include <range/v3/view/span.hpp>
+#include <range/v3/view/transform.hpp>
 #include <range/v3/view/zip.hpp>
 
 #include <whirlwind/common/assert.hpp>
@@ -203,9 +204,14 @@ public:
         auto edges = ranges::views::iota(r0, r1);
 
         const auto c = c_.data();
-        auto head_vertices = ranges::span(c + r0, c + r1);
+        auto heads = ranges::span(c + r0, c + r1);
 
-        return ranges::views::zip(std::move(edges), std::move(head_vertices));
+        auto to_pair = [](const auto& pair_like) {
+            return std::pair(std::get<0>(pair_like), std::get<1>(pair_like));
+        };
+
+        return ranges::views::zip(std::move(edges), std::move(heads)) |
+               ranges::views::transform(std::move(to_pair));
     }
 
 private:
