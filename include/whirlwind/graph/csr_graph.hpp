@@ -67,7 +67,9 @@ public:
 
                   ++edge_count;
               }
-              graph.r_.resize(max_vertex_id + 1, edge_count);
+
+              const auto num_vertices = max_vertex_id + 1;
+              graph.r_.resize(num_vertices + 1, edge_count);
 
               return graph;
           }())
