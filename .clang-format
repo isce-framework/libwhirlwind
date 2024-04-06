@@ -58,3 +58,4 @@ PointerAlignment: Left
 
 # Misc
 AllowShortCaseLabelsOnASingleLine: true
+AttributeMacros: ["WHIRLWIND_LIKELY", "WHIRLWIND_UNLIKELY"]

@@ -12,6 +12,12 @@
 #define WHIRLWIND_NO_UNIQUE_ADDRESS
 #endif
 
+#if defined(__has_cpp_attribute) && __has_cpp_attribute(likely) >= 201803L
+#define WHIRLWIND_LIKELY [[likely]]
+#else
+#define WHIRLWIND_LIKELY
+#endif
+
 #if defined(__has_cpp_attribute) && __has_cpp_attribute(unlikely) >= 201803L
 #define WHIRLWIND_UNLIKELY [[unlikely]]
 #else

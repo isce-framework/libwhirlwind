@@ -9,7 +9,14 @@ function(whirlwind_check_submodule NAME)
   endif()
 endfunction()
 
+whirlwind_check_submodule(generator)
 whirlwind_check_submodule(range-v3)
+
+add_library(std-generator INTERFACE)
+add_library(std::generator ALIAS std-generator)
+target_include_directories(
+  std-generator INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/generator/include>
+)
 
 add_library(range-v3 INTERFACE)
 add_library(range-v3::range-v3 ALIAS range-v3)

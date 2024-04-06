@@ -46,8 +46,8 @@ public:
     }
 
     /** Create a new `CSRGraph` from a sequence of (tail,head) pairs. */
-    template<template<class> class OtherContainer>
-    explicit constexpr CSRGraph(EdgeList<vertex_type, OtherContainer> edge_list)
+    template<template<class> class UContainer>
+    explicit constexpr CSRGraph(EdgeList<vertex_type, UContainer> edge_list)
         : CSRGraph([&]() {
               std::sort(std::begin(edge_list), std::end(edge_list));
 
@@ -100,7 +100,7 @@ public:
      * @returns
      *     The vertex index.
      */
-    [[nodiscard]] WHIRLWIND_CONSTEVAL auto
+    [[nodiscard]] constexpr auto
     get_vertex_id(const vertex_type& vertex) const noexcept -> size_type
     {
         return vertex;
@@ -118,7 +118,7 @@ public:
      * @returns
      *     The edge index.
      */
-    [[nodiscard]] WHIRLWIND_CONSTEVAL auto
+    [[nodiscard]] constexpr auto
     get_edge_id(const edge_type& edge) const noexcept -> size_type
     {
         return edge;
@@ -151,16 +151,14 @@ public:
     [[nodiscard]] constexpr auto
     contains_vertex(const vertex_type& vertex) const -> bool
     {
-        const auto vertex_id = get_vertex_id(vertex);
-        return vertex_id < num_vertices();
+        return get_vertex_id(vertex) < num_vertices();
     }
 
     /** Check whether the graph contains the specified edge. */
     [[nodiscard]] constexpr auto
     contains_edge(const edge_type& edge) const -> bool
     {
-        const auto edge_id = get_edge_id(edge);
-        return edge_id < num_edges();
+        return get_edge_id(edge) < num_edges();
     }
 
     /**

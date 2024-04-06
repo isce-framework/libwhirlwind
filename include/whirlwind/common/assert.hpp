@@ -9,7 +9,7 @@
  * false. May be disabled in non-debug builds.
  *
  * The default behavior may be overridden by defining this macro before including any
- * `whirlwind` header files.
+ * `whirlwind` header file.
  */
 #ifndef WHIRLWIND_ASSERT
 #define WHIRLWIND_ASSERT(condition) assert(condition)
@@ -22,7 +22,7 @@
  * false. Has no effect in non-debug builds.
  *
  * The default behavior may be overridden by defining this macro before including any
- * `whirlwind` header files.
+ * `whirlwind` header file.
  */
 #ifndef WHIRLWIND_DEBUG_ASSERT
 #define WHIRLWIND_DEBUG_ASSERT(condition) assert(condition)
@@ -35,7 +35,7 @@
  * diagnostic error message may be generated.
  *
  * The default behavior may be overridden by defining this macro before including any
- * `whirlwind` header files.
+ * `whirlwind` header file.
  */
 #ifndef WHIRLWIND_STATIC_ASSERT
 #define WHIRLWIND_STATIC_ASSERT(...) static_assert(__VA_ARGS__)
