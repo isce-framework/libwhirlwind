@@ -207,7 +207,8 @@ public:
         auto heads = ranges::span(c + r0, c + r1);
 
         auto to_pair = [](const auto& pair_like) {
-            return std::pair(std::get<0>(pair_like), std::get<1>(pair_like));
+            using std::get;
+            return std::pair(get<0>(pair_like), get<1>(pair_like));
         };
 
         return ranges::views::zip(std::move(edges), std::move(heads)) |

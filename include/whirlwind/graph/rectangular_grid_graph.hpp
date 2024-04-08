@@ -148,7 +148,8 @@ public:
         auto jj = ranges::views::iota(dim_type{0}, num_cols());
 
         auto to_vertex = [](const auto& vertex) -> vertex_type {
-            return vertex_type(std::get<0>(vertex), std::get<1>(vertex));
+            using std::get;
+            return vertex_type(get<0>(vertex), get<1>(vertex));
         };
 
         return ranges::views::cartesian_product(std::move(ii), std::move(jj)) |
