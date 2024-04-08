@@ -12,7 +12,7 @@
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/graph/graph_traits.hpp>
 
-#include "predecessors_view.hpp"
+#include "predecessors.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
 
