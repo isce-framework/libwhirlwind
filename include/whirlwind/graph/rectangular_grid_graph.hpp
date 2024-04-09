@@ -24,10 +24,12 @@ WHIRLWIND_NAMESPACE_BEGIN
  * Vertices are represented by (row,col) index pairs. Edges are represented by unsigned
  * integers.
  *
+ * @tparam P
+ *     The number of parallel edges between adjacent vertices.
  * @tparam Dim
  *     The type used to represent row and column indices of vertices in the graph.
  */
-template<class Dim = Size>
+template<Size P = 1, class Dim = Size>
 class RectangularGridGraph {
     WHIRLWIND_STATIC_ASSERT(std::is_integral_v<Dim>);
 
@@ -58,6 +60,13 @@ public:
             WHIRLWIND_ASSERT(num_rows >= 0);
             WHIRLWIND_ASSERT(num_cols >= 0);
         }
+    }
+
+    /** The number of parallel edges between adjacent vertices. */
+    [[nodiscard]] static WHIRLWIND_CONSTEVAL auto
+    num_parallel_edges() noexcept -> size_type
+    {
+        return P;
     }
 
     /** The number of rows of vertices in the graph. */
@@ -95,7 +104,7 @@ public:
         const auto num_ud_edges = (m - 1) * n;
         const auto num_lr_edges = m * (n - 1);
 
-        return 2 * (num_ud_edges + num_lr_edges);
+        return 2 * num_parallel_edges() * (num_ud_edges + num_lr_edges);
     }
 
     /**
@@ -207,7 +216,7 @@ public:
         if (j == num_cols() - 1) WHIRLWIND_UNLIKELY { --n; }
         // clang-format on
 
-        return n;
+        return n * num_parallel_edges();
     }
 
     /**
@@ -240,38 +249,62 @@ public:
 
         // up
         if (i != 0) WHIRLWIND_LIKELY {
-            auto edge = first_up_edge() + (ei - 1) * en + ej;
-            auto head = vertex_type(i - 1, j);
-            WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
+            const auto head = vertex_type(i - 1, j);
             WHIRLWIND_DEBUG_ASSERT(contains_vertex(head));
-            co_yield std::pair(std::move(edge), std::move(head));
+
+            const auto e = (ei - 1) * en + ej;
+            auto edge = first_up_edge() + num_parallel_edges() * e;
+
+            WHIRLWIND_UNROLL(num_parallel_edges())
+            for (auto p = num_parallel_edges(); p != size_type{0}; --p, ++edge) {
+                WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
+                co_yield std::pair(edge, head);
+            }
         }
 
         // left
         if (j != 0) WHIRLWIND_LIKELY {
-            auto edge = first_left_edge() + ei * (en - 1) + (ej - 1);
-            auto head = vertex_type(i, j - 1);
-            WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
+            const auto head = vertex_type(i, j - 1);
             WHIRLWIND_DEBUG_ASSERT(contains_vertex(head));
-            co_yield std::pair(std::move(edge), std::move(head));
+
+            const auto e = ei * (en - 1) + (ej - 1);
+            auto edge = first_left_edge() + num_parallel_edges() * e;
+
+            WHIRLWIND_UNROLL(num_parallel_edges())
+            for (auto p = num_parallel_edges(); p != size_type{0}; --p, ++edge) {
+                WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
+                co_yield std::pair(edge, head);
+            }
         }
 
         // down
         if (i != m - 1) WHIRLWIND_LIKELY {
-            auto edge = first_down_edge() + edge_offsets_[1] + ei * en + ej;
-            auto head = vertex_type(i + 1, j);
-            WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
+            const auto head = vertex_type(i + 1, j);
             WHIRLWIND_DEBUG_ASSERT(contains_vertex(head));
-            co_yield std::pair(std::move(edge), std::move(head));
+
+            const auto e = ei * en + ej;
+            auto edge = first_down_edge() + num_parallel_edges() * e;
+
+            WHIRLWIND_UNROLL(num_parallel_edges())
+            for (auto p = num_parallel_edges(); p != size_type{0}; --p, ++edge) {
+                WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
+                co_yield std::pair(edge, head);
+            }
         }
 
         // right
         if (j != n - 1) WHIRLWIND_LIKELY {
-            auto edge = first_right_edge() + ei * (en - 1) + ej;
-            auto head = vertex_type(i, j + 1);
-            WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
+            const auto head = vertex_type(i, j + 1);
             WHIRLWIND_DEBUG_ASSERT(contains_vertex(head));
-            co_yield std::pair(std::move(edge), std::move(head));
+
+            const auto e = ei * (en - 1) + ej;
+            auto edge = first_right_edge() + num_parallel_edges() * e;
+
+            WHIRLWIND_UNROLL(num_parallel_edges())
+            for (auto p = num_parallel_edges(); p != size_type{0}; --p, ++edge) {
+                WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
+                co_yield std::pair(edge, head);
+            }
         }
     }
 
