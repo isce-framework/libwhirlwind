@@ -254,11 +254,22 @@ public:
 
             const auto e = (ei - 1) * en + ej;
             auto edge = first_up_edge() + num_parallel_edges() * e;
+            WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
 
-            WHIRLWIND_UNROLL(num_parallel_edges())
-            for (auto p = num_parallel_edges(); p != size_type{0}; --p, ++edge) {
+            co_yield std::pair(edge, head);
+
+            if constexpr (num_parallel_edges() > 1) {
+                ++edge;
                 WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
                 co_yield std::pair(edge, head);
+            }
+
+            if constexpr (num_parallel_edges() > 2) {
+                for (auto p = size_type{2}; p != num_parallel_edges(); ++p) {
+                    ++edge;
+                    WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
+                    co_yield std::pair(edge, head);
+                }
             }
         }
 
@@ -269,11 +280,22 @@ public:
 
             const auto e = ei * (en - 1) + (ej - 1);
             auto edge = first_left_edge() + num_parallel_edges() * e;
+            WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
 
-            WHIRLWIND_UNROLL(num_parallel_edges())
-            for (auto p = num_parallel_edges(); p != size_type{0}; --p, ++edge) {
+            co_yield std::pair(edge, head);
+
+            if constexpr (num_parallel_edges() > 1) {
+                ++edge;
                 WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
                 co_yield std::pair(edge, head);
+            }
+
+            if constexpr (num_parallel_edges() > 2) {
+                for (auto p = size_type{2}; p != num_parallel_edges(); ++p) {
+                    ++edge;
+                    WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
+                    co_yield std::pair(edge, head);
+                }
             }
         }
 
@@ -284,11 +306,22 @@ public:
 
             const auto e = ei * en + ej;
             auto edge = first_down_edge() + num_parallel_edges() * e;
+            WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
 
-            WHIRLWIND_UNROLL(num_parallel_edges())
-            for (auto p = num_parallel_edges(); p != size_type{0}; --p, ++edge) {
+            co_yield std::pair(edge, head);
+
+            if constexpr (num_parallel_edges() > 1) {
+                ++edge;
                 WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
                 co_yield std::pair(edge, head);
+            }
+
+            if constexpr (num_parallel_edges() > 2) {
+                for (auto p = size_type{2}; p != num_parallel_edges(); ++p) {
+                    ++edge;
+                    WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
+                    co_yield std::pair(edge, head);
+                }
             }
         }
 
@@ -299,11 +332,22 @@ public:
 
             const auto e = ei * (en - 1) + ej;
             auto edge = first_right_edge() + num_parallel_edges() * e;
+            WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
 
-            WHIRLWIND_UNROLL(num_parallel_edges())
-            for (auto p = num_parallel_edges(); p != size_type{0}; --p, ++edge) {
+            co_yield std::pair(edge, head);
+
+            if constexpr (num_parallel_edges() > 1) {
+                ++edge;
                 WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
                 co_yield std::pair(edge, head);
+            }
+
+            if constexpr (num_parallel_edges() > 2) {
+                for (auto p = size_type{2}; p != num_parallel_edges(); ++p) {
+                    ++edge;
+                    WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
+                    co_yield std::pair(edge, head);
+                }
             }
         }
     }
