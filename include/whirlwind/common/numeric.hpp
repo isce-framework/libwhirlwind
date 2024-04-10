@@ -16,6 +16,13 @@ zero() noexcept -> Numeric
 
 template<class Numeric>
 [[nodiscard]] WHIRLWIND_CONSTEVAL auto
+one() noexcept -> Numeric
+{
+    return static_cast<Numeric>(1);
+}
+
+template<class Numeric>
+[[nodiscard]] WHIRLWIND_CONSTEVAL auto
 infinity() noexcept -> Numeric
 {
     using T = std::numeric_limits<Numeric>;
@@ -23,6 +30,13 @@ infinity() noexcept -> Numeric
         return T::infinity();
     }
     return T::max();
+}
+
+template<class Integer>
+[[nodiscard]] constexpr auto
+is_even(Integer i) noexcept -> bool
+{
+    return i % Integer{2} == Integer{0};
 }
 
 WHIRLWIND_NAMESPACE_END
