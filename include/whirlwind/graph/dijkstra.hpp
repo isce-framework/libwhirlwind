@@ -14,7 +14,6 @@
 #include <whirlwind/common/numeric.hpp>
 
 #include "forest.hpp"
-#include "graph_traits.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
 
@@ -34,8 +33,8 @@ protected:
 public:
     using distance_type = Distance;
     using graph_type = Graph;
-    using vertex_type = GraphTraits<graph_type>::vertex_type;
-    using edge_type = GraphTraits<graph_type>::edge_type;
+    using vertex_type = typename graph_type::vertex_type;
+    using edge_type = typename graph_type::edge_type;
     using heap_type = Heap;
     using value_type = typename heap_type::value_type;
     using forest_type = Forest;

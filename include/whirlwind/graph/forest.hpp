@@ -10,7 +10,6 @@
 
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
-#include <whirlwind/graph/graph_traits.hpp>
 
 #include "predecessors.hpp"
 
@@ -36,8 +35,8 @@ template<class Graph, template<class> class Container = std::vector>
 class Forest {
 public:
     using graph_type = Graph;
-    using vertex_type = GraphTraits<Graph>::vertex_type;
-    using edge_type = GraphTraits<Graph>::edge_type;
+    using vertex_type = typename graph_type::vertex_type;
+    using edge_type = typename graph_type::edge_type;
     using pred_type = std::pair<vertex_type, edge_type>;
 
     template<class T>
