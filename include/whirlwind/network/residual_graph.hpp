@@ -283,11 +283,6 @@ public:
     using super_type::contains_arc;
     using super_type::get_arc_id;
 
-    constexpr ResidualGraphMixin(const graph_type& original_graph)
-        : super_type(residual_graph_type(original_graph.num_rows(),
-                                         original_graph.num_cols()))
-    {}
-
     [[nodiscard]] constexpr auto
     is_forward_arc(const arc_type& arc) const -> bool
     {
@@ -309,6 +304,12 @@ public:
         auto arc_id = get_arc_id(arc);
         return is_forward_arc(arc) ? ++arc_id : --arc_id;
     }
+
+protected:
+    constexpr ResidualGraphMixin(const graph_type& original_graph)
+        : super_type(residual_graph_type(original_graph.num_rows(),
+                                         original_graph.num_cols()))
+    {}
 };
 
 WHIRLWIND_NAMESPACE_END
