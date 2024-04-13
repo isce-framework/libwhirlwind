@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -34,6 +35,7 @@ public:
     using cost_type = Cost;
     using flow_type = Flow;
     using size_type = Size;
+    using ssize_type = std::make_signed_t<size_type>;
 
     template<class T>
     using container_type = Container<T>;
@@ -130,12 +132,41 @@ public:
                 nodes(), [&](const auto& node) { return is_deficit_node(node); });
     }
 
+    /**
+     * Get the total excess surplus of all excess nodes.
+     *
+     * @returns
+     *     The sum of the excess surplus among all excess nodes in the network.
+     */
     [[nodiscard]] constexpr auto
-    total_excess() const -> size_type
+    total_excess() const -> ssize_type
     {
         auto excesses = ranges::views::transform(
                 excess_nodes(), [&](const auto& node) { return node_excess(node); });
-        return ranges::fold_left(std::move(excesses), 0, std::plus<size_type>());
+        return ranges::fold_left(std::move(excesses), 0, std::plus<ssize_type>());
+    }
+
+    /**
+     * Get the total excess demand of all deficit nodes.
+     *
+     * @returns
+     *     The sum of the excess surplus among all deficit nodes in the network (a
+     *     negative value).
+     */
+    [[nodiscard]] constexpr auto
+    total_deficit() const -> ssize_type
+    {
+        auto deficits = ranges::views::transform(
+                deficit_nodes(), [&](const auto& node) { return node_excess(node); });
+        return ranges::fold_left(std::move(deficits), 0, std::plus<ssize_type>());
+    }
+
+    [[nodiscard]] constexpr auto
+    is_balanced() const -> bool
+    {
+        const auto imbalance =
+                ranges::fold_left(node_excess_, 0, std::plus<ssize_type>());
+        return imbalance == ssize_type{0};
     }
 
     [[nodiscard]] constexpr auto
