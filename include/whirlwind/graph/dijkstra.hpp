@@ -44,6 +44,7 @@ public:
     using container_type = Container<T>;
 
     using forest_type::graph;
+    using forest_type::is_root_vertex;
     using forest_type::make_root_vertex;
     using forest_type::set_predecessor;
 
@@ -53,8 +54,8 @@ public:
           distance_(graph.num_vertices(), infinity<distance_type>()),
           heap_{}
     {
-        WHIRLWIND_DEBUG_ASSERT(std::size(label_) == graph().num_vertices());
-        WHIRLWIND_DEBUG_ASSERT(std::size(distance_) == graph().num_vertices());
+        WHIRLWIND_DEBUG_ASSERT(std::size(label_) == this->graph().num_vertices());
+        WHIRLWIND_DEBUG_ASSERT(std::size(distance_) == this->graph().num_vertices());
     }
 
     [[nodiscard]] constexpr auto
@@ -175,7 +176,7 @@ public:
     {
         WHIRLWIND_ASSERT(graph().contains_vertex(vertex));
         WHIRLWIND_ASSERT(distance >= zero<distance_type>());
-        WHIRLWIND_DEBUG_ASSERT(has_reached_vertex(source));
+        WHIRLWIND_DEBUG_ASSERT(has_reached_vertex(vertex));
         label_vertex_visited(vertex);
         set_distance_to_vertex(vertex, std::move(distance));
     }
@@ -198,7 +199,7 @@ public:
 
         WHIRLWIND_DEBUG_ASSERT(distance <= distance_to_vertex(head));
         set_predecessor(head, tail, edge);
-        WHIRLWIND_DEBUG_ASSERT(!is_vertex_root(head));
+        WHIRLWIND_DEBUG_ASSERT(!is_root_vertex(head));
         label_vertex_reached(head);
         heap_.emplace(head, std::move(distance));
     }

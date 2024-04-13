@@ -60,8 +60,8 @@ public:
           pred_edge_(graph.num_vertices(), edge_fill_value),
           edge_fill_value_(std::move(edge_fill_value))
     {
-        WHIRLWIND_DEBUG_ASSERT(std::size(pred_vertex_) == graph().num_vertices());
-        WHIRLWIND_DEBUG_ASSERT(std::size(pred_edge_) == graph().num_vertices());
+        WHIRLWIND_DEBUG_ASSERT(std::size(pred_vertex_) == this->graph().num_vertices());
+        WHIRLWIND_DEBUG_ASSERT(std::size(pred_edge_) == this->graph().num_vertices());
     }
 
     /** The underlying graph. */

@@ -22,7 +22,7 @@ public:
         : forest_(forest), vertex_(std::move(vertex))
     {
         WHIRLWIND_ASSERT(forest_ != nullptr);
-        WHIRLWIND_ASSERT(forest().graph().contains_vertex(vertex_));
+        WHIRLWIND_ASSERT(this->forest().graph().contains_vertex(vertex_));
     }
 
     [[nodiscard]] constexpr auto
@@ -52,7 +52,7 @@ protected:
     [[nodiscard]] constexpr auto
     read() const -> value_type
     {
-        WHIRLWIND_DEBUG_ASSERT(!forest().is_root_vertex(vertex));
+        WHIRLWIND_DEBUG_ASSERT(!forest().is_root_vertex(current_vertex()));
         return forest().predecessor(current_vertex());
     }
 
@@ -65,7 +65,7 @@ protected:
     constexpr void
     next()
     {
-        WHIRLWIND_DEBUG_ASSERT(!forest().is_root_vertex(vertex));
+        WHIRLWIND_DEBUG_ASSERT(!forest().is_root_vertex(current_vertex()));
         auto pred_vertex = forest().predecessor_vertex(current_vertex());
         set_current_vertex(std::move(pred_vertex));
     }
