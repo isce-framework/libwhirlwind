@@ -52,10 +52,9 @@ public:
      *     The upper capacity of the arc.
      */
     [[nodiscard]] constexpr auto
-    arc_capacity(const arc_type& arc) const -> flow_type
+    arc_capacity([[maybe_unused]] const arc_type& arc) const -> flow_type
     {
         WHIRLWIND_ASSERT(contains_arc(arc));
-        (void)arc;
         return one<flow_type>();
     }
 
@@ -109,14 +108,11 @@ public:
      *     arc's residual capacity.
      */
     constexpr void
-    increase_arc_flow(const arc_type& arc, flow_type delta)
+    increase_arc_flow(const arc_type& arc, [[maybe_unused]] flow_type delta)
     {
         WHIRLWIND_ASSERT(contains_arc(arc));
         WHIRLWIND_ASSERT(!is_arc_saturated(arc));
         WHIRLWIND_ASSERT(delta == one<flow_type>());
-
-        (void)delta;
-
         const auto arc_id = get_arc_id(arc);
         WHIRLWIND_DEBUG_ASSERT(arc_id < std::size(is_arc_saturated_));
         const auto transpose_arc_id = get_transpose_arc_id(arc);
@@ -130,12 +126,11 @@ protected:
     constexpr UnitCapacityMixin(Args&&... args)
         : super_type(std::forward<Args>(args)...), is_arc_saturated_([&]() {
               auto is_arc_saturated = container_type<bool>(num_arcs());
-              auto it = is_arc_saturated.begin();
+              [[maybe_unused]] auto it = is_arc_saturated.begin();
               for (const auto& arc : arcs()) {
                   *it = !is_forward_arc(arc);
                   ++it;
               }
-              (void)it;
               return is_arc_saturated;
           }())
     {
