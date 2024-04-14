@@ -36,7 +36,6 @@ public:
     using vertex_type = typename graph_type::vertex_type;
     using edge_type = typename graph_type::edge_type;
     using heap_type = Heap;
-    using value_type = typename heap_type::value_type;
     using forest_type = Forest;
 
     template<class T>
@@ -159,7 +158,7 @@ public:
     }
 
     constexpr auto
-    pop_next_unvisited_vertex() -> value_type
+    pop_next_unvisited_vertex()
     {
         WHIRLWIND_ASSERT(!heap_.empty());
         auto top = heap_.top();
@@ -181,9 +180,9 @@ public:
     }
 
     constexpr void
-    relax_edge(const edge_type& edge,
-               const vertex_type& tail,
-               const vertex_type& head,
+    relax_edge(const edge_type edge,
+               const vertex_type tail,
+               const vertex_type head,
                distance_type distance)
     {
         WHIRLWIND_ASSERT(graph().contains_edge(edge));
@@ -197,10 +196,10 @@ public:
         }
 
         WHIRLWIND_DEBUG_ASSERT(distance <= distance_to_vertex(head));
-        set_predecessor(head, tail, edge);
+        set_predecessor(head, std::move(tail), std::move(edge));
         WHIRLWIND_DEBUG_ASSERT(!is_root_vertex(head));
         label_vertex_reached(head);
-        heap_.emplace(head, std::move(distance));
+        heap_.emplace(std::move(head), std::move(distance));
     }
 
     [[nodiscard]] constexpr auto

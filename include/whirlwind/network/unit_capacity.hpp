@@ -95,6 +95,22 @@ public:
     }
 
     /**
+     * Get the amount of flow in an arc.
+     *
+     * @param[in] arc
+     *     The input arc. Must be a valid arc in the network's residual graph (though
+     *     its residual capacity may be zero).
+     *
+     * @returns
+     *     The amount of flow in the arc.
+     */
+    [[nodiscard]] constexpr auto
+    arc_flow(const arc_type& arc) const -> flow_type
+    {
+        return is_arc_saturated(arc) ? one<flow_type>() : zero<flow_type>();
+    }
+
+    /**
      * Increase flow in an arc.
      *
      * Adds `delta` units of flow to `arc` and removes `delta` units of flow from its
@@ -108,7 +124,7 @@ public:
      *     arc's residual capacity.
      */
     constexpr void
-    increase_arc_flow(const arc_type& arc, [[maybe_unused]] flow_type delta)
+    increase_arc_flow(const arc_type& arc, [[maybe_unused]] const flow_type& delta)
     {
         WHIRLWIND_ASSERT(contains_arc(arc));
         WHIRLWIND_ASSERT(!is_arc_saturated(arc));

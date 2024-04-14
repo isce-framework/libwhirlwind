@@ -36,7 +36,7 @@ template<class Integer>
 [[nodiscard]] constexpr auto
 is_even(Integer i) noexcept -> bool
 {
-    return i % Integer{2} == Integer{0};
+    return i % Integer(2) == Integer(0);
 }
 
 WHIRLWIND_NAMESPACE_END

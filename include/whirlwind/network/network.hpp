@@ -40,6 +40,8 @@ public:
     template<class T>
     using container_type = Container<T>;
 
+    using super_type::arc_flow;
+    using super_type::arcs;
     using super_type::contains_arc;
     using super_type::contains_node;
     using super_type::get_arc_id;
@@ -196,6 +198,16 @@ public:
         node_potential_[node_id] -= delta;
     }
 
+    /**
+     * Get the cost per unit of flow in an arc.
+     *
+     * @param[in] arc
+     *     The input arc. Must be a valid arc in the network's residual graph (though
+     *     its residual capacity may be zero).
+     *
+     * @returns
+     *     The unit cost of flow in the arc.
+     */
     [[nodiscard]] constexpr auto
     arc_cost(const arc_type& arc) const -> const cost_type&
     {
@@ -214,6 +226,18 @@ public:
         WHIRLWIND_ASSERT(contains_node(tail));
         WHIRLWIND_ASSERT(contains_node(head));
         return arc_cost(arc) - node_potential(tail) + node_potential(head);
+    }
+
+    [[nodiscard]] constexpr auto
+    total_cost() const -> cost_type
+    {
+        auto arc_costs = ranges::views::transform(arcs(), [&](const auto& arc) {
+            const auto flow = arc_flow(arc);
+            const auto cost = arc_cost(arc);
+            return cost * flow;
+        });
+        return ranges::fold_left(std::move(arc_costs), zero<cost_type>(),
+                                 std::plus<cost_type>());
     }
 
 private:
