@@ -15,7 +15,7 @@
 #include <whirlwind/common/numeric.hpp>
 #include <whirlwind/common/stddef.hpp>
 
-#include "unit_capacity.hpp"
+#include "uncapacitated.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
 
@@ -23,7 +23,7 @@ template<class Graph,
          class Cost,
          class Flow,
          template<class> class Container = std::vector,
-         class Mixin = UnitCapacityMixin<Graph, Flow, Container>>
+         class Mixin = UncapacitatedMixin<Graph, Flow, Container>>
 class Network : public Mixin {
 private:
     using super_type = Mixin;

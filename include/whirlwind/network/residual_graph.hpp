@@ -48,6 +48,12 @@ public:
         return residual_graph().num_edges();
     }
 
+    [[nodiscard]] constexpr auto
+    num_forward_arcs() const noexcept -> size_type
+    {
+        return num_arcs() / 2;
+    }
+
     /** Check whether the network contains the specified node. */
     [[nodiscard]] constexpr auto
     contains_node(const node_type& node) const -> bool
