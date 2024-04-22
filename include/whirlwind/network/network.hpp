@@ -41,9 +41,9 @@ public:
     using container_type = Container<T>;
 
     using super_type::arc_flow;
-    using super_type::arcs;
     using super_type::contains_arc;
     using super_type::contains_node;
+    using super_type::forward_arcs;
     using super_type::get_arc_id;
     using super_type::get_node_id;
     using super_type::nodes;
@@ -231,7 +231,7 @@ public:
     [[nodiscard]] constexpr auto
     total_cost() const -> cost_type
     {
-        auto arc_costs = ranges::views::transform(arcs(), [&](const auto& arc) {
+        auto arc_costs = ranges::views::transform(forward_arcs(), [&](const auto& arc) {
             const auto flow = arc_flow(arc);
             const auto cost = arc_cost(arc);
             return cost * flow;

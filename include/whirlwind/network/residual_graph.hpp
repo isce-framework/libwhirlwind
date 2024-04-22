@@ -3,6 +3,8 @@
 #include <utility>
 #include <vector>
 
+#include <range/v3/view/filter.hpp>
+
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/numeric.hpp>
@@ -180,6 +182,7 @@ public:
     template<class T>
     using container_type = Container<T>;
 
+    using super_type::arcs;
     using super_type::contains_arc;
     using super_type::get_arc_id;
     using super_type::num_arcs;
@@ -204,6 +207,13 @@ public:
         const auto arc_id = get_arc_id(arc);
         WHIRLWIND_DEBUG_ASSERT(arc_id < std::size(is_forward_arc_));
         return is_forward_arc_[arc_id];
+    }
+
+    [[nodiscard]] constexpr auto
+    forward_arcs() const
+    {
+        return ranges::views::filter(
+                arcs(), [&](const auto& arc) { return is_forward_arc(arc); });
     }
 
     /**
@@ -286,6 +296,7 @@ public:
     template<class T>
     using container_type = Container<T>;
 
+    using super_type::arcs;
     using super_type::contains_arc;
     using super_type::get_arc_id;
 
@@ -295,6 +306,13 @@ public:
         WHIRLWIND_ASSERT(contains_arc(arc));
         const auto arc_id = get_arc_id(arc);
         return is_even(arc_id);
+    }
+
+    [[nodiscard]] constexpr auto
+    forward_arcs() const
+    {
+        return ranges::views::filter(
+                arcs(), [&](const auto& arc) { return is_forward_arc(arc); });
     }
 
     [[nodiscard]] constexpr auto
