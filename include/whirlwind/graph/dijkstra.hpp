@@ -41,9 +41,11 @@ public:
     template<class T>
     using container_type = Container<T>;
 
+    using forest_type::depth;
     using forest_type::graph;
     using forest_type::is_root_vertex;
     using forest_type::make_root_vertex;
+    using forest_type::predecessor_vertex;
     using forest_type::set_predecessor;
 
     explicit constexpr Dijkstra(const graph_type& graph)
@@ -152,6 +154,8 @@ public:
         WHIRLWIND_ASSERT(graph().contains_vertex(source));
         WHIRLWIND_ASSERT(!has_reached_vertex(source));
         make_root_vertex(source);
+        WHIRLWIND_DEBUG_ASSERT(depth(source) == 0);
+        WHIRLWIND_DEBUG_ASSERT(predecessor_vertex(source) == source);
         label_vertex_reached(source);
         set_distance_to_vertex(source, zero<distance_type>());
         heap_.emplace(source, zero<distance_type>());
