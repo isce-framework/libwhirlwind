@@ -4,3 +4,6 @@
 [submodule "ext/generator"]
 	path = ext/generator
 	url = https://github.com/lewissbaker/generator.git
+[submodule "ext/mdspan"]
+	path = ext/mdspan
+	url = https://github.com/kokkos/mdspan.git
