@@ -65,14 +65,12 @@ public:
 
     template<class FlowInputRange, class CostInputRange>
     constexpr Network(const graph_type& graph,
-                      FlowInputRange&& surplus,
-                      CostInputRange&& cost)
+                      const FlowInputRange& surplus,
+                      const CostInputRange& cost)
         : super_type(graph),
-          node_excess_(ranges::to<container_type<flow_type>>(
-                  std::forward<FlowInputRange>(surplus))),
+          node_excess_(ranges::to<container_type<flow_type>>(surplus)),
           node_potential_(num_nodes(), zero<cost_type>()),
-          arc_cost_(ranges::to<container_type<cost_type>>(
-                  std::forward<CostInputRange>(cost)))
+          arc_cost_(ranges::to<container_type<cost_type>>(cost))
     {
         WHIRLWIND_ASSERT(std::size(node_excess_) == num_nodes());
         WHIRLWIND_ASSERT(std::size(arc_cost_) == num_arcs());
