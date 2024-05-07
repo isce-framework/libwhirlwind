@@ -33,7 +33,7 @@ target_compile_features(whirlwind INTERFACE cxx_std_20)
 target_include_directories(
   whirlwind INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/>
 )
-target_link_libraries(whirlwind INTERFACE range-v3::range-v3 std::generator)
+target_link_libraries(whirlwind INTERFACE range-v3::range-v3 std::generator std::mdspan)
 
 if(WHIRLWIND_TEST)
   add_subdirectory(test)

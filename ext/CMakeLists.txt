@@ -10,8 +10,10 @@ function(whirlwind_check_submodule NAME)
 endfunction()
 
 whirlwind_check_submodule(generator)
+whirlwind_check_submodule(mdspan)
 whirlwind_check_submodule(range-v3)
 
+# generator
 add_library(std-generator INTERFACE)
 add_library(std::generator ALIAS std-generator)
 target_include_directories(
@@ -19,6 +21,14 @@ target_include_directories(
   INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/generator/include>
 )
 
+# mdspan
+add_library(std-mdspan INTERFACE)
+add_library(std::mdspan ALIAS std-mdspan)
+target_include_directories(
+  std-mdspan INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/mdspan/include>
+)
+
+# range-v3
 add_library(range-v3 INTERFACE)
 add_library(range-v3::range-v3 ALIAS range-v3)
 target_include_directories(
