@@ -11,13 +11,13 @@
 #define MDSPAN_USE_PAREN_OPERATOR 1
 
 #include <array>
+#include <cstddef>
 #include <vector>
 
 #include <experimental/mdarray>
 
 #include "namespace.hpp"
 #include "ndspan.hpp"
-#include "stddef.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
 
@@ -75,7 +75,7 @@ using Array3D = NDArray<T, DynamicExtents3D, Container>;
  * @tparam N
  *     The array size.
  */
-template<class T, Size N>
+template<class T, std::size_t N>
 using StaticArray1D = NDArray<T, Extents<N>, std::array<T, N>>;
 
 /**
@@ -86,7 +86,7 @@ using StaticArray1D = NDArray<T, Extents<N>, std::array<T, N>>;
  * @tparam M,N
  *     The array dimensions, in order from slowest varying to fastest varying.
  */
-template<class T, Size M, Size N>
+template<class T, std::size_t M, std::size_t N>
 using StaticArray2D = NDArray<T, Extents<M, N>, std::array<T, M * N>>;
 
 /**
@@ -97,7 +97,7 @@ using StaticArray2D = NDArray<T, Extents<M, N>, std::array<T, M * N>>;
  * @tparam M,N,P
  *     The array dimensions, in order from slowest varying to fastest varying.
  */
-template<class T, Size M, Size N, Size P>
+template<class T, std::size_t M, std::size_t N, std::size_t P>
 using StaticArray3D = NDArray<T, Extents<M, N, P>, std::array<T, M * N * P>>;
 
 WHIRLWIND_NAMESPACE_END

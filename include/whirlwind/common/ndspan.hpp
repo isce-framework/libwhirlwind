@@ -10,6 +10,8 @@
 #endif
 #define MDSPAN_USE_PAREN_OPERATOR 1
 
+#include <cstddef>
+
 #include <experimental/mdspan>
 
 #include "namespace.hpp"
@@ -35,14 +37,17 @@ using LayoutRight = std::experimental::layout_right;
 template<Size... Dims>
 using Extents = std::experimental::extents<Size, Dims...>;
 
+template<std::size_t Rank>
+using DynamicExtents = std::experimental::dextents<Size, Rank>;
+
 /** 1-dimensional dynamic extents. */
-using DynamicExtents1D = std::experimental::dextents<Size, 1>;
+using DynamicExtents1D = DynamicExtents<1>;
 
 /** 2-dimensional dynamic extents. */
-using DynamicExtents2D = std::experimental::dextents<Size, 2>;
+using DynamicExtents2D = DynamicExtents<2>;
 
 /** 3-dimensional dynamic extents. */
-using DynamicExtents3D = std::experimental::dextents<Size, 3>;
+using DynamicExtents3D = DynamicExtents<3>;
 
 template<class T, class Extents, class LayoutPolicy = LayoutRight>
 using NDSpan = std::experimental::mdspan<T, Extents, LayoutPolicy>;
@@ -81,6 +86,6 @@ template<class T, class LayoutPolicy = LayoutRight>
 using Span3D = NDSpan<T, DynamicExtents3D, LayoutPolicy>;
 
 /** A constant used to differentiate arrays/spans of static and dynamic extent. */
-inline constexpr Size dynamic = std::experimental::dynamic_extent;
+inline constexpr std::size_t dynamic = std::experimental::dynamic_extent;
 
 WHIRLWIND_NAMESPACE_END
