@@ -220,6 +220,110 @@ public:
     }
 
     /**
+     * Get the outgoing edge of `vertex` whose head is the immediate neighbor of
+     * `vertex` in the row above `vertex`.
+     *
+     * If there are multiple parallel directed edges between the two vertices, returns
+     * the first such edge.
+     *
+     * @param[in] vertex
+     *     The input vertex. Must be a valid vertex in the graph. Must not be in the
+     *     first row of vertices in the grid.
+     *
+     * @returns
+     *     The upward-facing outgoing edge of the input vertex.
+     */
+    [[nodiscard]] constexpr auto
+    get_up_edge(const vertex_type& vertex) const -> edge_type
+    {
+        WHIRLWIND_ASSERT(contains_vertex(vertex));
+        const auto i = edge_type{vertex.first};
+        const auto j = edge_type{vertex.second};
+        const auto n = edge_type{num_cols()};
+        WHIRLWIND_ASSERT(i != 0);
+        const auto e = (i - 1) * n + j;
+        return first_up_edge() + num_parallel_edges() * e;
+    }
+
+    /**
+     * Get the outgoing edge of `vertex` whose head is the immediate neighbor of
+     * `vertex` in the column to the left of `vertex`.
+     *
+     * If there are multiple parallel directed edges between the two vertices, returns
+     * the first such edge.
+     *
+     * @param[in] vertex
+     *     The input vertex. Must be a valid vertex in the graph. Must not be in the
+     *     first column of vertices in the grid.
+     *
+     * @returns
+     *     The leftward-facing outgoing edge of the input vertex.
+     */
+    [[nodiscard]] constexpr auto
+    get_left_edge(const vertex_type& vertex) const -> edge_type
+    {
+        WHIRLWIND_ASSERT(contains_vertex(vertex));
+        const auto i = edge_type{vertex.first};
+        const auto j = edge_type{vertex.second};
+        const auto n = edge_type{num_cols()};
+        WHIRLWIND_ASSERT(j != 0);
+        const auto e = i * (n - 1) + (j - 1);
+        return first_left_edge() + num_parallel_edges() * e;
+    }
+
+    /**
+     * Get the outgoing edge of `vertex` whose head is the immediate neighbor of
+     * `vertex` in the row below `vertex`.
+     *
+     * If there are multiple parallel directed edges between the two vertices, returns
+     * the first such edge.
+     *
+     * @param[in] vertex
+     *     The input vertex. Must be a valid vertex in the graph. Must not be in the
+     *     last row of vertices in the grid.
+     *
+     * @returns
+     *     The downward-facing outgoing edge of the input vertex.
+     */
+    [[nodiscard]] constexpr auto
+    get_down_edge(const vertex_type& vertex) const -> edge_type
+    {
+        WHIRLWIND_ASSERT(contains_vertex(vertex));
+        const auto i = edge_type{vertex.first};
+        const auto j = edge_type{vertex.second};
+        const auto n = edge_type{num_cols()};
+        WHIRLWIND_ASSERT(i != edge_type{num_rows()} - 1);
+        const auto e = i * n + j;
+        return first_down_edge() + num_parallel_edges() * e;
+    }
+
+    /**
+     * Get the outgoing edge of `vertex` whose head is the immediate neighbor of
+     * `vertex` in the column to the right of `vertex`.
+     *
+     * If there are multiple parallel directed edges between the two vertices, returns
+     * the first such edge.
+     *
+     * @param[in] vertex
+     *     The input vertex. Must be a valid vertex in the graph. Must not be in the
+     *     last column of vertices in the grid.
+     *
+     * @returns
+     *     The rightward-facing outgoing edge of the input vertex.
+     */
+    [[nodiscard]] constexpr auto
+    get_right_edge(const vertex_type& vertex) const -> edge_type
+    {
+        WHIRLWIND_ASSERT(contains_vertex(vertex));
+        const auto i = edge_type{vertex.first};
+        const auto j = edge_type{vertex.second};
+        const auto n = edge_type{num_cols()};
+        WHIRLWIND_ASSERT(j != n - 1);
+        const auto e = i * (n - 1) + j;
+        return first_right_edge() + num_parallel_edges() * e;
+    }
+
+    /**
      * Iterate over outgoing edges (and corresponding head vertices) of a vertex.
      *
      * Returns a view of ordered (edge,head) pairs over all edges emanating from the
@@ -243,19 +347,12 @@ public:
         const auto m = num_rows();
         const auto n = num_cols();
 
-        const auto ei = edge_type{i};
-        const auto ej = edge_type{j};
-        const auto en = edge_type{n};
-
         // up
         if (i != 0) WHIRLWIND_LIKELY {
             const auto head = vertex_type(i - 1, j);
             WHIRLWIND_DEBUG_ASSERT(contains_vertex(head));
-
-            const auto e = (ei - 1) * en + ej;
-            auto edge = first_up_edge() + num_parallel_edges() * e;
+            auto edge = get_up_edge(vertex);
             WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
-
             co_yield std::pair(edge, head);
 
             if constexpr (num_parallel_edges() > 1) {
@@ -265,7 +362,7 @@ public:
             }
 
             if constexpr (num_parallel_edges() > 2) {
-                for (auto p = size_type{2}; p != num_parallel_edges(); ++p) {
+                for (size_type p = 2; p != num_parallel_edges(); ++p) {
                     ++edge;
                     WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
                     co_yield std::pair(edge, head);
@@ -277,11 +374,8 @@ public:
         if (j != 0) WHIRLWIND_LIKELY {
             const auto head = vertex_type(i, j - 1);
             WHIRLWIND_DEBUG_ASSERT(contains_vertex(head));
-
-            const auto e = ei * (en - 1) + (ej - 1);
-            auto edge = first_left_edge() + num_parallel_edges() * e;
+            auto edge = get_left_edge(vertex);
             WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
-
             co_yield std::pair(edge, head);
 
             if constexpr (num_parallel_edges() > 1) {
@@ -291,7 +385,7 @@ public:
             }
 
             if constexpr (num_parallel_edges() > 2) {
-                for (auto p = size_type{2}; p != num_parallel_edges(); ++p) {
+                for (size_type p = 2; p != num_parallel_edges(); ++p) {
                     ++edge;
                     WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
                     co_yield std::pair(edge, head);
@@ -303,11 +397,8 @@ public:
         if (i != m - 1) WHIRLWIND_LIKELY {
             const auto head = vertex_type(i + 1, j);
             WHIRLWIND_DEBUG_ASSERT(contains_vertex(head));
-
-            const auto e = ei * en + ej;
-            auto edge = first_down_edge() + num_parallel_edges() * e;
+            auto edge = get_down_edge(vertex);
             WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
-
             co_yield std::pair(edge, head);
 
             if constexpr (num_parallel_edges() > 1) {
@@ -317,7 +408,7 @@ public:
             }
 
             if constexpr (num_parallel_edges() > 2) {
-                for (auto p = size_type{2}; p != num_parallel_edges(); ++p) {
+                for (size_type p = 2; p != num_parallel_edges(); ++p) {
                     ++edge;
                     WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
                     co_yield std::pair(edge, head);
@@ -329,11 +420,8 @@ public:
         if (j != n - 1) WHIRLWIND_LIKELY {
             const auto head = vertex_type(i, j + 1);
             WHIRLWIND_DEBUG_ASSERT(contains_vertex(head));
-
-            const auto e = ei * (en - 1) + ej;
-            auto edge = first_right_edge() + num_parallel_edges() * e;
+            auto edge = get_right_edge(vertex);
             WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
-
             co_yield std::pair(edge, head);
 
             if constexpr (num_parallel_edges() > 1) {
@@ -343,7 +431,7 @@ public:
             }
 
             if constexpr (num_parallel_edges() > 2) {
-                for (auto p = size_type{2}; p != num_parallel_edges(); ++p) {
+                for (size_type p = 2; p != num_parallel_edges(); ++p) {
                     ++edge;
                     WHIRLWIND_DEBUG_ASSERT(contains_edge(edge));
                     co_yield std::pair(edge, head);
