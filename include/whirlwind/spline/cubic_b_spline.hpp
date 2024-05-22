@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <range/v3/range/conversion.hpp>
+#include <range/v3/view/transform.hpp>
 
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/compatibility.hpp>
@@ -55,6 +56,16 @@ public:
         auto c = [&](size_type ii) noexcept { return control_points_[i + ii]; };
 
         return (c(0) * b[0] + c(1) * b[1]) + (c(2) * b[2] + c(3) * b[3]);
+    }
+
+    template<class InputRange>
+    [[nodiscard]] constexpr auto
+    operator()(const InputRange& x) const -> container_type<value_type>
+    {
+        return x | ranges::views::transform([&](const auto& xx) {
+                   return operator()(xx);
+               }) |
+               ranges::to<container_type<value_type>>();
     }
 
     [[nodiscard]] static WHIRLWIND_CONSTEVAL auto

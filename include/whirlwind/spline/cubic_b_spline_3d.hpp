@@ -6,6 +6,8 @@
 #include <vector>
 
 #include <range/v3/range/conversion.hpp>
+#include <range/v3/view/transform.hpp>
+#include <range/v3/view/zip.hpp>
 
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/compatibility.hpp>
@@ -95,8 +97,9 @@ public:
     }
 
     [[nodiscard]] constexpr auto
-    operator()(const knot_type& x0, const knot_type& x1, const knot_type& x2) const
-            -> value_type
+    operator()(const knot_type& x0,
+               const knot_type& x1,
+               const knot_type& x2) const -> value_type
     {
         const auto i0 = bases_[0].get_knot_interval(x0);
         const auto i1 = bases_[1].get_knot_interval(x1);
@@ -121,6 +124,19 @@ public:
         };
 
         return (c0(0) * b0[0] + c0(1) * b0[1]) + (c0(2) * b0[2] + c0(3) * b0[3]);
+    }
+
+    template<class InputRange>
+    [[nodiscard]] constexpr auto
+    operator()(const InputRange& x0,
+               const InputRange& x1,
+               const InputRange& x2) const -> container_type<value_type>
+    {
+        return ranges::views::zip(x0, x1, x2) |
+               ranges::views::transform([&](const auto& xx) {
+                   return operator()(std::get<0>(xx), std::get<1>(xx), std::get<2>(xx));
+               }) |
+               ranges::to<container_type<value_type>>();
     }
 
     [[nodiscard]] static WHIRLWIND_CONSTEVAL auto

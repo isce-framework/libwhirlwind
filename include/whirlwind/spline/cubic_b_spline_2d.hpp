@@ -6,6 +6,8 @@
 #include <vector>
 
 #include <range/v3/range/conversion.hpp>
+#include <range/v3/view/transform.hpp>
+#include <range/v3/view/zip.hpp>
 
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/compatibility.hpp>
@@ -101,6 +103,18 @@ public:
         };
 
         return (c0(0) * b0[0] + c0(1) * b0[1]) + (c0(2) * b0[2] + c0(3) * b0[3]);
+    }
+
+    template<class InputRange>
+    [[nodiscard]] constexpr auto
+    operator()(const InputRange& x0,
+               const InputRange& x1) const -> container_type<value_type>
+    {
+        return ranges::views::zip(x0, x1) |
+               ranges::views::transform([&](const auto& xx) {
+                   return operator()(std::get<0>(xx), std::get<1>(xx));
+               }) |
+               ranges::to<container_type<value_type>>();
     }
 
     [[nodiscard]] static WHIRLWIND_CONSTEVAL auto
