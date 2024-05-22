@@ -2,7 +2,9 @@
 
 #include <array>
 #include <cmath>
+#include <iterator>
 #include <memory>
+#include <span>
 #include <type_traits>
 #include <vector>
 
@@ -10,9 +12,7 @@
 #include <range/v3/algorithm/all_of.hpp>
 #include <range/v3/algorithm/lower_bound.hpp>
 #include <range/v3/functional/comparisons.hpp>
-#include <range/v3/iterator/operations.hpp>
 #include <range/v3/range/access.hpp>
-#include <range/v3/view/span.hpp>
 
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
@@ -146,7 +146,7 @@ public:
         WHIRLWIND_DEBUG_ASSERT(std::size(augmented_knots_) >= 4);
         const auto first = std::to_address(ranges::begin(augmented_knots_) + 2);
         const auto count = std::size(augmented_knots_) - 4;
-        return ranges::span(first, count);
+        return std::span(first, count);
     }
 
     [[nodiscard]] constexpr auto
@@ -172,10 +172,10 @@ public:
         WHIRLWIND_DEBUG_ASSERT(std::size(augmented_knots_) >= 6);
         const auto first = std::to_address(ranges::begin(augmented_knots_) + 3);
         const auto count = std::size(augmented_knots_) - 6;
-        const auto subspan = ranges::span(first, count);
+        const auto subspan = std::span(first, count);
 
         const auto it = ranges::lower_bound(subspan, x);
-        const auto i = size_type{ranges::distance(first, it)};
+        const auto i = size_type{std::distance(first, std::to_address(it))};
         WHIRLWIND_DEBUG_ASSERT(i < num_knot_intervals());
         return i;
     }

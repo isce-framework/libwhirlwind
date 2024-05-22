@@ -1,12 +1,12 @@
 #pragma once
 
 #include <algorithm>
+#include <span>
 #include <type_traits>
 #include <utility>
 #include <vector>
 
 #include <range/v3/view/iota.hpp>
-#include <range/v3/view/span.hpp>
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/zip.hpp>
 
@@ -204,7 +204,7 @@ public:
         auto edges = ranges::views::iota(r0, r1);
 
         const auto c = c_.data();
-        auto heads = ranges::span(c + r0, c + r1);
+        auto heads = std::span(c + r0, c + r1);
 
         auto to_pair = [](const auto& pair_like) {
             using std::get;
