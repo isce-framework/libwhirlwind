@@ -25,6 +25,8 @@ template<class Graph,
          template<class> class Container = std::vector,
          class Mixin = UncapacitatedMixin<Graph, Flow, Container>>
 class Network : public Mixin {
+    WHIRLWIND_STATIC_ASSERT(std::is_signed_v<Cost>);
+
 private:
     using super_type = Mixin;
 
@@ -46,8 +48,11 @@ public:
     using super_type::forward_arcs;
     using super_type::get_arc_id;
     using super_type::get_node_id;
+    using super_type::get_transpose_arc_id;
+    using super_type::is_forward_arc;
     using super_type::nodes;
     using super_type::num_arcs;
+    using super_type::num_forward_arcs;
     using super_type::num_nodes;
 
     constexpr Network(const graph_type& graph,
@@ -59,7 +64,7 @@ public:
           arc_cost_(std::move(cost))
     {
         WHIRLWIND_ASSERT(std::size(node_excess_) == num_nodes());
-        WHIRLWIND_ASSERT(std::size(arc_cost_) == num_arcs());
+        WHIRLWIND_ASSERT(std::size(arc_cost_) == num_forward_arcs());
         WHIRLWIND_DEBUG_ASSERT(std::size(node_potential_) == num_nodes());
     }
 
@@ -73,7 +78,7 @@ public:
           arc_cost_(ranges::to<container_type<cost_type>>(cost))
     {
         WHIRLWIND_ASSERT(std::size(node_excess_) == num_nodes());
-        WHIRLWIND_ASSERT(std::size(arc_cost_) == num_arcs());
+        WHIRLWIND_ASSERT(std::size(arc_cost_) == num_forward_arcs());
         WHIRLWIND_DEBUG_ASSERT(std::size(node_potential_) == num_nodes());
     }
 
@@ -210,9 +215,15 @@ public:
     arc_cost(const arc_type& arc) const -> const cost_type&
     {
         WHIRLWIND_ASSERT(contains_arc(arc));
-        const auto arc_id = get_arc_id(arc);
-        WHIRLWIND_DEBUG_ASSERT(arc_id < std::size(arc_cost_));
-        return arc_cost_[arc_id];
+        if (is_forward_arc(arc)) {
+            const auto arc_id = get_arc_id(arc);
+            WHIRLWIND_DEBUG_ASSERT(arc_id < std::size(arc_cost_));
+            return arc_cost_[arc_id];
+        } else {
+            const auto arc_id = get_transpose_arc_id(arc);
+            WHIRLWIND_DEBUG_ASSERT(arc_id < std::size(arc_cost_));
+            return -arc_cost_[arc_id];
+        }
     }
 
     [[nodiscard]] constexpr auto
