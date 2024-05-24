@@ -122,7 +122,7 @@ public:
     [[nodiscard]] constexpr auto
     get_vertex_id(const vertex_type& vertex) const noexcept -> size_type
     {
-        return size_type{vertex.first} * size_type{num_rows()} +
+        return size_type{vertex.first} * size_type{num_cols()} +
                size_type{vertex.second};
     }
 
