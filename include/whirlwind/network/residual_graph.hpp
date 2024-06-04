@@ -53,6 +53,7 @@ public:
     [[nodiscard]] constexpr auto
     num_forward_arcs() const noexcept -> size_type
     {
+        WHIRLWIND_DEBUG_ASSERT(is_even(num_arcs()));
         return num_arcs() / 2;
     }
 
@@ -299,6 +300,7 @@ public:
     using super_type::arcs;
     using super_type::contains_arc;
     using super_type::get_arc_id;
+    using super_type::num_forward_arcs;
 
     [[nodiscard]] constexpr auto
     is_forward_arc(const arc_type& arc) const -> bool
@@ -322,11 +324,37 @@ public:
     }
 
     [[nodiscard]] constexpr auto
+    get_edge_id(const arc_type& forward_arc) const -> size_type
+    {
+        WHIRLWIND_ASSERT(contains_arc(forward_arc));
+        WHIRLWIND_ASSERT(is_forward_arc(forward_arc));
+        auto arc_id = get_arc_id(forward_arc);
+        WHIRLWIND_DEBUG_ASSERT(is_even(arc_id));
+        return arc_id / 2;
+    }
+
+    [[nodiscard]] constexpr auto
     get_transpose_arc_id(const arc_type& arc) const -> size_type
     {
         WHIRLWIND_ASSERT(contains_arc(arc));
         auto arc_id = get_arc_id(arc);
-        return is_forward_arc(arc) ? ++arc_id : --arc_id;
+
+        const auto n = num_forward_arcs();
+        WHIRLWIND_DEBUG_ASSERT(n >= 1);
+
+        if (is_forward_arc(arc)) {
+            if (arc_id < n) {
+                return arc_id + n + 1;
+            } else {
+                return arc_id - n + 1;
+            }
+        } else {
+            if (arc_id < n) {
+                return arc_id + n - 1;
+            } else {
+                return arc_id - n - 1;
+            }
+        }
     }
 
 protected:

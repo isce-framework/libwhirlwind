@@ -140,13 +140,11 @@ protected:
     template<class... Args>
     constexpr UnitCapacityMixin(Args&&... args)
         : super_type(std::forward<Args>(args)...), is_arc_saturated_([&]() {
-              auto is_arc_saturated = container_type<bool>(num_arcs());
-              [[maybe_unused]] auto it = is_arc_saturated.begin();
-              for (const auto& arc : arcs()) {
-                  *it = !is_forward_arc(arc);
-                  ++it;
-              }
-              return is_arc_saturated;
+              return arcs() | ranges::views::transform([&](const auto& arc) {
+                         // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=67274
+                         return !this->is_forward_arc(arc);
+                     }) |
+                     ranges::to<container_type<bool>>();
           }())
     {
         WHIRLWIND_DEBUG_ASSERT(std::size(is_arc_saturated_) == num_arcs());

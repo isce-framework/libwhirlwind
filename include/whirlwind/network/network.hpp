@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <functional>
 #include <type_traits>
 #include <utility>
@@ -43,42 +44,43 @@ public:
     using container_type = Container<T>;
 
     using super_type::arc_flow;
+    using super_type::arcs;
     using super_type::contains_arc;
     using super_type::contains_node;
     using super_type::forward_arcs;
     using super_type::get_arc_id;
     using super_type::get_node_id;
-    using super_type::get_transpose_arc_id;
     using super_type::is_forward_arc;
     using super_type::nodes;
     using super_type::num_arcs;
     using super_type::num_forward_arcs;
     using super_type::num_nodes;
 
+    template<class RandomAccessRange>
     constexpr Network(const graph_type& graph,
                       container_type<flow_type> surplus,
-                      container_type<cost_type> cost)
+                      const RandomAccessRange& cost)
         : super_type(graph),
           node_excess_(std::move(surplus)),
           node_potential_(num_nodes(), zero<cost_type>()),
-          arc_cost_(std::move(cost))
+          arc_cost_(make_residual_arc_costs(cost))
     {
         WHIRLWIND_ASSERT(std::size(node_excess_) == num_nodes());
-        WHIRLWIND_ASSERT(std::size(arc_cost_) == num_forward_arcs());
+        WHIRLWIND_DEBUG_ASSERT(std::size(arc_cost_) == num_arcs());
         WHIRLWIND_DEBUG_ASSERT(std::size(node_potential_) == num_nodes());
     }
 
-    template<class FlowInputRange, class CostInputRange>
+    template<class InputRange, class RandomAccessRange>
     constexpr Network(const graph_type& graph,
-                      const FlowInputRange& surplus,
-                      const CostInputRange& cost)
+                      const InputRange& surplus,
+                      const RandomAccessRange& cost)
         : super_type(graph),
           node_excess_(ranges::to<container_type<flow_type>>(surplus)),
           node_potential_(num_nodes(), zero<cost_type>()),
-          arc_cost_(ranges::to<container_type<cost_type>>(cost))
+          arc_cost_(make_residual_arc_costs(cost))
     {
         WHIRLWIND_ASSERT(std::size(node_excess_) == num_nodes());
-        WHIRLWIND_ASSERT(std::size(arc_cost_) == num_forward_arcs());
+        WHIRLWIND_DEBUG_ASSERT(std::size(arc_cost_) == num_arcs());
         WHIRLWIND_DEBUG_ASSERT(std::size(node_potential_) == num_nodes());
     }
 
@@ -215,15 +217,9 @@ public:
     arc_cost(const arc_type& arc) const -> const cost_type&
     {
         WHIRLWIND_ASSERT(contains_arc(arc));
-        if (is_forward_arc(arc)) {
-            const auto arc_id = get_arc_id(arc);
-            WHIRLWIND_DEBUG_ASSERT(arc_id < std::size(arc_cost_));
-            return arc_cost_[arc_id];
-        } else {
-            const auto arc_id = get_transpose_arc_id(arc);
-            WHIRLWIND_DEBUG_ASSERT(arc_id < std::size(arc_cost_));
-            return -arc_cost_[arc_id];
-        }
+        const auto arc_id = get_arc_id(arc);
+        WHIRLWIND_DEBUG_ASSERT(arc_id < std::size(arc_cost_));
+        return arc_cost_[arc_id];
     }
 
     [[nodiscard]] constexpr auto
@@ -247,6 +243,40 @@ public:
         });
         return ranges::fold_left(std::move(arc_costs), zero<cost_type>(),
                                  std::plus<cost_type>());
+    }
+
+protected:
+    template<class RandomAccessRange>
+    [[nodiscard]] constexpr auto
+    make_residual_arc_costs(const RandomAccessRange& forward_cost)
+            -> container_type<cost_type>
+    {
+        WHIRLWIND_ASSERT(std::size(forward_cost) == num_forward_arcs());
+        return arcs() | ranges::views::transform([&](const auto& arc) {
+                   if (is_forward_arc(arc)) {
+                       const auto edge_id = this->get_edge_id(arc);
+
+                       WHIRLWIND_DEBUG_ASSERT(edge_id < std::size(forward_cost));
+                       const auto cost = forward_cost[edge_id];
+                       if constexpr (std::is_floating_point_v<decltype(cost)>) {
+                           WHIRLWIND_ASSERT(!std::isnan(cost));
+                       }
+                       WHIRLWIND_ASSERT(cost >= zero<cost_type>());
+                       return cost;
+                   } else {
+                       const auto transpose_arc = this->get_transpose_arc_id(arc);
+                       const auto edge_id = this->get_edge_id(transpose_arc);
+
+                       WHIRLWIND_DEBUG_ASSERT(edge_id < std::size(forward_cost));
+                       const auto cost = forward_cost[edge_id];
+                       if constexpr (std::is_floating_point_v<decltype(cost)>) {
+                           WHIRLWIND_ASSERT(!std::isnan(cost));
+                       }
+                       WHIRLWIND_ASSERT(cost >= zero<cost_type>());
+                       return -cost;
+                   }
+               }) |
+               ranges::to<container_type<cost_type>>();
     }
 
 private:
