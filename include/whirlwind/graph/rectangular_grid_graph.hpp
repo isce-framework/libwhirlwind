@@ -451,14 +451,14 @@ protected:
             return std::array<edge_type, 3>{0, 0, 0};
         }
 
-        const auto num_ud_edges = (m - 1) * n;
-        const auto num_lr_edges = m * (n - 1);
+        const auto num_ud_edges = num_parallel_edges() * (m - 1) * n;
+        const auto num_lr_edges = num_parallel_edges() * m * (n - 1);
 
-        const auto off0 = num_ud_edges;
-        const auto off1 = off0 + num_lr_edges;
-        const auto off2 = off1 + num_ud_edges;
+        auto off0 = num_ud_edges;
+        auto off1 = off0 + num_lr_edges;
+        auto off2 = off1 + num_ud_edges;
 
-        return std::array{off0, off1, off2};
+        return std::array{std::move(off0), std::move(off1), std::move(off2)};
     }
 
     [[nodiscard]] constexpr auto
@@ -470,18 +470,21 @@ protected:
     [[nodiscard]] constexpr auto
     first_left_edge() const noexcept -> edge_type
     {
+        WHIRLWIND_DEBUG_ASSERT(std::size(edge_offsets_) > 0);
         return edge_offsets_[0];
     }
 
     [[nodiscard]] constexpr auto
     first_down_edge() const noexcept -> edge_type
     {
+        WHIRLWIND_DEBUG_ASSERT(std::size(edge_offsets_) > 1);
         return edge_offsets_[1];
     }
 
     [[nodiscard]] constexpr auto
     first_right_edge() const noexcept -> edge_type
     {
+        WHIRLWIND_DEBUG_ASSERT(std::size(edge_offsets_) > 2);
         return edge_offsets_[2];
     }
 
