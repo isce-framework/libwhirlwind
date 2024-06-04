@@ -241,6 +241,8 @@ public:
         const auto j = edge_type{vertex.second};
         const auto n = edge_type{num_cols()};
         WHIRLWIND_ASSERT(i != 0);
+        WHIRLWIND_DEBUG_ASSERT(num_rows() >= 2);
+        WHIRLWIND_DEBUG_ASSERT(num_cols() >= 1);
         const auto e = (i - 1) * n + j;
         return first_up_edge() + num_parallel_edges() * e;
     }
@@ -267,6 +269,8 @@ public:
         const auto j = edge_type{vertex.second};
         const auto n = edge_type{num_cols()};
         WHIRLWIND_ASSERT(j != 0);
+        WHIRLWIND_DEBUG_ASSERT(num_rows() >= 1);
+        WHIRLWIND_DEBUG_ASSERT(num_cols() >= 2);
         const auto e = i * (n - 1) + (j - 1);
         return first_left_edge() + num_parallel_edges() * e;
     }
@@ -292,7 +296,9 @@ public:
         const auto i = edge_type{vertex.first};
         const auto j = edge_type{vertex.second};
         const auto n = edge_type{num_cols()};
-        WHIRLWIND_ASSERT(i != edge_type{num_rows()} - 1);
+        WHIRLWIND_ASSERT(i + 1 != edge_type{num_rows()});
+        WHIRLWIND_DEBUG_ASSERT(num_rows() >= 2);
+        WHIRLWIND_DEBUG_ASSERT(num_cols() >= 1);
         const auto e = i * n + j;
         return first_down_edge() + num_parallel_edges() * e;
     }
@@ -318,7 +324,9 @@ public:
         const auto i = edge_type{vertex.first};
         const auto j = edge_type{vertex.second};
         const auto n = edge_type{num_cols()};
-        WHIRLWIND_ASSERT(j != n - 1);
+        WHIRLWIND_ASSERT(j + 1 != n);
+        WHIRLWIND_DEBUG_ASSERT(num_rows() >= 1);
+        WHIRLWIND_DEBUG_ASSERT(num_cols() >= 2);
         const auto e = i * (n - 1) + j;
         return first_right_edge() + num_parallel_edges() * e;
     }
@@ -343,9 +351,6 @@ public:
 
         const auto i = vertex.first;
         const auto j = vertex.second;
-
-        const auto m = num_rows();
-        const auto n = num_cols();
 
         // up
         if (i != 0) WHIRLWIND_LIKELY {
@@ -394,7 +399,7 @@ public:
         }
 
         // down
-        if (i != m - 1) WHIRLWIND_LIKELY {
+        if (i + 1 != num_rows()) WHIRLWIND_LIKELY {
             const auto head = vertex_type(i + 1, j);
             WHIRLWIND_DEBUG_ASSERT(contains_vertex(head));
             auto edge = get_down_edge(vertex);
@@ -417,7 +422,7 @@ public:
         }
 
         // right
-        if (j != n - 1) WHIRLWIND_LIKELY {
+        if (j + 1 != num_cols()) WHIRLWIND_LIKELY {
             const auto head = vertex_type(i, j + 1);
             WHIRLWIND_DEBUG_ASSERT(contains_vertex(head));
             auto edge = get_right_edge(vertex);
