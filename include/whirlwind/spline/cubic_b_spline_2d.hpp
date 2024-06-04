@@ -112,7 +112,8 @@ public:
     {
         return ranges::views::zip(x0, x1) |
                ranges::views::transform([&](const auto& xx) {
-                   return operator()(std::get<0>(xx), std::get<1>(xx));
+                   using std::get;
+                   return operator()(get<0>(xx), get<1>(xx));
                }) |
                ranges::to<container_type<value_type>>();
     }
