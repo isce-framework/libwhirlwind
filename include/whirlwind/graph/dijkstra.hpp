@@ -56,6 +56,7 @@ public:
     {
         WHIRLWIND_DEBUG_ASSERT(std::size(label_) == this->graph().num_vertices());
         WHIRLWIND_DEBUG_ASSERT(std::size(distance_) == this->graph().num_vertices());
+        WHIRLWIND_DEBUG_ASSERT(std::empty(heap_));
     }
 
     [[nodiscard]] constexpr auto
@@ -177,10 +178,9 @@ public:
     visit_vertex(const vertex_type& vertex, distance_type distance)
     {
         WHIRLWIND_ASSERT(graph().contains_vertex(vertex));
-        WHIRLWIND_ASSERT(distance >= zero<distance_type>());
+        WHIRLWIND_ASSERT(distance >= -eps<distance_type>());
         WHIRLWIND_DEBUG_ASSERT(has_reached_vertex(vertex));
         label_vertex_visited(vertex);
-        set_distance_to_vertex(vertex, std::move(distance));
     }
 
     constexpr void
@@ -193,16 +193,17 @@ public:
         WHIRLWIND_ASSERT(graph().contains_vertex(tail));
         WHIRLWIND_ASSERT(graph().contains_vertex(head));
         WHIRLWIND_ASSERT(has_visited_vertex(tail));
-        WHIRLWIND_ASSERT(distance >= zero<distance_type>());
+        WHIRLWIND_ASSERT(distance >= -eps<distance_type>());
 
-        if (has_visited_vertex(head)) {
+        if (distance >= distance_to_vertex(head) - eps<distance_type>()) {
             return;
         }
+        WHIRLWIND_DEBUG_ASSERT(!has_visited_vertex(head));
 
-        WHIRLWIND_DEBUG_ASSERT(distance <= distance_to_vertex(head));
         set_predecessor(head, std::move(tail), std::move(edge));
         WHIRLWIND_DEBUG_ASSERT(!is_root_vertex(head));
         label_vertex_reached(head);
+        set_distance_to_vertex(head, distance);
         heap_.emplace(std::move(head), std::move(distance));
     }
 
@@ -230,7 +231,7 @@ public:
         ranges::fill(label_, label_type::unreached);
         ranges::fill(distance_, infinity<distance_type>());
         heap_.clear();
-        WHIRLWIND_DEBUG_ASSERT(heap_.empty());
+        WHIRLWIND_DEBUG_ASSERT(std::empty(heap_));
     }
 
 private:

@@ -1,7 +1,9 @@
 #pragma once
 
 #include <limits>
+#include <type_traits>
 
+#include "assert.hpp"
 #include "compatibility.hpp"
 #include "namespace.hpp"
 
@@ -19,6 +21,28 @@ template<class Numeric>
 one() noexcept -> Numeric
 {
     return static_cast<Numeric>(1);
+}
+
+template<class Numeric>
+[[nodiscard]] WHIRLWIND_CONSTEVAL auto
+eps() noexcept -> Numeric
+{
+    WHIRLWIND_STATIC_ASSERT(std::is_integral_v<Numeric>);
+    return zero<Numeric>();
+}
+
+template<>
+[[nodiscard]] WHIRLWIND_CONSTEVAL auto
+eps<float>() noexcept -> float
+{
+    return 1e-3f;
+}
+
+template<>
+[[nodiscard]] WHIRLWIND_CONSTEVAL auto
+eps<double>() noexcept -> double
+{
+    return 1e-8;
 }
 
 template<class Numeric>
