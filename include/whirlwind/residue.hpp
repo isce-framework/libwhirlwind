@@ -30,8 +30,14 @@ residue(const ArrayLike2D& wrapped_phase)
     WHIRLWIND_ASSERT(n >= 1);
     auto out = Array2D<SignedInteger, Container<SignedInteger>>(m + 1, n + 1);
 
+    // Checks whether the argument is in the interval [-pi, pi].
+    [[maybe_unused]] auto is_wrapped_phase = [](const auto& psi) {
+        using T = decltype(psi);
+        return (psi >= -pi_v<T>) && (psi <= pi_v<T>);
+    };
+
     auto cycle_diff_residual = [](const auto& a, const auto& b) -> SignedInteger {
-        const auto diff = b - a;
+        const auto diff = a - b;
         return static_cast<SignedInteger>(std::round(diff / tau_v<decltype(diff)>));
     };
 
@@ -41,23 +47,20 @@ residue(const ArrayLike2D& wrapped_phase)
             const auto phi_00 = wrapped_phase(i, j);
             const auto phi_10 = wrapped_phase(i + 1, j);
             const auto phi_01 = wrapped_phase(i, j + 1);
-            WHIRLWIND_ASSERT(phi_00 >= -pi_v<decltype(phi_00)> &&
-                             phi_00 <= pi_v<decltype(phi_00)>);
-            WHIRLWIND_ASSERT(phi_10 >= -pi_v<decltype(phi_10)> &&
-                             phi_10 <= pi_v<decltype(phi_10)>);
-            WHIRLWIND_ASSERT(phi_01 >= -pi_v<decltype(phi_01)> &&
-                             phi_01 <= pi_v<decltype(phi_01)>);
+            WHIRLWIND_ASSERT(is_wrapped_phase(phi_00));
+            WHIRLWIND_ASSERT(is_wrapped_phase(phi_10));
+            WHIRLWIND_ASSERT(is_wrapped_phase(phi_01));
 
-            const auto di = cycle_diff_residual(phi_10, phi_00);
-            const auto dj = cycle_diff_residual(phi_00, phi_01);
+            const auto di = cycle_diff_residual(phi_00, phi_10);
+            const auto dj = cycle_diff_residual(phi_01, phi_00);
             WHIRLWIND_DEBUG_ASSERT((di == -1) || (di == 0) || (di == 1));
             WHIRLWIND_DEBUG_ASSERT((dj == -1) || (dj == 0) || (dj == 1));
 
             WHIRLWIND_DEBUG_ASSERT(i + 1 < out.extent(0));
             WHIRLWIND_DEBUG_ASSERT(j + 1 < out.extent(1));
-            out(i + 1, j) -= di;
-            out(i, j + 1) -= dj;
-            out(i + 1, j + 1) += di + dj;
+            out(i + 1, j) += di;
+            out(i, j + 1) += dj;
+            out(i + 1, j + 1) -= di + dj;
         }
     }
 
@@ -65,32 +68,32 @@ residue(const ArrayLike2D& wrapped_phase)
     for (Index i = 0, j = n - 1; i < m - 1; ++i) {
         const auto phi0 = wrapped_phase(i, j);
         const auto phi1 = wrapped_phase(i + 1, j);
-        WHIRLWIND_ASSERT(phi0 >= -pi_v<decltype(phi0)> && phi0 <= pi_v<decltype(phi0)>);
-        WHIRLWIND_ASSERT(phi1 >= -pi_v<decltype(phi1)> && phi1 <= pi_v<decltype(phi1)>);
-
-        const auto d = cycle_diff_residual(phi1, phi0);
-        WHIRLWIND_DEBUG_ASSERT((d == -1) || (d == 0) || (d == 1));
-
-        WHIRLWIND_DEBUG_ASSERT(i + 1 < out.extent(0));
-        WHIRLWIND_DEBUG_ASSERT(j + 1 < out.extent(1));
-        out(i + 1, j) -= d;
-        out(i + 1, j + 1) += d;
-    }
-
-    // Last row.
-    for (Index i = m - 1, j = 0; j < n - 1; ++j) {
-        const auto phi0 = wrapped_phase(i, j);
-        const auto phi1 = wrapped_phase(i, j + 1);
-        WHIRLWIND_ASSERT(phi0 >= -pi_v<decltype(phi0)> && phi0 <= pi_v<decltype(phi0)>);
-        WHIRLWIND_ASSERT(phi1 >= -pi_v<decltype(phi1)> && phi1 <= pi_v<decltype(phi1)>);
+        WHIRLWIND_ASSERT(is_wrapped_phase(phi0));
+        WHIRLWIND_ASSERT(is_wrapped_phase(phi1));
 
         const auto d = cycle_diff_residual(phi0, phi1);
         WHIRLWIND_DEBUG_ASSERT((d == -1) || (d == 0) || (d == 1));
 
         WHIRLWIND_DEBUG_ASSERT(i + 1 < out.extent(0));
         WHIRLWIND_DEBUG_ASSERT(j + 1 < out.extent(1));
-        out(i, j + 1) -= d;
-        out(i + 1, j + 1) += d;
+        out(i + 1, j) += d;
+        out(i + 1, j + 1) -= d;
+    }
+
+    // Last row.
+    for (Index i = m - 1, j = 0; j < n - 1; ++j) {
+        const auto phi0 = wrapped_phase(i, j);
+        const auto phi1 = wrapped_phase(i, j + 1);
+        WHIRLWIND_ASSERT(is_wrapped_phase(phi0));
+        WHIRLWIND_ASSERT(is_wrapped_phase(phi1));
+
+        const auto d = cycle_diff_residual(phi1, phi0);
+        WHIRLWIND_DEBUG_ASSERT((d == -1) || (d == 0) || (d == 1));
+
+        WHIRLWIND_DEBUG_ASSERT(i + 1 < out.extent(0));
+        WHIRLWIND_DEBUG_ASSERT(j + 1 < out.extent(1));
+        out(i, j + 1) += d;
+        out(i + 1, j + 1) -= d;
     }
 
     return out;
