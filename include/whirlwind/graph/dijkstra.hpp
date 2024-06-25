@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <memory>
 #include <utility>
 #include <vector>
 
@@ -150,22 +149,24 @@ public:
     }
 
     constexpr void
-    add_source(const vertex_type& source)
+    add_source(vertex_type source)
     {
         WHIRLWIND_ASSERT(graph().contains_vertex(source));
         WHIRLWIND_ASSERT(!has_reached_vertex(source));
+
         make_root_vertex(source);
         WHIRLWIND_DEBUG_ASSERT(depth(source) == 0);
         WHIRLWIND_DEBUG_ASSERT(predecessor_vertex(source) == source);
+
         label_vertex_reached(source);
         set_distance_to_vertex(source, zero<distance_type>());
-        heap_.emplace(source, zero<distance_type>());
+        heap_.emplace(std::move(source), zero<distance_type>());
     }
 
     constexpr auto
     pop_next_unvisited_vertex()
     {
-        WHIRLWIND_ASSERT(!heap_.empty());
+        WHIRLWIND_ASSERT(!std::empty(heap_));
         auto top = heap_.top();
         using std::get;
         WHIRLWIND_DEBUG_ASSERT(has_reached_vertex(get<0>(top)));
@@ -175,7 +176,7 @@ public:
     }
 
     constexpr void
-    visit_vertex(const vertex_type& vertex, distance_type distance)
+    visit_vertex(const vertex_type& vertex, [[maybe_unused]] distance_type distance)
     {
         WHIRLWIND_ASSERT(graph().contains_vertex(vertex));
         WHIRLWIND_ASSERT(distance >= -eps<distance_type>());
@@ -184,9 +185,18 @@ public:
     }
 
     constexpr void
-    relax_edge(const edge_type edge,
-               const vertex_type tail,
-               const vertex_type head,
+    push_vertex(vertex_type vertex, distance_type distance)
+    {
+        WHIRLWIND_ASSERT(graph().contains_vertex(vertex));
+        WHIRLWIND_ASSERT(distance >= -eps<distance_type>());
+        WHIRLWIND_DEBUG_ASSERT(has_reached_vertex(vertex));
+        heap_.emplace(std::move(vertex), std::move(distance));
+    }
+
+    constexpr void
+    relax_edge(edge_type edge,
+               vertex_type tail,
+               vertex_type head,
                distance_type distance)
     {
         WHIRLWIND_ASSERT(graph().contains_edge(edge));
@@ -204,7 +214,7 @@ public:
         WHIRLWIND_DEBUG_ASSERT(!is_root_vertex(head));
         label_vertex_reached(head);
         set_distance_to_vertex(head, distance);
-        heap_.emplace(std::move(head), std::move(distance));
+        push_vertex(std::move(head), std::move(distance));
     }
 
     [[nodiscard]] constexpr auto
