@@ -7,6 +7,7 @@
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/numeric.hpp>
+#include <whirlwind/logging/null_logger.hpp>
 
 WHIRLWIND_NAMESPACE_BEGIN
 
@@ -20,7 +21,6 @@ dijkstra_ssp(Dijkstra& dijkstra,
         -> std::optional<typename Network::node_type>
 {
     using Distance = typename Dijkstra::distance_type;
-
     WHIRLWIND_STATIC_ASSERT(std::is_same_v<Distance, typename Network::cost_type>);
 
     WHIRLWIND_ASSERT(network.contains_node(source));
@@ -44,6 +44,7 @@ dijkstra_ssp(Dijkstra& dijkstra,
 
         dijkstra.visit_vertex(tail, distance);
         WHIRLWIND_DEBUG_ASSERT(dijkstra.has_visited_vertex(tail));
+        WHIRLWIND_DEBUG_ASSERT(dijkstra.distance_to_vertex(tail) == distance);
 
         if (network.is_deficit_node(tail)) {
             return tail;
@@ -112,7 +113,6 @@ update_potential_ssp(Network& network,
                      const typename Network::node_type& sink)
 {
     using Distance = typename Dijkstra::distance_type;
-
     WHIRLWIND_STATIC_ASSERT(std::is_same_v<Distance, typename Network::cost_type>);
 
     WHIRLWIND_ASSERT(network.contains_node(sink));
@@ -132,14 +132,15 @@ update_potential_ssp(Network& network,
 
         WHIRLWIND_DEBUG_ASSERT(distance_to_sink - distance >= -eps<Distance>());
         network.increase_node_potential(node, distance_to_sink - distance);
-        WHIRLWIND_DEBUG_ASSERT(network.node_potential(node) >= -eps<Distance>());
     }
 }
 
-template<class Dijkstra, class Network>
+template<class Dijkstra, class Logger = NullLogger, class Network>
 constexpr void
 successive_shortest_paths(Network& network)
 {
+    auto logger = Logger("whirlwind.network.successive_shortest_paths");
+
     WHIRLWIND_ASSERT(network.is_balanced());
 
     auto dijkstra = Dijkstra(network.residual_graph());
@@ -147,12 +148,21 @@ successive_shortest_paths(Network& network)
     WHIRLWIND_DEBUG_ASSERT(std::addressof(dijkstra.graph()) ==
                            std::addressof(network.residual_graph()));
 
+    const auto num_iter = network.total_excess();
+    using Iter = std::remove_const_t<decltype(num_iter)>;
+    Iter iter = 1;
     for (const auto& source : network.excess_nodes()) {
+        if (iter % 100 == 0) {
+            logger.info("Iteration {:>8}/{}", iter, num_iter);
+        }
+
         const auto sink = dijkstra_ssp(dijkstra, network, source);
         WHIRLWIND_ASSERT(sink);
 
         augment_flow_ssp(network, dijkstra, *sink);
         update_potential_ssp(network, dijkstra, *sink);
+
+        ++iter;
     }
 }
 
