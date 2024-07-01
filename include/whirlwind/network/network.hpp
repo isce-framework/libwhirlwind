@@ -186,7 +186,7 @@ public:
     }
 
     constexpr void
-    increase_node_potential(const node_type& node, cost_type delta)
+    increase_node_potential(const node_type& node, const cost_type& delta)
     {
         WHIRLWIND_ASSERT(contains_node(node));
         const auto node_id = get_node_id(node);
@@ -195,7 +195,7 @@ public:
     }
 
     constexpr void
-    decrease_node_potential(const node_type& node, cost_type delta)
+    decrease_node_potential(const node_type& node, const cost_type& delta)
     {
         WHIRLWIND_ASSERT(contains_node(node));
         const auto node_id = get_node_id(node);

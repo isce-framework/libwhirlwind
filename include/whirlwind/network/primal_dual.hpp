@@ -17,6 +17,8 @@
 #include <whirlwind/common/stddef.hpp>
 #include <whirlwind/logging/null_logger.hpp>
 
+#include "successive_shortest_paths.hpp"
+
 WHIRLWIND_NAMESPACE_BEGIN
 
 template<class Dijkstra>
@@ -260,7 +262,7 @@ update_potential_pd(Network& network, const Dijkstra& dijkstra)
 
 template<class Dijkstra, class Logger = NullLogger, class Network>
 constexpr void
-primal_dual(Network& network)
+primal_dual(Network& network, Size maxiter = 0)
 {
     auto logger = Logger("whirlwind.network.primal_dual");
 
@@ -279,13 +281,19 @@ primal_dual(Network& network)
         augment_flow_pd(network, dijkstra);
 
         if (!contains_any_excess_node(network)) {
-            break;
+            return;
         }
 
         update_potential_pd(network, dijkstra);
 
+        if (iter == maxiter) {
+            break;
+        }
+
         ++iter;
     }
+
+    successive_shortest_paths<Dijkstra, Logger>(network);
 }
 
 WHIRLWIND_NAMESPACE_END

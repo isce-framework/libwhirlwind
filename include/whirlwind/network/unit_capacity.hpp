@@ -141,7 +141,6 @@ protected:
     constexpr UnitCapacityMixin(Args&&... args)
         : super_type(std::forward<Args>(args)...), is_arc_saturated_([&]() {
               return arcs() | ranges::views::transform([&](const auto& arc) {
-                         // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=67274
                          return !this->is_forward_arc(arc);
                      }) |
                      ranges::to<container_type<bool>>();

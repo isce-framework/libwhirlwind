@@ -228,7 +228,6 @@ public:
         WHIRLWIND_ASSERT(distance >= -eps<distance_type>());
 
         WHIRLWIND_DEBUG_ASSERT(has_visited_vertex(tail));
-        WHIRLWIND_DEBUG_ASSERT(!has_visited_vertex(head));
         WHIRLWIND_DEBUG_ASSERT(distance >=
                                distance_to_vertex(tail) - eps<distance_type>());
 
