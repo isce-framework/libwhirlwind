@@ -46,6 +46,13 @@ public:
         WHIRLWIND_DEBUG_ASSERT(std::empty(heap_));
     }
 
+    template<class Network>
+    explicit constexpr Dijkstra(const Network& network)
+        : Dijkstra(network.residual_graph())
+    {
+        WHIRLWIND_STATIC_ASSERT(std::is_same_v<typename Network::cost_type, Distance>);
+    }
+
     constexpr void
     push_vertex(vertex_type vertex, distance_type distance)
     {

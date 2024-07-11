@@ -41,10 +41,11 @@ public:
     using super_type::graph;
     using super_type::predecessor_vertex;
 
-    explicit constexpr PrimalDualDijkstra(const graph_type& graph,
+    template<class Network>
+    explicit constexpr PrimalDualDijkstra(const Network& network,
                                           vertex_type source_fill_value = {})
-        : super_type(graph),
-          source_(graph.num_vertices(), source_fill_value),
+        : super_type(network),
+          source_(network.residual_graph().num_vertices(), source_fill_value),
           source_fill_value_(std::move(source_fill_value))
     {
         WHIRLWIND_DEBUG_ASSERT(std::size(source_) == this->graph().num_vertices());
@@ -144,9 +145,6 @@ dijkstra_pd(Dijkstra& dijkstra, const Network& network)
 
     WHIRLWIND_ASSERT(std::addressof(dijkstra.graph()) ==
                      std::addressof(network.residual_graph()));
-
-    dijkstra.reset();
-    WHIRLWIND_DEBUG_ASSERT(dijkstra.done());
 
     for (const auto& source : network.excess_nodes()) {
         dijkstra.add_source(source);
@@ -268,14 +266,13 @@ primal_dual(Network& network, Size maxiter = 0)
 
     WHIRLWIND_ASSERT(network.is_balanced());
 
-    auto dijkstra = PrimalDualDijkstra<Dijkstra>(network.residual_graph());
-    WHIRLWIND_DEBUG_ASSERT(dijkstra.done());
-    WHIRLWIND_DEBUG_ASSERT(std::addressof(dijkstra.graph()) ==
-                           std::addressof(network.residual_graph()));
-
     Size iter = 1;
     while (true) {
         logger.info("Iteration {}", iter);
+
+        auto dijkstra = PrimalDualDijkstra<Dijkstra>(network);
+        WHIRLWIND_DEBUG_ASSERT(std::addressof(dijkstra.graph()) ==
+                               std::addressof(network.residual_graph()));
 
         dijkstra_pd(dijkstra, network);
         augment_flow_pd(network, dijkstra);

@@ -143,7 +143,7 @@ successive_shortest_paths(Network& network)
 
     WHIRLWIND_ASSERT(network.is_balanced());
 
-    auto dijkstra = Dijkstra(network.residual_graph());
+    auto dijkstra = Dijkstra(network);
     WHIRLWIND_DEBUG_ASSERT(dijkstra.done());
     WHIRLWIND_DEBUG_ASSERT(std::addressof(dijkstra.graph()) ==
                            std::addressof(network.residual_graph()));
