@@ -1,7 +1,6 @@
 #pragma once
 
 #include <utility>
-#include <vector>
 
 #include <range/v3/view/filter.hpp>
 
@@ -9,6 +8,7 @@
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/numeric.hpp>
 #include <whirlwind/common/stddef.hpp>
+#include <whirlwind/common/vector.hpp>
 #include <whirlwind/graph/rectangular_grid_graph.hpp>
 
 #include "residual_graph_traits.hpp"
@@ -170,7 +170,7 @@ private:
 
 } // namespace detail
 
-template<class Graph, template<class> class Container = std::vector>
+template<class Graph, template<class> class Container = Vector>
 class ResidualGraphMixin : public detail::BasicResidualGraphMixin<Graph> {
 private:
     using super_type = detail::BasicResidualGraphMixin<Graph>;

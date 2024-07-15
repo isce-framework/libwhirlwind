@@ -1,11 +1,11 @@
 #pragma once
 
 #include <utility>
-#include <vector>
 
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/numeric.hpp>
+#include <whirlwind/common/vector.hpp>
 
 #include "residual_graph.hpp"
 
@@ -13,7 +13,7 @@ WHIRLWIND_NAMESPACE_BEGIN
 
 template<class Graph,
          class Flow,
-         template<class> class Container = std::vector,
+         template<class> class Container = Vector,
          class ResidualGraphMixin = ResidualGraphMixin<Graph, Container>>
 class UncapacitatedMixin : public ResidualGraphMixin {
 private:

@@ -3,17 +3,17 @@
 #include <cmath>
 #include <cstdint>
 #include <type_traits>
-#include <vector>
 
 #include "common/assert.hpp"
 #include "common/namespace.hpp"
 #include "common/ndarray.hpp"
 #include "common/numbers.hpp"
+#include "common/vector.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
 
 template<class SignedInteger = std::int32_t,
-         template<class> class Container = std::vector,
+         template<class> class Container = Vector,
          class ArrayLike2D>
 [[nodiscard]] constexpr auto
 residue(const ArrayLike2D& wrapped_phase)

@@ -1,13 +1,13 @@
 #pragma once
 
 #include <utility>
-#include <vector>
 
 #include <range/v3/view/zip.hpp>
 
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/stddef.hpp>
+#include <whirlwind/common/vector.hpp>
 
 WHIRLWIND_NAMESPACE_BEGIN
 
@@ -20,7 +20,7 @@ WHIRLWIND_NAMESPACE_BEGIN
  *     A `std::vector`-like type template used to store the internal list of vertex
  *     pairs.
  */
-template<class Vertex, template<class> class Container = std::vector>
+template<class Vertex, template<class> class Container = Vector>
 class EdgeList {
 public:
     using vertex_type = Vertex;

@@ -1,12 +1,12 @@
 #pragma once
 
 #include <utility>
-#include <vector>
 
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/heap.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/numeric.hpp>
+#include <whirlwind/common/vector.hpp>
 
 #include "shortest_path_forest.hpp"
 
@@ -14,7 +14,7 @@ WHIRLWIND_NAMESPACE_BEGIN
 
 template<class Distance,
          class Graph,
-         template<class> class Container = std::vector,
+         template<class> class Container = Vector,
          class Heap = BinaryHeap<typename Graph::vertex_type, Distance, Container>,
          class ShortestPathForest = ShortestPathForest<Distance, Graph, Container>>
 class Dijkstra : public ShortestPathForest {

@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <utility>
-#include <vector>
 
 #include <range/v3/algorithm/copy.hpp>
 #include <range/v3/algorithm/fill.hpp>
@@ -12,6 +11,7 @@
 #include <whirlwind/common/compatibility.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/stddef.hpp>
+#include <whirlwind/common/vector.hpp>
 
 #include "predecessors.hpp"
 
@@ -33,7 +33,7 @@ WHIRLWIND_NAMESPACE_BEGIN
  *     A `std::vector`-like type template used to store the internal arrays of
  *     predecessor vertices and edges.
  */
-template<class Graph, template<class> class Container = std::vector>
+template<class Graph, template<class> class Container = Vector>
 class Forest {
 public:
     using graph_type = Graph;

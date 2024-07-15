@@ -2,7 +2,6 @@
 
 #include <type_traits>
 #include <utility>
-#include <vector>
 
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
@@ -11,6 +10,7 @@
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/numeric.hpp>
 #include <whirlwind/common/stddef.hpp>
+#include <whirlwind/common/vector.hpp>
 
 #include "residual_graph.hpp"
 
@@ -18,7 +18,7 @@ WHIRLWIND_NAMESPACE_BEGIN
 
 template<class Graph,
          class Flow,
-         template<class> class Container = std::vector,
+         template<class> class Container = Vector,
          class ResidualGraphMixin = ResidualGraphMixin<Graph, Container>>
 class UnitCapacityMixin : public ResidualGraphMixin {
 private:

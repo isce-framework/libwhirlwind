@@ -6,7 +6,6 @@
 #include <memory>
 #include <span>
 #include <type_traits>
-#include <vector>
 
 #include <range/v3/algorithm/adjacent_find.hpp>
 #include <range/v3/algorithm/all_of.hpp>
@@ -18,6 +17,7 @@
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/ndarray.hpp>
 #include <whirlwind/common/stddef.hpp>
+#include <whirlwind/common/vector.hpp>
 
 WHIRLWIND_NAMESPACE_BEGIN
 
@@ -41,12 +41,12 @@ is_contiguous_range(Range&& r) -> bool
 // TODO: concepts
 template<class T, class Allocator>
 [[nodiscard]] constexpr auto
-is_contiguous_range(const std::vector<T, Allocator>&) noexcept -> bool
+is_contiguous_range(const Vector<T, Allocator>&) noexcept -> bool
 {
     return true;
 }
 
-template<class Knot, template<class> class Container = std::vector>
+template<class Knot, template<class> class Container = Vector>
 class CubicBSplineBasis {
 protected:
     template<class RandomAccessRange>

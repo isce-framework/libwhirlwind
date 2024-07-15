@@ -3,7 +3,6 @@
 #include <cmath>
 #include <type_traits>
 #include <utility>
-#include <vector>
 
 #include <range/v3/algorithm/for_each.hpp>
 #include <range/v3/algorithm/minmax.hpp>
@@ -15,6 +14,7 @@
 #include <whirlwind/common/numeric.hpp>
 #include <whirlwind/common/queue.hpp>
 #include <whirlwind/common/stddef.hpp>
+#include <whirlwind/common/vector.hpp>
 
 #include "shortest_path_forest.hpp"
 
@@ -49,7 +49,7 @@ get_max_admissible_arc_length(const Network& network) -> typename Network::cost_
 
 template<class Distance,
          class Graph,
-         template<class> class Container = std::vector,
+         template<class> class Container = Vector,
          class Queue = Queue<typename Graph::vertex_type>,
          class ShortestPathForest = ShortestPathForest<Distance, Graph, Container>>
 class Dial : public ShortestPathForest {

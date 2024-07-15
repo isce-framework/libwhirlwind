@@ -3,7 +3,6 @@
 #include <array>
 #include <tuple>
 #include <utility>
-#include <vector>
 
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
@@ -15,6 +14,7 @@
 #include <whirlwind/common/ndarray.hpp>
 #include <whirlwind/common/stddef.hpp>
 #include <whirlwind/common/type_traits.hpp>
+#include <whirlwind/common/vector.hpp>
 
 #include "cubic_b_spline_basis.hpp"
 
@@ -22,7 +22,7 @@ WHIRLWIND_NAMESPACE_BEGIN
 
 template<class Knot,
          class Value = Knot,
-         template<class> class Container = std::vector,
+         template<class> class Container = Vector,
          class Basis = CubicBSplineBasis<Knot, Container>>
 class CubicBSpline2D {
 public:
@@ -107,8 +107,8 @@ public:
 
     template<class InputRange>
     [[nodiscard]] constexpr auto
-    operator()(const InputRange& x0,
-               const InputRange& x1) const -> container_type<value_type>
+    operator()(const InputRange& x0, const InputRange& x1) const
+            -> container_type<value_type>
     {
         return ranges::views::zip(x0, x1) |
                ranges::views::transform([&](const auto& xx) {
@@ -144,7 +144,7 @@ protected:
 
 template<class Knot,
          class Value = Knot,
-         template<class> class Container = std::vector,
+         template<class> class Container = Vector,
          class Basis = CubicBSplineBasis<Knot, Container>>
 using BiCubicBSpline = CubicBSpline2D<Knot, Value, Container, Basis>;
 

@@ -3,7 +3,6 @@
 #include <array>
 #include <tuple>
 #include <utility>
-#include <vector>
 
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
@@ -15,6 +14,7 @@
 #include <whirlwind/common/ndarray.hpp>
 #include <whirlwind/common/stddef.hpp>
 #include <whirlwind/common/type_traits.hpp>
+#include <whirlwind/common/vector.hpp>
 
 #include "cubic_b_spline_basis.hpp"
 
@@ -22,7 +22,7 @@ WHIRLWIND_NAMESPACE_BEGIN
 
 template<class Knot,
          class Value = Knot,
-         template<class> class Container = std::vector,
+         template<class> class Container = Vector,
          class Basis = CubicBSplineBasis<Knot, Container>>
 class CubicBSpline3D {
 public:
@@ -97,9 +97,8 @@ public:
     }
 
     [[nodiscard]] constexpr auto
-    operator()(const knot_type& x0,
-               const knot_type& x1,
-               const knot_type& x2) const -> value_type
+    operator()(const knot_type& x0, const knot_type& x1, const knot_type& x2) const
+            -> value_type
     {
         const auto i0 = bases_[0].get_knot_interval(x0);
         const auto i1 = bases_[1].get_knot_interval(x1);
@@ -128,9 +127,8 @@ public:
 
     template<class InputRange>
     [[nodiscard]] constexpr auto
-    operator()(const InputRange& x0,
-               const InputRange& x1,
-               const InputRange& x2) const -> container_type<value_type>
+    operator()(const InputRange& x0, const InputRange& x1, const InputRange& x2) const
+            -> container_type<value_type>
     {
         return ranges::views::zip(x0, x1, x2) |
                ranges::views::transform([&](const auto& xx) {
@@ -166,7 +164,7 @@ protected:
 
 template<class Knot,
          class Value = Knot,
-         template<class> class Container = std::vector,
+         template<class> class Container = Vector,
          class Basis = CubicBSplineBasis<Knot, Container>>
 using TriCubicBSpline = CubicBSpline3D<Knot, Value, Container, Basis>;
 

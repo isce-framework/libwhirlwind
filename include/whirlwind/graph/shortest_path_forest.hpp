@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <utility>
-#include <vector>
 
 #include <range/v3/algorithm/fill.hpp>
 #include <range/v3/view/filter.hpp>
@@ -10,6 +9,7 @@
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/numeric.hpp>
+#include <whirlwind/common/vector.hpp>
 
 #include "forest.hpp"
 
@@ -17,7 +17,7 @@ WHIRLWIND_NAMESPACE_BEGIN
 
 template<class Distance,
          class Graph,
-         template<class> class Container = std::vector,
+         template<class> class Container = Vector,
          class Forest = Forest<Graph, Container>>
 class ShortestPathForest : public Forest {
 private:

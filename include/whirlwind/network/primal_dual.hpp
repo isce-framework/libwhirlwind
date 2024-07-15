@@ -4,7 +4,6 @@
 #include <memory>
 #include <type_traits>
 #include <utility>
-#include <vector>
 
 #include <range/v3/algorithm/fill.hpp>
 #include <range/v3/algorithm/sort.hpp>
@@ -15,6 +14,7 @@
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/numeric.hpp>
 #include <whirlwind/common/stddef.hpp>
+#include <whirlwind/common/vector.hpp>
 #include <whirlwind/logging/null_logger.hpp>
 
 #include "successive_shortest_paths.hpp"
@@ -178,7 +178,7 @@ dijkstra_pd(Dijkstra& dijkstra, const Network& network)
     }
 }
 
-template<template<class> class Container = std::vector, class Network, class Dijkstra>
+template<template<class> class Container = Vector, class Network, class Dijkstra>
 constexpr void
 augment_flow_pd(Network& network, const Dijkstra& dijkstra)
 {

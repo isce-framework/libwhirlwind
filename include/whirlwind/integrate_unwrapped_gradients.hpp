@@ -2,18 +2,18 @@
 
 #include <cmath>
 #include <type_traits>
-#include <vector>
 
 #include "common/namespace.hpp"
 #include "common/ndarray.hpp"
 #include "common/numbers.hpp"
 #include "common/type_traits.hpp"
+#include "common/vector.hpp"
 #include "graph/rectangular_grid_graph.hpp"
 #include "network/network.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
 
-template<template<class> class Container = std::vector,
+template<template<class> class Container = Vector,
          class Accumulator = double,
          class ArrayLike2D,
          class Dim,

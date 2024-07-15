@@ -4,7 +4,6 @@
 #include <span>
 #include <type_traits>
 #include <utility>
-#include <vector>
 
 #include <range/v3/view/iota.hpp>
 #include <range/v3/view/transform.hpp>
@@ -14,6 +13,7 @@
 #include <whirlwind/common/compatibility.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/stddef.hpp>
+#include <whirlwind/common/vector.hpp>
 
 #include "edge_list.hpp"
 
@@ -29,7 +29,7 @@ WHIRLWIND_NAMESPACE_BEGIN
  *     A `std::vector`-like type template used to store the internal row and column
  *     index arrays.
  */
-template<template<class> class Container = std::vector>
+template<template<class> class Container = Vector>
 class CSRGraph {
 public:
     using vertex_type = Size;

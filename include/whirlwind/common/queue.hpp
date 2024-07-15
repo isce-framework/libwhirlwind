@@ -7,7 +7,10 @@
 
 WHIRLWIND_NAMESPACE_BEGIN
 
-template<class T, template<class> class Container = std::deque>
+template<class T>
+using Deque = std::deque<T>;
+
+template<class T, template<class> class Container = Deque>
 class Queue : public std::queue<T, Container<T>> {
 private:
     using super_type = std::queue<T, Container<T>>;

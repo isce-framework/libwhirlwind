@@ -4,7 +4,6 @@
 #include <functional>
 #include <type_traits>
 #include <utility>
-#include <vector>
 
 #include <range/v3/algorithm/fold_left.hpp>
 #include <range/v3/range/conversion.hpp>
@@ -15,6 +14,7 @@
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/numeric.hpp>
 #include <whirlwind/common/stddef.hpp>
+#include <whirlwind/common/vector.hpp>
 
 #include "uncapacitated.hpp"
 
@@ -23,7 +23,7 @@ WHIRLWIND_NAMESPACE_BEGIN
 template<class Graph,
          class Cost,
          class Flow,
-         template<class> class Container = std::vector,
+         template<class> class Container = Vector,
          class Mixin = UncapacitatedMixin<Graph, Flow, Container>>
 class Network : public Mixin {
     WHIRLWIND_STATIC_ASSERT(std::is_signed_v<Cost>);

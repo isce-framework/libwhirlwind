@@ -1,7 +1,6 @@
 #pragma once
 
 #include <utility>
-#include <vector>
 
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
@@ -11,6 +10,7 @@
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/ndarray.hpp>
 #include <whirlwind/common/stddef.hpp>
+#include <whirlwind/common/vector.hpp>
 
 #include "cubic_b_spline_basis.hpp"
 
@@ -18,7 +18,7 @@ WHIRLWIND_NAMESPACE_BEGIN
 
 template<class Knot,
          class Value = Knot,
-         template<class> class Container = std::vector,
+         template<class> class Container = Vector,
          class Basis = CubicBSplineBasis<Knot, Container>>
 class CubicBSpline {
 public:
