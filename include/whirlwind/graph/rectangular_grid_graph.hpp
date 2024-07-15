@@ -343,7 +343,7 @@ public:
      * @returns
      *     A view of the vertex's outgoing incident edges and successor vertices.
      */
-    [[nodiscard]] constexpr auto
+    [[nodiscard]] auto
     outgoing_edges(const vertex_type& vertex) const
             -> std::generator<std::pair<edge_type, vertex_type>>
     {
