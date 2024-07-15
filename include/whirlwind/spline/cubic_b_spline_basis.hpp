@@ -39,9 +39,9 @@ is_contiguous_range(Range&& r) -> bool
 }
 
 // TODO: concepts
-template<class T, class Allocator>
+template<class T>
 [[nodiscard]] constexpr auto
-is_contiguous_range(const Vector<T, Allocator>&) noexcept -> bool
+is_contiguous_range(const Vector<T>&) noexcept -> bool
 {
     return true;
 }
