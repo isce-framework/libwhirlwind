@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 3.25...3.29)
 # on the same day, starting from 0.
 project(
   whirlwind
-  VERSION 20240714.0
+  VERSION 20240715.0
   LANGUAGES CXX
 )
 
