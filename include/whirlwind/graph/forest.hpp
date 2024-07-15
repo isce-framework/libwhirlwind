@@ -59,7 +59,7 @@ public:
     explicit constexpr Forest(const graph_type& graph, edge_type edge_fill_value = {})
         : graph_(std::addressof(graph)),
           depth_(graph.num_vertices(), size_type{0}),
-          pred_vertex_(graph.vertices() | ranges::to<container_type>()),
+          pred_vertex_(graph.vertices() | ranges::to<container_type<vertex_type>>()),
           pred_edge_(graph.num_vertices(), edge_fill_value),
           edge_fill_value_(std::move(edge_fill_value))
     {
