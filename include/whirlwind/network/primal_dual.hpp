@@ -34,7 +34,7 @@ public:
     using distance_type = typename super_type::distance_type;
 
     template<class T>
-    using container_type = typename super_type::container_type<T>;
+    using container_type = typename super_type::template container_type<T>;
 
     using super_type::depth;
     using super_type::distance_to_vertex;
