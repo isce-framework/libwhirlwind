@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <iterator>
 #include <memory>
 #include <type_traits>
@@ -13,7 +14,6 @@
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/numeric.hpp>
-#include <whirlwind/common/stddef.hpp>
 #include <whirlwind/container/vector.hpp>
 #include <whirlwind/logging/null_logger.hpp>
 
@@ -260,13 +260,13 @@ update_potential_pd(Network& network, const Dijkstra& dijkstra)
 
 template<class Dijkstra, class Logger = NullLogger, class Network>
 constexpr void
-primal_dual(Network& network, Size maxiter = 0)
+primal_dual(Network& network, std::size_t maxiter = 0)
 {
     auto logger = Logger("whirlwind.network.primal_dual");
 
     WHIRLWIND_ASSERT(network.is_balanced());
 
-    Size iter = 1;
+    std::size_t iter = 1;
     while (true) {
         logger.info("Iteration {}", iter);
 

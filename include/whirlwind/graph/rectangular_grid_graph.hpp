@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <cstddef>
 #include <generator>
 #include <type_traits>
 #include <utility>
@@ -12,7 +13,6 @@
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/compatibility.hpp>
 #include <whirlwind/common/namespace.hpp>
-#include <whirlwind/common/stddef.hpp>
 
 WHIRLWIND_NAMESPACE_BEGIN
 
@@ -29,15 +29,15 @@ WHIRLWIND_NAMESPACE_BEGIN
  * @tparam Dim
  *     The type used to represent row and column indices of vertices in the graph.
  */
-template<Size P = 1, class Dim = Size>
+template<std::size_t P = 1, class Dim = std::size_t>
 class RectangularGridGraph {
     WHIRLWIND_STATIC_ASSERT(std::is_integral_v<Dim>);
 
 public:
     using dim_type = Dim;
     using vertex_type = std::pair<dim_type, dim_type>;
-    using edge_type = Size;
-    using size_type = Size;
+    using edge_type = std::size_t;
+    using size_type = std::size_t;
 
     /**
      * Default constructor. Creates an empty `RectangularGridGraph` with no vertices or

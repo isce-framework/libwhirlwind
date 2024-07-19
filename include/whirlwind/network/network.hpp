@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <cstddef>
 #include <functional>
 #include <type_traits>
 #include <utility>
@@ -13,7 +14,6 @@
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/numeric.hpp>
-#include <whirlwind/common/stddef.hpp>
 #include <whirlwind/container/vector.hpp>
 
 #include "uncapacitated.hpp"
@@ -37,7 +37,7 @@ public:
     using arc_type = typename super_type::arc_type;
     using cost_type = Cost;
     using flow_type = Flow;
-    using size_type = Size;
+    using size_type = std::size_t;
     using ssize_type = std::make_signed_t<size_type>;
 
     template<class T>

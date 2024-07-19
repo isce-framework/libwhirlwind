@@ -1,12 +1,12 @@
 #pragma once
 
+#include <cstddef>
 #include <utility>
 
 #include <range/v3/view/zip.hpp>
 
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
-#include <whirlwind/common/stddef.hpp>
 #include <whirlwind/container/vector.hpp>
 
 WHIRLWIND_NAMESPACE_BEGIN
@@ -27,7 +27,7 @@ public:
     using value_type = std::pair<vertex_type, vertex_type>;
     using reference = value_type&;
     using const_reference = const value_type&;
-    using size_type = Size;
+    using size_type = std::size_t;
 
     template<class T>
     using container_type = Container<T>;

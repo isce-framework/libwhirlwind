@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <utility>
 
 #include <range/v3/range/conversion.hpp>
@@ -9,7 +10,6 @@
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/compatibility.hpp>
 #include <whirlwind/common/namespace.hpp>
-#include <whirlwind/common/stddef.hpp>
 #include <whirlwind/container/vector.hpp>
 
 #include "cubic_b_spline_basis.hpp"
@@ -26,7 +26,7 @@ public:
     using value_type = Value;
     using basis_type = Basis;
     using control_points_type = Array1D<Value, Container<Value>>;
-    using size_type = Size;
+    using size_type = std::size_t;
 
     template<class T>
     using container_type = Container<T>;

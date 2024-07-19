@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <utility>
 
 #include <range/v3/view/filter.hpp>
@@ -7,7 +8,6 @@
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/numeric.hpp>
-#include <whirlwind/common/stddef.hpp>
 #include <whirlwind/container/vector.hpp>
 #include <whirlwind/graph/rectangular_grid_graph.hpp>
 
@@ -24,7 +24,7 @@ public:
     using residual_graph_type = ResidualGraphTraits<graph_type>::type;
     using node_type = residual_graph_type::vertex_type;
     using arc_type = residual_graph_type::edge_type;
-    using size_type = Size;
+    using size_type = std::size_t;
 
     /** The residual graph of the network. */
     [[nodiscard]] constexpr auto

@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cmath>
+#include <cstddef>
 #include <iterator>
 #include <memory>
 #include <span>
@@ -16,7 +17,6 @@
 #include <whirlwind/array/ndarray.hpp>
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
-#include <whirlwind/common/stddef.hpp>
 #include <whirlwind/container/vector.hpp>
 
 WHIRLWIND_NAMESPACE_BEGIN
@@ -128,7 +128,7 @@ protected:
 
 public:
     using knot_type = Knot;
-    using size_type = Size;
+    using size_type = std::size_t;
 
     template<class T>
     using container_type = Container<T>;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <cstddef>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -13,7 +14,6 @@
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/compatibility.hpp>
 #include <whirlwind/common/namespace.hpp>
-#include <whirlwind/common/stddef.hpp>
 #include <whirlwind/container/vector.hpp>
 
 #include "cubic_b_spline_basis.hpp"
@@ -31,7 +31,7 @@ public:
     using basis_type = Basis;
     using bases_type = std::array<Basis, 2>;
     using control_points_type = Array2D<Value, Container<Value>>;
-    using size_type = Size;
+    using size_type = std::size_t;
 
     template<class T>
     using container_type = Container<T>;

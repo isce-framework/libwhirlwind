@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <cstddef>
 #include <type_traits>
 #include <utility>
 
@@ -12,7 +13,6 @@
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/numeric.hpp>
-#include <whirlwind/common/stddef.hpp>
 #include <whirlwind/container/queue.hpp>
 #include <whirlwind/container/vector.hpp>
 
@@ -64,7 +64,7 @@ public:
     using vertex_type = typename graph_type::vertex_type;
     using edge_type = typename graph_type::edge_type;
     using queue_type = Queue;
-    using size_type = Size;
+    using size_type = std::size_t;
 
     template<class T>
     using container_type = Container<T>;

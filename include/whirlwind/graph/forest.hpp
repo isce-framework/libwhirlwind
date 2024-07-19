@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <memory>
 #include <utility>
 
@@ -10,7 +11,6 @@
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/compatibility.hpp>
 #include <whirlwind/common/namespace.hpp>
-#include <whirlwind/common/stddef.hpp>
 #include <whirlwind/container/vector.hpp>
 
 #include "predecessors.hpp"
@@ -40,7 +40,7 @@ public:
     using vertex_type = typename graph_type::vertex_type;
     using edge_type = typename graph_type::edge_type;
     using pred_type = std::pair<vertex_type, edge_type>;
-    using size_type = Size;
+    using size_type = std::size_t;
 
     template<class T>
     using container_type = Container<T>;

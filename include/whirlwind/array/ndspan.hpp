@@ -15,7 +15,6 @@
 #include <experimental/mdspan>
 
 #include "namespace.hpp"
-#include "stddef.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
 
@@ -34,11 +33,11 @@ using LayoutRight = std::experimental::layout_right;
  * @tparam Dims
  *     The extent of each array dimension.
  */
-template<Size... Dims>
-using Extents = std::experimental::extents<Size, Dims...>;
+template<std::size_t... Dims>
+using Extents = std::experimental::extents<std::size_t, Dims...>;
 
 template<std::size_t Rank>
-using DynamicExtents = std::experimental::dextents<Size, Rank>;
+using DynamicExtents = std::experimental::dextents<std::size_t, Rank>;
 
 /** 1-dimensional dynamic extents. */
 using DynamicExtents1D = DynamicExtents<1>;

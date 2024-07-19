@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cstddef>
 #include <span>
 #include <type_traits>
 #include <utility>
@@ -12,7 +13,6 @@
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/compatibility.hpp>
 #include <whirlwind/common/namespace.hpp>
-#include <whirlwind/common/stddef.hpp>
 #include <whirlwind/container/vector.hpp>
 
 #include "edge_list.hpp"
@@ -32,9 +32,9 @@ WHIRLWIND_NAMESPACE_BEGIN
 template<template<class> class Container = Vector>
 class CSRGraph {
 public:
-    using vertex_type = Size;
-    using edge_type = Size;
-    using size_type = Size;
+    using vertex_type = std::size_t;
+    using edge_type = std::size_t;
+    using size_type = std::size_t;
 
     template<class T>
     using container_type = Container<T>;

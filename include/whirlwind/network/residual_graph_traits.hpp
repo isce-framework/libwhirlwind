@@ -1,7 +1,8 @@
 #pragma once
 
+#include <cstddef>
+
 #include <whirlwind/common/namespace.hpp>
-#include <whirlwind/common/stddef.hpp>
 #include <whirlwind/graph/csr_graph.hpp>
 #include <whirlwind/graph/rectangular_grid_graph.hpp>
 
@@ -15,7 +16,7 @@ struct ResidualGraphTraits<CSRGraph<Container>> {
     using type = CSRGraph<Container>;
 };
 
-template<Size P, class Dim>
+template<std::size_t P, class Dim>
 struct ResidualGraphTraits<RectangularGridGraph<P, Dim>> {
     using type = RectangularGridGraph<2 * P, Dim>;
 };
