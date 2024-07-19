@@ -5,12 +5,12 @@
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
 
+#include <whirlwind/array/ndarray.hpp>
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/compatibility.hpp>
 #include <whirlwind/common/namespace.hpp>
-#include <whirlwind/common/ndarray.hpp>
 #include <whirlwind/common/stddef.hpp>
-#include <whirlwind/common/vector.hpp>
+#include <whirlwind/container/vector.hpp>
 
 #include "cubic_b_spline_basis.hpp"
 

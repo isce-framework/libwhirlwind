@@ -8,13 +8,13 @@
 #include <range/v3/view/transform.hpp>
 #include <range/v3/view/zip.hpp>
 
+#include <whirlwind/array/ndarray.hpp>
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/compatibility.hpp>
 #include <whirlwind/common/namespace.hpp>
-#include <whirlwind/common/ndarray.hpp>
 #include <whirlwind/common/stddef.hpp>
 #include <whirlwind/common/type_traits.hpp>
-#include <whirlwind/common/vector.hpp>
+#include <whirlwind/container/vector.hpp>
 
 #include "cubic_b_spline_basis.hpp"
 
@@ -107,8 +107,8 @@ public:
 
     template<class InputRange>
     [[nodiscard]] constexpr auto
-    operator()(const InputRange& x0, const InputRange& x1) const
-            -> container_type<value_type>
+    operator()(const InputRange& x0,
+               const InputRange& x1) const -> container_type<value_type>
     {
         return ranges::views::zip(x0, x1) |
                ranges::views::transform([&](const auto& xx) {

@@ -7,7 +7,7 @@
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/stddef.hpp>
-#include <whirlwind/common/vector.hpp>
+#include <whirlwind/container/vector.hpp>
 
 WHIRLWIND_NAMESPACE_BEGIN
 

@@ -4,11 +4,11 @@
 #include <cstdint>
 #include <type_traits>
 
+#include "array/ndarray.hpp"
 #include "common/assert.hpp"
 #include "common/namespace.hpp"
-#include "common/ndarray.hpp"
 #include "common/numbers.hpp"
-#include "common/vector.hpp"
+#include "container/vector.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
 
@@ -16,7 +16,7 @@ template<class SignedInteger = std::int32_t,
          template<class> class Container = Vector,
          class ArrayLike2D>
 [[nodiscard]] constexpr auto
-residue(const ArrayLike2D& wrapped_phase)
+get_residues(const ArrayLike2D& wrapped_phase)
         -> Array2D<SignedInteger, Container<SignedInteger>>
 {
     WHIRLWIND_STATIC_ASSERT(std::is_signed_v<SignedInteger> &&

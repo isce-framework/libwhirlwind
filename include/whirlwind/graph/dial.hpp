@@ -12,9 +12,9 @@
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/numeric.hpp>
-#include <whirlwind/common/queue.hpp>
 #include <whirlwind/common/stddef.hpp>
-#include <whirlwind/common/vector.hpp>
+#include <whirlwind/container/queue.hpp>
+#include <whirlwind/container/vector.hpp>
 
 #include "shortest_path_forest.hpp"
 

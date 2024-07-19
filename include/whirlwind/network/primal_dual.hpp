@@ -14,7 +14,7 @@
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/numeric.hpp>
 #include <whirlwind/common/stddef.hpp>
-#include <whirlwind/common/vector.hpp>
+#include <whirlwind/container/vector.hpp>
 #include <whirlwind/logging/null_logger.hpp>
 
 #include "successive_shortest_paths.hpp"

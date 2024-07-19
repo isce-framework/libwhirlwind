@@ -8,7 +8,7 @@
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/numeric.hpp>
 #include <whirlwind/common/stddef.hpp>
-#include <whirlwind/common/vector.hpp>
+#include <whirlwind/container/vector.hpp>
 #include <whirlwind/graph/rectangular_grid_graph.hpp>
 
 #include "residual_graph_traits.hpp"
