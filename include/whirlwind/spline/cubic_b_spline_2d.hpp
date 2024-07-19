@@ -2,6 +2,7 @@
 
 #include <array>
 #include <tuple>
+#include <type_traits>
 #include <utility>
 
 #include <range/v3/range/conversion.hpp>
@@ -13,7 +14,6 @@
 #include <whirlwind/common/compatibility.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/common/stddef.hpp>
-#include <whirlwind/common/type_traits.hpp>
 #include <whirlwind/container/vector.hpp>
 
 #include "cubic_b_spline_basis.hpp"
@@ -55,7 +55,7 @@ public:
         : CubicBSpline2D(
                   std::get<0>(bases), std::get<1>(bases), std::move(control_points))
     {
-        WHIRLWIND_STATIC_ASSERT(std::tuple_size_v<remove_cvref_t<Tuple>> == 2);
+        WHIRLWIND_STATIC_ASSERT(std::tuple_size_v<std::remove_cvref_t<Tuple>> == 2);
     }
 
     template<class InputRange>
@@ -81,7 +81,7 @@ public:
     constexpr CubicBSpline2D(Tuple&& bases, const InputRange& control_points)
         : CubicBSpline2D(std::get<0>(bases), std::get<1>(bases), control_points)
     {
-        WHIRLWIND_STATIC_ASSERT(std::tuple_size_v<remove_cvref_t<Tuple>> == 2);
+        WHIRLWIND_STATIC_ASSERT(std::tuple_size_v<std::remove_cvref_t<Tuple>> == 2);
     }
 
     [[nodiscard]] constexpr auto

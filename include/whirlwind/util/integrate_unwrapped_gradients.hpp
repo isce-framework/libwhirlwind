@@ -6,7 +6,6 @@
 #include "array/ndarray.hpp"
 #include "common/namespace.hpp"
 #include "common/numbers.hpp"
-#include "common/type_traits.hpp"
 #include "container/vector.hpp"
 #include "graph/rectangular_grid_graph.hpp"
 #include "network/network.hpp"
@@ -72,7 +71,7 @@ integrate_unwrapped_gradients(
         return diff - tau_v<T> * std::round(diff / tau_v<T>);
     };
 
-    using ResidualGraph = remove_cvref_t<decltype(residual_graph)>;
+    using ResidualGraph = std::remove_cvref_t<decltype(residual_graph)>;
     using Vertex = ResidualGraph::vertex_type;
 
     // Start with a fixed "seed" point where the wrapped and unwrapped phase values are
