@@ -33,12 +33,12 @@ get_residues(const ArrayLike2D& wrapped_phase)
     // Checks whether the argument is in the interval [-pi, pi].
     [[maybe_unused]] auto is_wrapped_phase = [](const auto& psi) {
         using T = decltype(psi);
-        return (psi >= -pi_v<T>) && (psi <= pi_v<T>);
+        return (psi >= -pi<T>()) && (psi <= pi<T>());
     };
 
     auto cycle_diff_residual = [](const auto& a, const auto& b) -> SignedInteger {
         const auto diff = a - b;
-        return static_cast<SignedInteger>(std::round(diff / tau_v<decltype(diff)>));
+        return static_cast<SignedInteger>(std::round(diff / tau<decltype(diff)>()));
     };
 
     using Index = std::remove_const_t<decltype(m)>;

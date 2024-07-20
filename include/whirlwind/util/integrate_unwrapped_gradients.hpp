@@ -60,7 +60,7 @@ integrate_unwrapped_gradients(
     // Checks whether the argument is in the interval [-pi, pi].
     [[maybe_unused]] auto is_wrapped_phase = [](const auto& psi) {
         using T = decltype(psi);
-        return (psi >= -pi_v<T>) && (psi <= pi_v<T>);
+        return (psi >= -pi<T>()) && (psi <= pi<T>());
     };
 
     // Computes the difference between the two input phase values (in radians), wrapped
@@ -68,7 +68,7 @@ integrate_unwrapped_gradients(
     auto wrapped_diff = [](const auto& a, const auto& b) {
         const auto diff = a - b;
         using T = decltype(diff);
-        return diff - tau_v<T> * std::round(diff / tau_v<T>);
+        return diff - tau<T>() * std::round(diff / tau<T>());
     };
 
     using ResidualGraph = std::remove_cvref_t<decltype(residual_graph)>;
@@ -112,7 +112,7 @@ integrate_unwrapped_gradients(
 
         // Get the unwrapped phase gradient between the pixels and add it to the
         // cumulative sum.
-        const auto dphi = dpsi + tau_v<decltype(dpsi)> * net_flow;
+        const auto dphi = dpsi + tau<decltype(dpsi)>() * net_flow;
         phi += Accumulator{dphi};
 
         // Store the unwrapped phase value.
@@ -155,7 +155,7 @@ integrate_unwrapped_gradients(
 
             // Get the unwrapped phase gradient between the pixels and add it to the
             // cumulative sum.
-            const auto dphi = dpsi + tau_v<decltype(dpsi)> * net_flow;
+            const auto dphi = dpsi + tau<decltype(dpsi)>() * net_flow;
             phi += Accumulator{dphi};
 
             // Store the unwrapped phase value.
