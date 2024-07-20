@@ -12,7 +12,7 @@
 
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
-#include <whirlwind/common/numeric.hpp>
+#include <whirlwind/common/numbers.hpp>
 #include <whirlwind/container/queue.hpp>
 #include <whirlwind/container/vector.hpp>
 
