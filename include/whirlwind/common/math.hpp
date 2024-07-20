@@ -1,14 +1,16 @@
 #pragma once
 
+#include <concepts>
+
 #include "namespace.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
 
-template<class Integer>
+template<std::integral Integer>
 [[nodiscard]] constexpr auto
 is_even(Integer i) noexcept -> bool
 {
-    return i % Integer(2) == Integer(0);
+    return i % static_cast<Integer>(2) == static_cast<Integer>(0);
 }
 
 WHIRLWIND_NAMESPACE_END
