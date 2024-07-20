@@ -98,9 +98,9 @@ public:
         WHIRLWIND_ASSERT(graph().contains_edge(edge));
         WHIRLWIND_ASSERT(graph().contains_vertex(tail));
         WHIRLWIND_ASSERT(graph().contains_vertex(head));
-        WHIRLWIND_ASSERT(distance >= -eps<distance_type>());
+        WHIRLWIND_ASSERT(distance >= zero<distance_type>());
 
-        if (distance < distance_to_vertex(head) - eps<distance_type>()) {
+        if (distance < distance_to_vertex(head)) {
             reach_vertex(std::move(edge), std::move(tail), std::move(head),
                          std::move(distance));
         }
@@ -155,7 +155,7 @@ dijkstra_pd(Dijkstra& dijkstra, const Network& network)
     while (!dijkstra.done()) {
         const auto [tail, distance] = dijkstra.pop_next_unvisited_vertex();
         WHIRLWIND_DEBUG_ASSERT(network.contains_node(tail));
-        WHIRLWIND_DEBUG_ASSERT(distance >= -eps<Distance>());
+        WHIRLWIND_DEBUG_ASSERT(distance >= zero<Distance>());
 
         dijkstra.visit_vertex(tail, distance);
         WHIRLWIND_DEBUG_ASSERT(dijkstra.has_visited_vertex(tail));
@@ -170,7 +170,7 @@ dijkstra_pd(Dijkstra& dijkstra, const Network& network)
             }
 
             const auto arc_length = network.arc_reduced_cost(arc, tail, head);
-            WHIRLWIND_ASSERT(arc_length >= -eps<Distance>());
+            WHIRLWIND_ASSERT(arc_length >= zero<Distance>());
 
             dijkstra.relax_edge(arc, tail, head, distance + arc_length);
             WHIRLWIND_DEBUG_ASSERT(dijkstra.has_reached_vertex(head));
@@ -252,9 +252,9 @@ update_potential_pd(Network& network, const Dijkstra& dijkstra)
     for (const auto& node : network.nodes()) {
         WHIRLWIND_DEBUG_ASSERT(dijkstra.has_visited_vertex(node));
         const auto distance = dijkstra.distance_to_vertex(node);
-        WHIRLWIND_DEBUG_ASSERT(distance >= -eps<Distance>());
+        WHIRLWIND_DEBUG_ASSERT(distance >= zero<Distance>());
         network.decrease_node_potential(node, distance);
-        WHIRLWIND_DEBUG_ASSERT(network.node_potential(node) <= eps<Distance>());
+        WHIRLWIND_DEBUG_ASSERT(network.node_potential(node) <= zero<Distance>());
     }
 }
 

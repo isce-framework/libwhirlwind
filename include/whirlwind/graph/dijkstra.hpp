@@ -57,7 +57,7 @@ public:
     push_vertex(vertex_type vertex, distance_type distance)
     {
         WHIRLWIND_ASSERT(graph().contains_vertex(vertex));
-        WHIRLWIND_ASSERT(distance >= -eps<distance_type>());
+        WHIRLWIND_ASSERT(distance >= zero<distance_type>());
         WHIRLWIND_DEBUG_ASSERT(has_reached_vertex(vertex));
         heap_.emplace(std::move(vertex), std::move(distance));
     }
@@ -98,12 +98,11 @@ public:
         WHIRLWIND_ASSERT(graph().contains_edge(edge));
         WHIRLWIND_ASSERT(graph().contains_vertex(tail));
         WHIRLWIND_ASSERT(graph().contains_vertex(head));
-        WHIRLWIND_ASSERT(distance >= -eps<distance_type>());
+        WHIRLWIND_ASSERT(distance >= zero<distance_type>());
 
         WHIRLWIND_DEBUG_ASSERT(has_visited_vertex(tail));
         WHIRLWIND_DEBUG_ASSERT(!has_visited_vertex(head));
-        WHIRLWIND_DEBUG_ASSERT(distance >=
-                               distance_to_vertex(tail) - eps<distance_type>());
+        WHIRLWIND_DEBUG_ASSERT(distance >= distance_to_vertex(tail));
 
         set_predecessor(head, std::move(tail), std::move(edge));
         WHIRLWIND_DEBUG_ASSERT(!is_root_vertex(head));
@@ -116,7 +115,7 @@ public:
     visit_vertex(const vertex_type& vertex, [[maybe_unused]] distance_type distance)
     {
         WHIRLWIND_ASSERT(graph().contains_vertex(vertex));
-        WHIRLWIND_ASSERT(distance >= -eps<distance_type>());
+        WHIRLWIND_ASSERT(distance >= zero<distance_type>());
         WHIRLWIND_DEBUG_ASSERT(has_reached_vertex(vertex));
         label_vertex_visited(vertex);
     }
@@ -130,13 +129,12 @@ public:
         WHIRLWIND_ASSERT(graph().contains_edge(edge));
         WHIRLWIND_ASSERT(graph().contains_vertex(tail));
         WHIRLWIND_ASSERT(graph().contains_vertex(head));
-        WHIRLWIND_ASSERT(distance >= -eps<distance_type>());
+        WHIRLWIND_ASSERT(distance >= zero<distance_type>());
 
         WHIRLWIND_DEBUG_ASSERT(has_visited_vertex(tail));
-        WHIRLWIND_DEBUG_ASSERT(distance >=
-                               distance_to_vertex(tail) - eps<distance_type>());
+        WHIRLWIND_DEBUG_ASSERT(distance >= distance_to_vertex(tail));
 
-        if (distance < distance_to_vertex(head) - eps<distance_type>()) {
+        if (distance < distance_to_vertex(head)) {
             reach_vertex(std::move(edge), std::move(tail), std::move(head),
                          std::move(distance));
         }

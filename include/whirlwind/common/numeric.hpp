@@ -25,28 +25,6 @@ one() noexcept -> Numeric
 
 template<class Numeric>
 [[nodiscard]] WHIRLWIND_CONSTEVAL auto
-eps() noexcept -> Numeric
-{
-    WHIRLWIND_STATIC_ASSERT(std::is_integral_v<Numeric>);
-    return zero<Numeric>();
-}
-
-template<>
-[[nodiscard]] WHIRLWIND_CONSTEVAL auto
-eps<float>() noexcept -> float
-{
-    return 1e-3f;
-}
-
-template<>
-[[nodiscard]] WHIRLWIND_CONSTEVAL auto
-eps<double>() noexcept -> double
-{
-    return 1e-8;
-}
-
-template<class Numeric>
-[[nodiscard]] WHIRLWIND_CONSTEVAL auto
 infinity() noexcept -> Numeric
 {
     using T = std::numeric_limits<Numeric>;

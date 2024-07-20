@@ -40,7 +40,7 @@ dijkstra_ssp(Dijkstra& dijkstra,
     while (!dijkstra.done()) {
         const auto [tail, distance] = dijkstra.pop_next_unvisited_vertex();
         WHIRLWIND_DEBUG_ASSERT(network.contains_node(tail));
-        WHIRLWIND_DEBUG_ASSERT(distance >= -eps<Distance>());
+        WHIRLWIND_DEBUG_ASSERT(distance >= zero<Distance>());
 
         dijkstra.visit_vertex(tail, distance);
         WHIRLWIND_DEBUG_ASSERT(dijkstra.has_visited_vertex(tail));
@@ -59,7 +59,7 @@ dijkstra_ssp(Dijkstra& dijkstra,
             }
 
             const auto arc_length = network.arc_reduced_cost(arc, tail, head);
-            WHIRLWIND_ASSERT(arc_length >= -eps<Distance>());
+            WHIRLWIND_ASSERT(arc_length >= zero<Distance>());
 
             dijkstra.relax_edge(arc, tail, head, distance + arc_length);
             WHIRLWIND_DEBUG_ASSERT(dijkstra.has_reached_vertex(head));
@@ -121,16 +121,16 @@ update_potential_ssp(Network& network,
                      std::addressof(dijkstra.graph()));
 
     const auto distance_to_sink = dijkstra.distance_to_vertex(sink);
-    WHIRLWIND_DEBUG_ASSERT(distance_to_sink >= -eps<Distance>());
+    WHIRLWIND_DEBUG_ASSERT(distance_to_sink >= zero<Distance>());
 
     for (const auto& node : dijkstra.visited_vertices()) {
         WHIRLWIND_DEBUG_ASSERT(network.contains_node(node));
         WHIRLWIND_DEBUG_ASSERT(dijkstra.has_visited_vertex(node));
 
         const auto distance = dijkstra.distance_to_vertex(node);
-        WHIRLWIND_DEBUG_ASSERT(distance >= -eps<Distance>());
+        WHIRLWIND_DEBUG_ASSERT(distance >= zero<Distance>());
 
-        WHIRLWIND_DEBUG_ASSERT(distance_to_sink - distance >= -eps<Distance>());
+        WHIRLWIND_DEBUG_ASSERT(distance_to_sink >= distance);
         network.increase_node_potential(node, distance_to_sink - distance);
     }
 }
