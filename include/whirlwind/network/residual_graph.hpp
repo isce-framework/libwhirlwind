@@ -6,10 +6,10 @@
 #include <range/v3/view/filter.hpp>
 
 #include <whirlwind/common/assert.hpp>
-#include <whirlwind/common/math.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/container/vector.hpp>
 #include <whirlwind/graph/rectangular_grid_graph.hpp>
+#include <whirlwind/math/math.hpp>
 
 #include "residual_graph_traits.hpp"
 

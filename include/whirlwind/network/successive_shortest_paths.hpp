@@ -6,8 +6,8 @@
 
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
-#include <whirlwind/common/numbers.hpp>
 #include <whirlwind/logging/null_logger.hpp>
+#include <whirlwind/math/numbers.hpp>
 
 WHIRLWIND_NAMESPACE_BEGIN
 

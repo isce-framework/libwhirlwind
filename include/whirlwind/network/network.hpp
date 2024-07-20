@@ -13,8 +13,8 @@
 
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
-#include <whirlwind/common/numbers.hpp>
 #include <whirlwind/container/vector.hpp>
+#include <whirlwind/math/numbers.hpp>
 
 #include "uncapacitated.hpp"
 

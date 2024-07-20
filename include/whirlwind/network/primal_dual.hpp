@@ -13,9 +13,9 @@
 
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
-#include <whirlwind/common/numbers.hpp>
 #include <whirlwind/container/vector.hpp>
 #include <whirlwind/logging/null_logger.hpp>
+#include <whirlwind/math/numbers.hpp>
 
 #include "successive_shortest_paths.hpp"
 

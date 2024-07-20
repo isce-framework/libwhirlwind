@@ -5,9 +5,9 @@
 
 #include "array/ndarray.hpp"
 #include "common/namespace.hpp"
-#include "common/numbers.hpp"
 #include "container/vector.hpp"
 #include "graph/rectangular_grid_graph.hpp"
+#include "math/numbers.hpp"
 #include "network/network.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN

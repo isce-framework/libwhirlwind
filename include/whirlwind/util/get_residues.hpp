@@ -7,8 +7,8 @@
 #include "array/ndarray.hpp"
 #include "common/assert.hpp"
 #include "common/namespace.hpp"
-#include "common/numbers.hpp"
 #include "container/vector.hpp"
+#include "math/numbers.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
 
