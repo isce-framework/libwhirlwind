@@ -14,10 +14,10 @@
 #include <range/v3/functional/comparisons.hpp>
 #include <range/v3/range/access.hpp>
 
-#include <whirlwind/array/ndarray.hpp>
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/container/vector.hpp>
+#include <whirlwind/ndarray/ndarray.hpp>
 
 WHIRLWIND_NAMESPACE_BEGIN
 

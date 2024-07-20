@@ -6,11 +6,11 @@
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/transform.hpp>
 
-#include <whirlwind/array/ndarray.hpp>
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/compatibility.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/container/vector.hpp>
+#include <whirlwind/ndarray/ndarray.hpp>
 
 #include "cubic_b_spline_basis.hpp"
 

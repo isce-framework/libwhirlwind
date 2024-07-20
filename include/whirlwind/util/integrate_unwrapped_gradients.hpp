@@ -3,11 +3,11 @@
 #include <cmath>
 #include <type_traits>
 
-#include <whirlwind/array/ndarray.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/container/vector.hpp>
 #include <whirlwind/graph/rectangular_grid_graph.hpp>
 #include <whirlwind/math/numbers.hpp>
+#include <whirlwind/ndarray/ndarray.hpp>
 #include <whirlwind/network/network.hpp>
 
 WHIRLWIND_NAMESPACE_BEGIN
