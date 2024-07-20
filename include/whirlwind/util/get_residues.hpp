@@ -4,11 +4,11 @@
 #include <cstdint>
 #include <type_traits>
 
-#include "array/ndarray.hpp"
-#include "common/assert.hpp"
-#include "common/namespace.hpp"
-#include "container/vector.hpp"
-#include "math/numbers.hpp"
+#include <whirlwind/array/ndarray.hpp>
+#include <whirlwind/common/assert.hpp>
+#include <whirlwind/common/namespace.hpp>
+#include <whirlwind/container/vector.hpp>
+#include <whirlwind/math/numbers.hpp>
 
 WHIRLWIND_NAMESPACE_BEGIN
 
