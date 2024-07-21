@@ -1,9 +1,28 @@
 #pragma once
 
 // clang-format off
-#define WHIRLWIND_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
-#define WHIRLWIND_VERSION_MINOR @PROJECT_VERSION_MINOR@
-#define WHIRLWIND_VERSION @PROJECT_VERSION_MAJOR@@PROJECT_VERSION_MINOR@ULL
+/**
+ * @def WHIRLWIND_VERSION_EPOCH
+ *
+ * The epoch version number as an `unsigned long` literal. The calendar date of the most
+ * recent API-breaking release in YYYYMMDD format. Releases with the same epoch number
+ * are API-compatible.
+ */
+#define WHIRLWIND_VERSION_EPOCH @PROJECT_VERSION_MAJOR@UL
+
+/**
+ * @def WHIRLWIND_VERSION_PATCH
+ *
+ * The patch number as an `unsigned` literal. The patch number is incremented whenever
+ * backwards-compatible patches are released, starting over from 0 on each API-breaking
+ * release.
+ */
+#define WHIRLWIND_VERSION_PATCH @PROJECT_VERSION_MINOR@U
 // clang-format on
 
+/**
+ * @def WHIRLWIND_VERSION_STRING
+ *
+ * A string literal containing the epoch and version numbers separated by a dot (".").
+ */
 #define WHIRLWIND_VERSION_STRING "@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@"

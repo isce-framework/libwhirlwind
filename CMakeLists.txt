@@ -3,10 +3,12 @@
 # should not exceed the latest CMake version tested by the CI system.
 cmake_minimum_required(VERSION 3.25...3.29)
 
-# This project does not follow a semantic versioning scheme (and makes no guarantees of
-# API stability). The major version should be the calendar date of the latest Git tag in
-# YYYYMMDD format. The minor version should be incremented if multiple tags are created
-# on the same day, starting from 0.
+# This project follows a CalVer (calendar date-based versioning) convention with two
+# version numbers. The first is the "epoch" -- the calendar date of the latest
+# API-breaking release in YYYYMMDD format. Each release with the same epoch number
+# should be API-compatible. The second version number is the "patch" number, which is
+# incremented whenever backwards-compatible patches are released, starting over from 0
+# whenever the epoch is updated.
 project(
   whirlwind
   VERSION 20240715.0

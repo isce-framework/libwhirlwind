@@ -16,7 +16,7 @@
  * The name of the inline ABI namespace.
  */
 #define WHIRLWIND_ABI_NAMESPACE                                                        \
-    WHIRLWIND_CONCATENATE(abi_, WHIRLWIND_VERSION_MAJOR, _, WHIRLWIND_VERSION_MINOR)
+    WHIRLWIND_CONCATENATE(abi_, WHIRLWIND_VERSION_EPOCH, _, WHIRLWIND_VERSION_PATCH)
 
 /**
  * @def WHIRLWIND_NAMESPACE
