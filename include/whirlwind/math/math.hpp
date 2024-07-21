@@ -2,7 +2,7 @@
 
 #include <concepts>
 
-#include "namespace.hpp"
+#include <whirlwind/common/namespace.hpp>
 
 WHIRLWIND_NAMESPACE_BEGIN
 

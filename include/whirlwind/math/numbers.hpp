@@ -4,8 +4,8 @@
 #include <limits>
 #include <type_traits>
 
-#include "compatibility.hpp"
-#include "namespace.hpp"
+#include <whirlwind/common/compatibility.hpp>
+#include <whirlwind/common/namespace.hpp>
 
 WHIRLWIND_NAMESPACE_BEGIN
 
