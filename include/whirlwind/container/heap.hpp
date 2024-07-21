@@ -3,7 +3,8 @@
 #include <queue>
 #include <utility>
 
-#include "namespace.hpp"
+#include <whirlwind/common/namespace.hpp>
+
 #include "vector.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
