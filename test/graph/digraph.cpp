@@ -14,7 +14,7 @@ WHIRLWIND_CONSTEVAL void
 require_satisfies_digraph() noexcept
 {}
 
-TEST_CASE("digraph", "[graph]")
+TEST_CASE("DiGraph", "[graph]")
 {
     require_satisfies_digraph<ww::CSRGraph<>>();
     require_satisfies_digraph<ww::RectangularGridGraph<>>();

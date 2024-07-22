@@ -11,6 +11,7 @@
 #include <whirlwind/container/vector.hpp>
 #include <whirlwind/math/numbers.hpp>
 
+#include "forest.hpp"
 #include "simple_forest.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
@@ -18,7 +19,7 @@ WHIRLWIND_NAMESPACE_BEGIN
 template<class Distance,
          class Graph,
          template<class> class Container = Vector,
-         class Base = SimpleForest<Graph, Container>>
+         Forest Base = SimpleForest<Graph, Container>>
 class ShortestPathForest : public Base {
 private:
     using base_type = Base;
