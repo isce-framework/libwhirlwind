@@ -11,17 +11,17 @@
 #include <whirlwind/container/vector.hpp>
 #include <whirlwind/math/numbers.hpp>
 
-#include "forest.hpp"
+#include "simple_forest.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
 
 template<class Distance,
          class Graph,
          template<class> class Container = Vector,
-         class Forest = Forest<Graph, Container>>
-class ShortestPathForest : public Forest {
+         class Base = SimpleForest<Graph, Container>>
+class ShortestPathForest : public Base {
 private:
-    using super_type = Forest;
+    using base_type = Base;
 
 protected:
     enum struct label_type : std::uint8_t {
@@ -39,10 +39,10 @@ public:
     template<class T>
     using container_type = Container<T>;
 
-    using super_type::graph;
+    using base_type::graph;
 
     explicit constexpr ShortestPathForest(const graph_type& graph)
-        : super_type(graph),
+        : base_type(graph),
           label_(graph.num_vertices(), label_type::unreached),
           distance_(graph.num_vertices(), infinity<distance_type>())
     {
@@ -143,7 +143,7 @@ public:
     constexpr void
     reset()
     {
-        super_type::reset();
+        base_type::reset();
         ranges::fill(label_, label_type::unreached);
         ranges::fill(distance_, infinity<distance_type>());
     }
