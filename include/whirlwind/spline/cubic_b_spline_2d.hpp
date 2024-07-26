@@ -107,8 +107,8 @@ public:
 
     template<class InputRange>
     [[nodiscard]] constexpr auto
-    operator()(const InputRange& x0, const InputRange& x1) const
-            -> container_type<value_type>
+    operator()(const InputRange& x0,
+               const InputRange& x1) const -> container_type<value_type>
     {
         return ranges::views::zip(x0, x1) |
                ranges::views::transform([&](const auto& xx) {
