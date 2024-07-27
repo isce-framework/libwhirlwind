@@ -20,7 +20,7 @@ WHIRLWIND_NAMESPACE_BEGIN
  *     A `std::vector`-like type template used to store the internal list of vertex
  *     pairs.
  */
-template<class Vertex, template<class> class Container = Vector>
+template<class Vertex = std::size_t, template<class> class Container = Vector>
 class EdgeList {
 public:
     using vertex_type = Vertex;
