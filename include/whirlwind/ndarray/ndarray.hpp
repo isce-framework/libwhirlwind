@@ -10,7 +10,6 @@
 #endif
 #define MDSPAN_USE_PAREN_OPERATOR 1
 
-#include <array>
 #include <cstddef>
 #include <vector>
 
@@ -66,38 +65,5 @@ using Array2D = NDArray<T, DynamicExtents2D, Container>;
  */
 template<class T, class Container = std::vector<T>>
 using Array3D = NDArray<T, DynamicExtents3D, Container>;
-
-/**
- * A contiguous 1-dimensional array with static extent.
- *
- * @tparam T
- *     The element type.
- * @tparam N
- *     The array size.
- */
-template<class T, std::size_t N>
-using StaticArray1D = NDArray<T, Extents<N>, std::array<T, N>>;
-
-/**
- * A contiguous 2-dimensional array with static extent and row-major layout.
- *
- * @tparam T
- *     The element type.
- * @tparam M,N
- *     The array dimensions, in order from slowest varying to fastest varying.
- */
-template<class T, std::size_t M, std::size_t N>
-using StaticArray2D = NDArray<T, Extents<M, N>, std::array<T, M * N>>;
-
-/**
- * A contiguous 3-dimensional array with static extent and row-major layout.
- *
- * @tparam T
- *     The element type.
- * @tparam M,N,P
- *     The array dimensions, in order from slowest varying to fastest varying.
- */
-template<class T, std::size_t M, std::size_t N, std::size_t P>
-using StaticArray3D = NDArray<T, Extents<M, N, P>, std::array<T, M * N * P>>;
 
 WHIRLWIND_NAMESPACE_END
