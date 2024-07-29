@@ -8,12 +8,13 @@
 #include <whirlwind/container/vector.hpp>
 #include <whirlwind/math/numbers.hpp>
 
+#include "graph_concepts.hpp"
 #include "shortest_path_forest.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
 
 template<class Distance,
-         class Graph,
+         GraphType Graph,
          template<class> class Container = Vector,
          class Heap = BinaryHeap<typename Graph::vertex_type, Distance, Container>,
          class ShortestPathForest = ShortestPathForest<Distance, Graph, Container>>

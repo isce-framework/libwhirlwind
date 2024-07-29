@@ -14,13 +14,14 @@
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/container/vector.hpp>
+#include <whirlwind/graph/graph_concepts.hpp>
 #include <whirlwind/math/numbers.hpp>
 
 #include "uncapacitated.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
 
-template<class Graph,
+template<GraphType Graph,
          class Cost,
          class Flow,
          template<class> class Container = Vector,

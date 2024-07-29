@@ -9,7 +9,7 @@ WHIRLWIND_NAMESPACE_BEGIN
 namespace detail {
 
 template<class Graph, class Vertex, class Edge, class Size>
-concept DiGraphWith = requires(const Graph graph, Vertex vertex, Edge edge, Size) {
+concept GraphTypeImpl = requires(const Graph graph, Vertex vertex, Edge edge) {
     requires std::same_as<Size, std::size_t>;
 
     { graph.num_vertices() } -> std::same_as<Size>;
@@ -24,10 +24,10 @@ concept DiGraphWith = requires(const Graph graph, Vertex vertex, Edge edge, Size
 
 } // namespace detail
 
-template<class Graph>
-concept DiGraph = detail::DiGraphWith<Graph,
-                                      typename Graph::vertex_type,
-                                      typename Graph::edge_type,
-                                      typename Graph::size_type>;
+template<class T>
+concept GraphType = detail::GraphTypeImpl<T,
+                                          typename T::vertex_type,
+                                          typename T::edge_type,
+                                          typename T::size_type>;
 
 WHIRLWIND_NAMESPACE_END

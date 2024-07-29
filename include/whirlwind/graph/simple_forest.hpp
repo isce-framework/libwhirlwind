@@ -11,6 +11,7 @@
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/container/vector.hpp>
 
+#include "graph_concepts.hpp"
 #include "predecessors.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
@@ -31,7 +32,7 @@ WHIRLWIND_NAMESPACE_BEGIN
  *     A `std::vector`-like type template used to store the internal arrays of
  *     predecessor vertices and edges.
  */
-template<class Graph, template<class> class Container = Vector>
+template<GraphType Graph, template<class> class Container = Vector>
 class SimpleForest {
 public:
     using graph_type = Graph;

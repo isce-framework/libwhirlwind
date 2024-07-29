@@ -12,12 +12,13 @@
 #include <whirlwind/math/numbers.hpp>
 
 #include "forest.hpp"
+#include "graph_concepts.hpp"
 #include "simple_forest.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
 
 template<class Distance,
-         class Graph,
+         GraphType Graph,
          template<class> class Container = Vector,
          Forest Base = SimpleForest<Graph, Container>>
 class ShortestPathForest : public Base {

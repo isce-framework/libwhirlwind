@@ -5,13 +5,14 @@
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/container/vector.hpp>
+#include <whirlwind/graph/graph_concepts.hpp>
 #include <whirlwind/math/numbers.hpp>
 
 #include "residual_graph.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
 
-template<class Graph,
+template<GraphType Graph,
          class Flow,
          template<class> class Container = Vector,
          class ResidualGraphMixin = ResidualGraphMixin<Graph, Container>>

@@ -16,6 +16,7 @@
 #include <whirlwind/container/vector.hpp>
 #include <whirlwind/math/numbers.hpp>
 
+#include "graph_concepts.hpp"
 #include "shortest_path_forest.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
@@ -48,7 +49,7 @@ get_max_admissible_arc_length(const Network& network) -> typename Network::cost_
 }
 
 template<class Distance,
-         class Graph,
+         GraphType Graph,
          template<class> class Container = Vector,
          class Queue = Queue<typename Graph::vertex_type>,
          class ShortestPathForest = ShortestPathForest<Distance, Graph, Container>>

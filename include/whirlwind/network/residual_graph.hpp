@@ -8,6 +8,7 @@
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/container/vector.hpp>
+#include <whirlwind/graph/graph_concepts.hpp>
 #include <whirlwind/graph/rectangular_grid_graph.hpp>
 #include <whirlwind/math/math.hpp>
 
@@ -17,7 +18,7 @@ WHIRLWIND_NAMESPACE_BEGIN
 
 namespace detail {
 
-template<class Graph>
+template<GraphType Graph>
 class BasicResidualGraphMixin {
 public:
     using graph_type = Graph;
@@ -170,7 +171,7 @@ private:
 
 } // namespace detail
 
-template<class Graph, template<class> class Container = Vector>
+template<GraphType Graph, template<class> class Container = Vector>
 class ResidualGraphMixin : public detail::BasicResidualGraphMixin<Graph> {
 private:
     using super_type = detail::BasicResidualGraphMixin<Graph>;

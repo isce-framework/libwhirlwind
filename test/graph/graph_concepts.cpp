@@ -2,22 +2,22 @@
 
 #include <whirlwind/common/compatibility.hpp>
 #include <whirlwind/graph/csr_graph.hpp>
-#include <whirlwind/graph/digraph.hpp>
+#include <whirlwind/graph/graph_concepts.hpp>
 #include <whirlwind/graph/rectangular_grid_graph.hpp>
 
 namespace {
 
 namespace ww = whirlwind;
 
-template<ww::DiGraph Graph>
+template<ww::GraphType Graph>
 WHIRLWIND_CONSTEVAL void
-require_satisfies_digraph() noexcept
+require_satisfies_graph_type() noexcept
 {}
 
-TEST_CASE("DiGraph", "[graph]")
+TEST_CASE("GraphType", "[graph]")
 {
-    require_satisfies_digraph<ww::CSRGraph<>>();
-    require_satisfies_digraph<ww::RectangularGridGraph<>>();
+    require_satisfies_graph_type<ww::CSRGraph<>>();
+    require_satisfies_graph_type<ww::RectangularGridGraph<>>();
 }
 
 } // namespace

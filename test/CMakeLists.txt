@@ -3,7 +3,7 @@ find_package(Catch2 3 CONFIG REQUIRED)
 # Add test executable.
 add_executable(
   test-whirlwind # cmake-format: sortable
-  common/test_version.cpp graph/csr_graph.cpp graph/digraph.cpp graph/forest.cpp
+  common/test_version.cpp graph/csr_graph.cpp graph/forest.cpp graph/graph_concepts.cpp
   math/test_math.cpp math/test_numbers.cpp
 )
 target_link_libraries(
