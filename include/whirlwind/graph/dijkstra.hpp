@@ -28,7 +28,6 @@ public:
     using edge_type = typename graph_type::edge_type;
     using heap_type = Heap;
 
-    using super_type::depth;
     using super_type::distance_to_vertex;
     using super_type::graph;
     using super_type::has_reached_vertex;
@@ -69,7 +68,6 @@ public:
         WHIRLWIND_ASSERT(!has_reached_vertex(source));
 
         make_root_vertex(source);
-        WHIRLWIND_DEBUG_ASSERT(depth(source) == 0);
         WHIRLWIND_DEBUG_ASSERT(predecessor_vertex(source) == source);
 
         label_vertex_reached(source);

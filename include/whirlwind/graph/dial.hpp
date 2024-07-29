@@ -69,7 +69,6 @@ public:
     template<class T>
     using container_type = Container<T>;
 
-    using super_type::depth;
     using super_type::distance_to_vertex;
     using super_type::graph;
     using super_type::has_reached_vertex;
@@ -143,7 +142,6 @@ public:
         WHIRLWIND_ASSERT(std::size(buckets_) > 0);
 
         make_root_vertex(source);
-        WHIRLWIND_DEBUG_ASSERT(depth(source) == 0);
         WHIRLWIND_DEBUG_ASSERT(predecessor_vertex(source) == source);
 
         label_vertex_reached(source);

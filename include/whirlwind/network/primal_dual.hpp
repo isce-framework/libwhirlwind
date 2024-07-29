@@ -36,7 +36,6 @@ public:
     template<class T>
     using container_type = typename super_type::template container_type<T>;
 
-    using super_type::depth;
     using super_type::distance_to_vertex;
     using super_type::graph;
     using super_type::predecessor_vertex;
@@ -56,7 +55,6 @@ public:
     {
         WHIRLWIND_ASSERT(graph().contains_vertex(vertex));
         WHIRLWIND_ASSERT(graph().contains_vertex(source));
-        WHIRLWIND_DEBUG_ASSERT(depth(source) == 0);
         WHIRLWIND_DEBUG_ASSERT(predecessor_vertex(source) == source);
         const auto vertex_id = graph().get_vertex_id(vertex);
         WHIRLWIND_DEBUG_ASSERT(vertex_id < std::size(source_));

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstddef>
 #include <memory>
 #include <utility>
 
@@ -9,7 +8,6 @@
 #include <range/v3/range/conversion.hpp>
 
 #include <whirlwind/common/assert.hpp>
-#include <whirlwind/common/compatibility.hpp>
 #include <whirlwind/common/namespace.hpp>
 #include <whirlwind/container/vector.hpp>
 
@@ -40,7 +38,6 @@ public:
     using vertex_type = typename graph_type::vertex_type;
     using edge_type = typename graph_type::edge_type;
     using pred_type = std::pair<vertex_type, edge_type>;
-    using size_type = std::size_t;
 
     template<class T>
     using container_type = Container<T>;
@@ -59,12 +56,10 @@ public:
     explicit constexpr SimpleForest(const graph_type& graph,
                                     edge_type edge_fill_value = {})
         : graph_(std::addressof(graph)),
-          depth_(graph.num_vertices(), size_type{0}),
           pred_vertex_(graph.vertices() | ranges::to<container_type<vertex_type>>()),
           pred_edge_(graph.num_vertices(), edge_fill_value),
           edge_fill_value_(std::move(edge_fill_value))
     {
-        WHIRLWIND_DEBUG_ASSERT(std::size(depth_) == this->graph().num_vertices());
         WHIRLWIND_DEBUG_ASSERT(std::size(pred_vertex_) == this->graph().num_vertices());
         WHIRLWIND_DEBUG_ASSERT(std::size(pred_edge_) == this->graph().num_vertices());
     }
@@ -75,27 +70,6 @@ public:
     {
         WHIRLWIND_DEBUG_ASSERT(graph_ != nullptr);
         return *graph_;
-    }
-
-    /**
-     * Get the depth of a vertex.
-     *
-     * Returns the total number of ancestors of the specified vertex. Root vertices have
-     * a depth of zero.
-     *
-     * @param[in] vertex
-     *     The input vertex. Must be a valid vertex in the graph.
-     *
-     * @returns
-     *     The depth of the vertex.
-     */
-    [[nodiscard]] constexpr auto
-    depth(const vertex_type& vertex) const -> const size_type&
-    {
-        WHIRLWIND_ASSERT(graph().contains_vertex(vertex));
-        const auto vertex_id = graph().get_vertex_id(vertex);
-        WHIRLWIND_DEBUG_ASSERT(vertex_id < std::size(depth_));
-        return depth_[vertex_id];
     }
 
     /**
@@ -202,18 +176,11 @@ public:
     {
         WHIRLWIND_ASSERT(graph().contains_vertex(vertex));
         WHIRLWIND_ASSERT(graph().contains_vertex(pred_vertex));
-        WHIRLWIND_ASSERT(vertex == pred_vertex || graph().contains_edge(pred_edge));
+        WHIRLWIND_ASSERT((vertex == pred_vertex) || graph().contains_edge(pred_edge));
 
         const auto vertex_id = graph().get_vertex_id(vertex);
-        WHIRLWIND_DEBUG_ASSERT(vertex_id < std::size(depth_));
         WHIRLWIND_DEBUG_ASSERT(vertex_id < std::size(pred_vertex_));
         WHIRLWIND_DEBUG_ASSERT(vertex_id < std::size(pred_edge_));
-
-        if (vertex == pred_vertex) WHIRLWIND_UNLIKELY {
-            depth_[vertex_id] = 0;
-        } else {
-            depth_[vertex_id] = depth(pred_vertex) + 1;
-        }
 
         pred_vertex_[vertex_id] = std::move(pred_vertex);
         pred_edge_[vertex_id] = std::move(pred_edge);
@@ -250,11 +217,9 @@ public:
         WHIRLWIND_ASSERT(graph().contains_vertex(vertex));
 
         const auto vertex_id = graph().get_vertex_id(vertex);
-        WHIRLWIND_DEBUG_ASSERT(vertex_id < std::size(depth_));
         WHIRLWIND_DEBUG_ASSERT(vertex_id < std::size(pred_vertex_));
         WHIRLWIND_DEBUG_ASSERT(vertex_id < std::size(pred_edge_));
 
-        depth_[vertex_id] = 0;
         pred_vertex_[vertex_id] = std::move(vertex);
         pred_edge_[vertex_id] = edge_fill_value();
     }
@@ -271,7 +236,7 @@ public:
     [[nodiscard]] constexpr auto
     is_root_vertex(const vertex_type& vertex) const -> bool
     {
-        return depth(vertex) == 0;
+        return predecessor_vertex(vertex) == vertex;
     }
 
     /** The default predecessor edge value for vertices that have no predecessor. */
@@ -292,15 +257,13 @@ public:
     reset()
     {
         WHIRLWIND_DEBUG_ASSERT(std::size(pred_vertex_) == graph().num_vertices());
-        WHIRLWIND_DEBUG_ASSERT(std::size(pred_edge_) == graph().num_vertices());
-        ranges::fill(depth_, size_type{0});
         ranges::copy(graph().vertices(), std::begin(pred_vertex_));
+        WHIRLWIND_DEBUG_ASSERT(std::size(pred_edge_) == graph().num_vertices());
         ranges::fill(pred_edge_, edge_fill_value());
     }
 
 private:
     const graph_type* graph_;
-    container_type<size_type> depth_;
     container_type<vertex_type> pred_vertex_;
     container_type<edge_type> pred_edge_;
     edge_type edge_fill_value_;

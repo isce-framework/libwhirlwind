@@ -19,7 +19,7 @@ concept ForestWith = requires(const Forest forest, Vertex vertex, Edge) {
     { forest.is_root_vertex(vertex) } -> std::convertible_to<bool>;
 
     forest.predecessors(vertex);
-} && requires(Forest forest) { forest.reset(); };
+};
 
 template<class Forest, class Vertex, class Edge, class Pred>
 concept MutableForestWith =
@@ -27,6 +27,7 @@ concept MutableForestWith =
             forest.set_predecessor(vertex, vertex, edge);
             forest.set_predecessor(vertex, pred);
             forest.make_root_vertex(vertex);
+            forest.reset();
         };
 
 } // namespace detail
