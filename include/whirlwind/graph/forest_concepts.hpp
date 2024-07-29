@@ -9,7 +9,7 @@ WHIRLWIND_NAMESPACE_BEGIN
 namespace detail {
 
 template<class Forest, class Graph, class Vertex, class Edge, class Pred>
-concept ForestWith = requires(const Forest forest, Vertex vertex, Edge) {
+concept ForestTypeImpl = requires(const Forest forest, Vertex vertex, Edge) {
     requires std::same_as<Pred, std::pair<Vertex, Edge>>;
 
     { forest.graph() } -> std::same_as<const Graph&>;
@@ -22,7 +22,7 @@ concept ForestWith = requires(const Forest forest, Vertex vertex, Edge) {
 };
 
 template<class Forest, class Vertex, class Edge, class Pred>
-concept MutableForestWith =
+concept MutableForestTypeImpl =
         requires(Forest forest, Vertex vertex, Edge edge, Pred pred) {
             forest.set_predecessor(vertex, vertex, edge);
             forest.set_predecessor(vertex, pred);
@@ -32,17 +32,18 @@ concept MutableForestWith =
 
 } // namespace detail
 
-template<class F>
-concept Forest = detail::ForestWith<F,
-                                    typename F::graph_type,
-                                    typename F::vertex_type,
-                                    typename F::edge_type,
-                                    typename F::pred_type>;
+template<class T>
+concept ForestType = detail::ForestTypeImpl<T,
+                                            typename T::graph_type,
+                                            typename T::vertex_type,
+                                            typename T::edge_type,
+                                            typename T::pred_type>;
 
-template<class F>
-concept MutableForest = Forest<F> && detail::MutableForestWith<F,
-                                                               typename F::vertex_type,
-                                                               typename F::edge_type,
-                                                               typename F::pred_type>;
+template<class T>
+concept MutableForestType =
+        ForestType<T> && detail::MutableForestTypeImpl<T,
+                                                       typename T::vertex_type,
+                                                       typename T::edge_type,
+                                                       typename T::pred_type>;
 
 WHIRLWIND_NAMESPACE_END

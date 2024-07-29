@@ -2,7 +2,7 @@
 
 #include <whirlwind/common/compatibility.hpp>
 #include <whirlwind/graph/csr_graph.hpp>
-#include <whirlwind/graph/forest.hpp>
+#include <whirlwind/graph/forest_concepts.hpp>
 #include <whirlwind/graph/shortest_path_forest.hpp>
 #include <whirlwind/graph/simple_forest.hpp>
 
@@ -10,30 +10,30 @@ namespace {
 
 namespace ww = whirlwind;
 
-template<ww::Forest Forest>
+template<ww::ForestType Forest>
 WHIRLWIND_CONSTEVAL void
-require_satisfies_forest() noexcept
+require_satisfies_forest_type() noexcept
 {}
 
-template<ww::MutableForest Forest>
+template<ww::MutableForestType Forest>
 WHIRLWIND_CONSTEVAL void
-require_satisfies_mutable_forest() noexcept
+require_satisfies_mutable_forest_type() noexcept
 {}
 
 TEST_CASE("Forest", "[graph]")
 {
     using Graph = ww::CSRGraph<>;
     using Distance = int;
-    require_satisfies_forest<ww::SimpleForest<Graph>>();
-    require_satisfies_forest<ww::ShortestPathForest<Distance, Graph>>();
+    require_satisfies_forest_type<ww::SimpleForest<Graph>>();
+    require_satisfies_forest_type<ww::ShortestPathForest<Distance, Graph>>();
 }
 
 TEST_CASE("MutableForest", "[graph]")
 {
     using Graph = ww::CSRGraph<>;
     using Distance = int;
-    require_satisfies_mutable_forest<ww::SimpleForest<Graph>>();
-    require_satisfies_mutable_forest<ww::ShortestPathForest<Distance, Graph>>();
+    require_satisfies_mutable_forest_type<ww::SimpleForest<Graph>>();
+    require_satisfies_mutable_forest_type<ww::ShortestPathForest<Distance, Graph>>();
 }
 
 } // namespace
