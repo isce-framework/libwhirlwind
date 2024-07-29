@@ -23,7 +23,7 @@ WHIRLWIND_NAMESPACE_BEGIN
  * parent) vertex and edge in the tree, enabling traversal up to the tree's root. A root
  * vertex's predecessor is itself.
  *
- * A `SimpleForest` maintains a non-owning pointer to its underlying graph. It may be
+ * A `Forest` maintains a non-owning pointer to its underlying graph. It may be
  * invalidated if the graph is modified or its lifetime ends.
  *
  * @tparam Graph
@@ -33,7 +33,7 @@ WHIRLWIND_NAMESPACE_BEGIN
  *     predecessor vertices and edges.
  */
 template<GraphType Graph, template<class> class Container = Vector>
-class SimpleForest {
+class Forest {
 public:
     using graph_type = Graph;
     using vertex_type = typename graph_type::vertex_type;
@@ -44,7 +44,7 @@ public:
     using container_type = Container<T>;
 
     /**
-     * Create a new `SimpleForest`.
+     * Create a new `Forest`.
      *
      * The forest is initialized such that each vertex in the graph is the root of its
      * own singleton tree (by setting its predecessor vertex to itself).
@@ -54,8 +54,7 @@ public:
      * @param[in] edge_fill_value
      *     The default predecessor edge value for vertices that have no predecessor.
      */
-    explicit constexpr SimpleForest(const graph_type& graph,
-                                    edge_type edge_fill_value = {})
+    explicit constexpr Forest(const graph_type& graph, edge_type edge_fill_value = {})
         : graph_(std::addressof(graph)),
           pred_vertex_(graph.vertices() | ranges::to<container_type<vertex_type>>()),
           pred_edge_(graph.num_vertices(), edge_fill_value),
