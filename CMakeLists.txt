@@ -1,7 +1,7 @@
 # CMake>=3.25 is required for `add_subdirectory(... SYSTEM)`, which is convenient for
 # working with Git submodules. The maximum version may be updated occasionally but
 # should not exceed the latest CMake version tested by the CI system.
-cmake_minimum_required(VERSION 3.25...3.29)
+cmake_minimum_required(VERSION 3.25...3.30)
 
 # This project follows a CalVer (calendar date-based versioning) convention with two
 # version numbers. The first is the "epoch" -- the calendar date of the latest
@@ -38,5 +38,6 @@ target_include_directories(
 target_link_libraries(whirlwind INTERFACE range-v3::range-v3 std::generator std::mdspan)
 
 if(WHIRLWIND_TEST)
+  include(CTest)
   add_subdirectory(test)
 endif()
