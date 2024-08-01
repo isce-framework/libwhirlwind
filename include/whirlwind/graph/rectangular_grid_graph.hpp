@@ -87,15 +87,15 @@ public:
     [[nodiscard]] constexpr auto
     num_vertices() const noexcept -> size_type
     {
-        return size_type{num_rows()} * size_type{num_cols()};
+        return static_cast<size_type>(num_rows()) * static_cast<size_type>(num_cols());
     }
 
     /** The total number of edges in the graph. */
     [[nodiscard]] constexpr auto
     num_edges() const noexcept -> size_type
     {
-        const auto m = size_type{num_rows()};
-        const auto n = size_type{num_cols()};
+        const auto m = static_cast<size_type>(num_rows());
+        const auto n = static_cast<size_type>(num_cols());
 
         if ((m == 0) || (n == 0)) WHIRLWIND_UNLIKELY {
             return 0;
@@ -122,8 +122,9 @@ public:
     [[nodiscard]] constexpr auto
     get_vertex_id(const vertex_type& vertex) const noexcept -> size_type
     {
-        return size_type{vertex.first} * size_type{num_cols()} +
-               size_type{vertex.second};
+        return static_cast<size_type>(vertex.first) *
+                       static_cast<size_type>(num_cols()) +
+               static_cast<size_type>(vertex.second);
     }
 
     /**
@@ -141,7 +142,7 @@ public:
     [[nodiscard]] constexpr auto
     get_edge_id(const edge_type& edge) const noexcept -> size_type
     {
-        return size_type{edge};
+        return static_cast<size_type>(edge);
     }
 
     /**
@@ -207,7 +208,7 @@ public:
         const auto i = vertex.first;
         const auto j = vertex.second;
 
-        auto n = size_type{4};
+        size_type n = 4;
 
         // clang-format off
         if (i == 0) WHIRLWIND_UNLIKELY { --n; }
