@@ -45,13 +45,13 @@ TEST_CASE("CSRGraph", "[graph]")
     SECTION("{vertex,edge,size}_type")
     {
         using Vertex = typename decltype(graph)::vertex_type;
-        STATIC_REQUIRE(std::is_same_v<Vertex, std::size_t>);
+        STATIC_REQUIRE((std::is_same_v<Vertex, std::size_t>));
 
         using Edge = typename decltype(graph)::edge_type;
-        STATIC_REQUIRE(std::is_same_v<Edge, std::size_t>);
+        STATIC_REQUIRE((std::is_same_v<Edge, std::size_t>));
 
         using Size = typename decltype(graph)::size_type;
-        STATIC_REQUIRE(std::is_same_v<Size, std::size_t>);
+        STATIC_REQUIRE((std::is_same_v<Size, std::size_t>));
     }
 
     SECTION("num_{vertices,edges}")
