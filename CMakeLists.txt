@@ -36,8 +36,12 @@ target_include_directories(
   whirlwind INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/>
 )
 target_link_libraries(whirlwind INTERFACE range-v3::range-v3 std::generator std::mdspan)
+
+# When compiling with Clang<17, we need to add the `-fcoroutines-ts` flag.
 target_compile_options(
-  whirlwind INTERFACE $<$<COMPILE_LANG_AND_ID:CXX,GNU,Clang>:-fcoroutines>
+  whirlwind
+  INTERFACE
+    $<$<AND:$<$<COMPILE_LANG_AND_ID:CXX,Clang>,$<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,17>:-fcoroutines-ts>
 )
 
 if(WHIRLWIND_TEST)
