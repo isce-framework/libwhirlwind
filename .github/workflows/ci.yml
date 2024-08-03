@@ -46,7 +46,7 @@ jobs:
             preset: debug
       fail-fast: false
     name: ${{ matrix.runner }} • ${{ matrix.compiler }} • ${{ matrix.preset }}
-    runs-on: ${{ matrix.platform }}
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4.1.7
         with:
@@ -83,7 +83,7 @@ jobs:
             preset: release
       fail-fast: false
     name: ${{ matrix.runner }} • xcode=${{ matrix.xcode }} • ${{ matrix.preset }}
-    runs-on: ${{ matrix.platform }}
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4.1.7
         with:
@@ -111,7 +111,7 @@ jobs:
           - release
       fail-fast: false
     name: ${{ matrix.runner }} • ${{ matrix.compiler }} • ${{ matrix.preset }}
-    runs-on: ${{ matrix.platform }}
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4.1.7
         with:
