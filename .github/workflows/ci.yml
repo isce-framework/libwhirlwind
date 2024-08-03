@@ -24,7 +24,6 @@ jobs:
           - gcc-11
           - gcc-12
           - gcc-13
-          - gcc-14
           - llvm
           - llvm-10
           - llvm-11
