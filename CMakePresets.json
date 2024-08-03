@@ -13,6 +13,14 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
+      },
+      "warnings": {
+        "dev": false,
+        "deprecated": true,
+        "uninitialized": true
+      },
+      "errors": {
+        "deprecated": true
       }
     },
     {
