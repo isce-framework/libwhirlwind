@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    tags:
+      - "*"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    strategy:
+      matrix:
+        platform:
+          - { label: Linux x86_64, value: ubuntu-latest }
+        compiler:
+          - { label: GCC, value: gcc }
+          # - { label: GCC v10, value: gcc-10.5.0 }
+          # - { label: GCC v11, value: gcc-11.5.0 }
+          # - { label: GCC v12, value: gcc-12.4.0 }
+          # - { label: GCC v13, value: gcc-13.3.0 }
+          # - { label: GCC v14, value: gcc-14.1.0 }
+          - { label: LLVM, value: llvm }
+          - { label: LLVM v10, value: llvm-10.0.1 }
+          - { label: LLVM v11, value: llvm-11.1.0 }
+          - { label: LLVM v12, value: llvm-12.0.1 }
+          - { label: LLVM v13, value: llvm-13.0.1 }
+          # - { label: LLVM v14, value: llvm-14.0.6 }
+          - { label: LLVM v15, value: llvm-15.0.7 }
+          - { label: LLVM v16, value: llvm-16.0.6 }
+          - { label: LLVM v17, value: llvm-17.0.6 }
+          - { label: LLVM v18, value: llvm-18.1.8 }
+        build-type:
+          - { label: Release, value: release }
+        include:
+          - platform: { label: macOS arm64, value: macos-latest }
+            compiler: { label: LLVM, value: llvm }
+            build-type: { label: Release, value: release }
+          - platform: { label: macOS x86_64, value: macos-12 }
+            compiler: { label: LLVM, value: llvm }
+            build-type: { label: Release, value: release }
+          - platform: { label: Windows x86_64, value: windows-latest }
+            compiler: { label: MSVC, value: msvc }
+            build-type: { label: Release, value: release }
+          - platform: { label: Linux x86_64, value: ubuntu-latest }
+            compiler: { label: GCC, value: gcc }
+            build-type: { label: Debug, value: debug }
+          - platform: { label: Linux x86_64, value: ubuntu-latest }
+            compiler: { label: LLVM, value: llvm }
+            build-type: { label: Debug, value: debug }
+      fail-fast: false
+    name: ${{ matrix.platform.label }} • ${{ matrix.compiler.label }} • ${{ matrix.build-type.label }}
+    runs-on: ${{ matrix.platform.value }}
+    steps:
+      - uses: actions/checkout@v4.1.7
+        with:
+          fetch-depth: 0
+          submodules: true
+      - uses: aminya/setup-cpp@v0.37.0
+        with:
+          compiler: ${{ matrix.compiler.value }}
+      - uses: lukka/get-cmake@v3.30.1
+      - uses: lukka/run-vcpkg@v11.5
+      - uses: lukka/run-cmake@v10.7
+        with:
+          workflowPreset: ${{ matrix.build-type.value }}
