@@ -14,6 +14,7 @@ add_executable(
 target_link_libraries(
   test-whirlwind PRIVATE whirlwind::whirlwind Catch2::Catch2WithMain
 )
+set_target_properties(test-whirlwind PROPERTIES CXX_SCAN_FOR_MODULES OFF)
 
 # Find and register test cases from `test-whirlwind` with CTest.
 include(Catch)
