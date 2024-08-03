@@ -36,6 +36,9 @@ target_include_directories(
   whirlwind INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include/>
 )
 target_link_libraries(whirlwind INTERFACE range-v3::range-v3 std::generator std::mdspan)
+target_compile_options(
+  whirlwind INTERFACE $<$<COMPILE_LANG_AND_ID:CXX,GNU,Clang>:-fcoroutines>
+)
 
 if(WHIRLWIND_TEST)
   include(CTest)
