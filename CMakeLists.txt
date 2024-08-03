@@ -41,7 +41,7 @@ target_link_libraries(whirlwind INTERFACE range-v3::range-v3 std::generator std:
 target_compile_options(
   whirlwind
   INTERFACE
-    $<$<AND:$<$<COMPILE_LANG_AND_ID:CXX,Clang>,$<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,17>:-fcoroutines-ts>
+    $<$<AND:$<COMPILE_LANG_AND_ID:CXX,Clang>,$<VERSION_LESS:$<CXX_COMPILER_VERSION>,17>>:-fcoroutines-ts>
 )
 
 if(WHIRLWIND_TEST)

@@ -70,7 +70,6 @@ jobs:
           - latest
           - "14.3.1"
           - "15.4.0"
-          - "16.0.0"
         preset:
           - release
         include:
@@ -81,7 +80,7 @@ jobs:
             xcode: "14.3.1"
             preset: release
       fail-fast: false
-    name: ${{ matrix.runner }} • xcode=${{ matrix.xcode }} • ${{ matrix.preset }}
+    name: ${{ matrix.runner }} • xcode-${{ matrix.xcode }} • ${{ matrix.preset }}
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4.1.7
