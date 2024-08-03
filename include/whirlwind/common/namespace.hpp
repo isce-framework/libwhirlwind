@@ -3,20 +3,15 @@
 #include "version.hpp"
 
 /**
- * @def WHIRLWIND_CONCATENATE(...)
- *
- * Concatenate zero or more (up to eight) tokens. Macros are expanded.
- */
-#define WHIRLWIND_CONCATENATE_(a, b, c, d, e, f, g, h, ...) a##b##c##d##e##f##g##h
-#define WHIRLWIND_CONCATENATE(...) WHIRLWIND_CONCATENATE_(__VA_ARGS__, , , , , , , , )
-
-/**
  * @def WHIRLWIND_ABI_NAMESPACE
  *
  * The name of the inline ABI namespace.
  */
+#define WHIRLWIND_MAKE_ABI_NAMESPACE_IMPL(epoch, patch) abi_##epoch##_##patch
+#define WHIRLWIND_MAKE_ABI_NAMESPACE(epoch, patch)                                     \
+    WHIRLWIND_MAKE_ABI_NAMESPACE_IMPL(epoch, patch)
 #define WHIRLWIND_ABI_NAMESPACE                                                        \
-    WHIRLWIND_CONCATENATE(abi_, WHIRLWIND_VERSION_EPOCH, _, WHIRLWIND_VERSION_PATCH)
+    WHIRLWIND_MAKE_ABI_NAMESPACE(WHIRLWIND_VERSION_EPOCH, WHIRLWIND_VERSION_PATCH)
 
 /**
  * @def WHIRLWIND_NAMESPACE
