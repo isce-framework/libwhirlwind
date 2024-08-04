@@ -1,5 +1,8 @@
 find_package(Catch2 3 CONFIG REQUIRED)
 
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+include(WhirlwindWarnings)
+
 # Add test executable.
 add_executable(
   test-whirlwind # cmake-format: sortable
@@ -12,7 +15,8 @@ add_executable(
   math/test_numbers.cpp
 )
 target_link_libraries(
-  test-whirlwind PRIVATE whirlwind::whirlwind Catch2::Catch2WithMain
+  test-whirlwind PRIVATE Catch2::Catch2WithMain whirlwind::warnings
+                         whirlwind::whirlwind
 )
 set_target_properties(test-whirlwind PROPERTIES CXX_SCAN_FOR_MODULES OFF)
 

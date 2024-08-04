@@ -32,7 +32,7 @@ TEST_CASE("one", "[numbers]")
 TEST_CASE("pi", "[numbers]")
 {
     using Catch::Matchers::WithinAbs;
-    CHECK_THAT(ww::pi<float>(), WithinAbs(3.141'592'7f, 1e-7));
+    CHECK_THAT(ww::pi<float>(), WithinAbs(3.141'592'7, 1e-7));
     CHECK_THAT(ww::pi<double>(), WithinAbs(3.141'592'653'589'793'2, 1e-16));
 }
 
@@ -45,7 +45,7 @@ TEST_CASE("pi (consteval)", "[numbers]")
 TEST_CASE("tau", "[numbers]")
 {
     using Catch::Matchers::WithinAbs;
-    CHECK_THAT(ww::tau<float>(), WithinAbs(6.283'185'3f, 2e-7));
+    CHECK_THAT(ww::tau<float>(), WithinAbs(6.283'185'3, 2e-7));
     CHECK_THAT(ww::tau<double>(), WithinAbs(6.283'185'307'179'586'4, 1e-16));
 }
 

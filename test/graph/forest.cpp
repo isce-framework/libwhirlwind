@@ -17,7 +17,7 @@ namespace ww = whirlwind;
 
 TEST_CASE("Forest (const)", "[graph]")
 {
-    const auto graph = ww::RectangularGridGraph<>(4, 4);
+    const auto graph = ww::RectangularGridGraph<>(4U, 4U);
     const auto forest = ww::Forest(graph);
 
     SECTION("{graph,vertex,edge,pred}_type")
@@ -56,8 +56,8 @@ TEST_CASE("Forest (const)", "[graph]")
 TEST_CASE("Forest (non-const)", "[graph]")
 {
     auto edgelist = ww::EdgeList();
-    edgelist.add_edge(1, 2);
-    edgelist.add_edge(2, 3);
+    edgelist.add_edge(1U, 2U);
+    edgelist.add_edge(2U, 3U);
 
     const auto graph = ww::CSRGraph(edgelist);
 
@@ -65,35 +65,35 @@ TEST_CASE("Forest (non-const)", "[graph]")
 
     SECTION("set_predecessor")
     {
-        CHECK(forest.predecessor_vertex(2) == 2);
-        forest.set_predecessor(2, 1, 0);
-        CHECK(forest.predecessor_vertex(2) == 1);
-        CHECK(forest.predecessor_edge(2) == 0);
+        CHECK(forest.predecessor_vertex(2U) == 2U);
+        forest.set_predecessor(2U, 1U, 0U);
+        CHECK(forest.predecessor_vertex(2U) == 1U);
+        CHECK(forest.predecessor_edge(2U) == 0U);
 
-        CHECK(forest.predecessor_vertex(3) == 3);
-        forest.set_predecessor(3, {2, 1});
-        CHECK(forest.predecessor_vertex(3) == 2);
-        CHECK(forest.predecessor_edge(3) == 1);
+        CHECK(forest.predecessor_vertex(3U) == 3U);
+        forest.set_predecessor(3U, {2U, 1U});
+        CHECK(forest.predecessor_vertex(3U) == 2U);
+        CHECK(forest.predecessor_edge(3U) == 1U);
     }
 
     SECTION("make_root_vertex")
     {
-        CHECK(forest.is_root_vertex(2));
-        forest.set_predecessor(2, 1, 0);
-        CHECK(!forest.is_root_vertex(2));
-        forest.make_root_vertex(2);
-        CHECK(forest.is_root_vertex(2));
+        CHECK(forest.is_root_vertex(2U));
+        forest.set_predecessor(2U, 1U, 0U);
+        CHECK(!forest.is_root_vertex(2U));
+        forest.make_root_vertex(2U);
+        CHECK(forest.is_root_vertex(2U));
     }
 
     SECTION("reset")
     {
-        forest.set_predecessor(2, 1, 0);
-        forest.set_predecessor(3, 2, 1);
-        CHECK(!forest.is_root_vertex(2));
-        CHECK(!forest.is_root_vertex(3));
+        forest.set_predecessor(2U, 1U, 0U);
+        forest.set_predecessor(3U, 2U, 1U);
+        CHECK(!forest.is_root_vertex(2U));
+        CHECK(!forest.is_root_vertex(3U));
         forest.reset();
-        CHECK(forest.is_root_vertex(2));
-        CHECK(forest.is_root_vertex(3));
+        CHECK(forest.is_root_vertex(2U));
+        CHECK(forest.is_root_vertex(3U));
     }
 }
 

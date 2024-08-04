@@ -43,13 +43,13 @@ public:
 
     using base_type::graph;
 
-    explicit constexpr ShortestPathForest(const graph_type& graph)
-        : base_type(graph),
-          label_(graph.num_vertices(), label_type::unreached),
-          distance_(graph.num_vertices(), infinity<distance_type>())
+    explicit constexpr ShortestPathForest(const graph_type& g)
+        : base_type(g),
+          label_(g.num_vertices(), label_type::unreached),
+          distance_(g.num_vertices(), infinity<distance_type>())
     {
-        WHIRLWIND_DEBUG_ASSERT(std::size(label_) == this->graph().num_vertices());
-        WHIRLWIND_DEBUG_ASSERT(std::size(distance_) == this->graph().num_vertices());
+        WHIRLWIND_DEBUG_ASSERT(std::size(label_) == g.num_vertices());
+        WHIRLWIND_DEBUG_ASSERT(std::size(distance_) == g.num_vertices());
     }
 
     [[nodiscard]] constexpr auto
