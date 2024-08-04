@@ -80,7 +80,7 @@ TEST_CASE("Forest (non-const)", "[graph]")
     {
         CHECK(forest.is_root_vertex(2U));
         forest.set_predecessor(2U, 1U, 0U);
-        CHECK(!forest.is_root_vertex(2U));
+        CHECK_FALSE(forest.is_root_vertex(2U));
         forest.make_root_vertex(2U);
         CHECK(forest.is_root_vertex(2U));
     }
@@ -89,8 +89,8 @@ TEST_CASE("Forest (non-const)", "[graph]")
     {
         forest.set_predecessor(2U, 1U, 0U);
         forest.set_predecessor(3U, 2U, 1U);
-        CHECK(!forest.is_root_vertex(2U));
-        CHECK(!forest.is_root_vertex(3U));
+        CHECK_FALSE(forest.is_root_vertex(2U));
+        CHECK_FALSE(forest.is_root_vertex(3U));
         forest.reset();
         CHECK(forest.is_root_vertex(2U));
         CHECK(forest.is_root_vertex(3U));

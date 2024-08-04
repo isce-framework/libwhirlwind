@@ -23,8 +23,8 @@ TEST_CASE("CSRGraph (empty)", "[graph]")
 
     SECTION("contains_{vertex,edge}")
     {
-        CHECK(!graph.contains_vertex(0U));
-        CHECK(!graph.contains_edge(0U));
+        CHECK_FALSE(graph.contains_vertex(0U));
+        CHECK_FALSE(graph.contains_edge(0U));
     }
 }
 
@@ -80,13 +80,13 @@ TEST_CASE("CSRGraph", "[graph]")
     {
         CHECK(graph.contains_vertex(0U));
         CHECK(graph.contains_vertex(3U));
-        CHECK(!graph.contains_vertex(999U));
-        CHECK(!graph.contains_vertex(4U));
+        CHECK_FALSE(graph.contains_vertex(999U));
+        CHECK_FALSE(graph.contains_vertex(4U));
 
         CHECK(graph.contains_edge(0U));
         CHECK(graph.contains_edge(4U));
-        CHECK(!graph.contains_edge(999U));
-        CHECK(!graph.contains_edge(5U));
+        CHECK_FALSE(graph.contains_edge(999U));
+        CHECK_FALSE(graph.contains_edge(5U));
     }
 
     SECTION("outdegree")
@@ -125,7 +125,7 @@ TEST_CASE("CSRGraph (nonconsecutive vertices)", "[graph]")
     SECTION("contains_vertex")
     {
         CHECK(graph.contains_vertex(3));
-        CHECK(!graph.contains_vertex(6));
+        CHECK_FALSE(graph.contains_vertex(6));
     }
 
     SECTION("outdegree") { CHECK(graph.outdegree(3) == 0); }
