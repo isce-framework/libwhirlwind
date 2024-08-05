@@ -37,8 +37,8 @@ target_include_directories(
 )
 target_link_libraries(whirlwind INTERFACE range-v3::range-v3 std::generator std::mdspan)
 
-# When compiling with GCC<11, we need to add the `-fcoroutines` option. With LLVM
-# Clang<16, we need `-fcoroutines-ts`.
+# When compiling with GCC<11, we need to add the `-fcoroutines` option to enable
+# coroutines support. With LLVM Clang<16, we need `-fcoroutines-ts` instead.
 target_compile_options(
   whirlwind
   INTERFACE
