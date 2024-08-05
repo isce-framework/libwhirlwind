@@ -9,7 +9,6 @@ Checks: >
   -boost-*,
   -cert-dcl58-cpp,
   -cppcoreguidelines-macro-usage,
-  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
   -fuchsia-default-arguments-*,
   -fuchsia-overloaded-operator,
   -fuchsia-trailing-return,

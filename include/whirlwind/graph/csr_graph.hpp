@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <memory>
 #include <span>
 #include <type_traits>
 #include <utility>
@@ -199,12 +200,16 @@ public:
         WHIRLWIND_ASSERT(contains_vertex(vertex));
         const auto vertex_id = get_vertex_id(vertex);
 
+        WHIRLWIND_DEBUG_ASSERT(vertex_id + 1 < std::size(r_));
         const auto r0 = r_[vertex_id];
         const auto r1 = r_[vertex_id + 1];
         auto edges = ranges::views::iota(r0, r1);
 
-        const auto c = c_.data();
-        auto heads = std::span(c + r0, c + r1);
+        WHIRLWIND_DEBUG_ASSERT(r0 < std::size(c_));
+        WHIRLWIND_DEBUG_ASSERT(r1 < std::size(c_));
+        const auto c0 = std::addressof(c_[r0]);
+        const auto c1 = std::addressof(c_[r1]);
+        auto heads = std::span(c0, c1);
 
         auto to_pair = [](const auto& pair_like) {
             using std::get;
