@@ -12,7 +12,7 @@
 #include <whirlwind/container/vector.hpp>
 
 #include "graph_concepts.hpp"
-#include "predecessors.hpp"
+#include "predecessors_view.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
 
