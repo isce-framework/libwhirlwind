@@ -2,7 +2,7 @@
 #include <type_traits>
 
 #include <catch2/catch_test_macros.hpp>
-#include <range/v3/algorithm/equal.hpp>
+#include <catch2/matchers/catch_matchers_range_equals.hpp>
 
 #include <whirlwind/graph/csr_graph.hpp>
 #include <whirlwind/graph/edge_list.hpp>
@@ -72,8 +72,9 @@ TEST_CASE("CSRGraph", "[graph]")
 
     SECTION("{vertices,edges}")
     {
-        CHECK(ranges::equal(graph.vertices(), vertices));
-        CHECK(ranges::equal(graph.edges(), edges));
+        using Catch::Matchers::RangeEquals;
+        CHECK_THAT(graph.vertices(), RangeEquals(vertices));
+        CHECK_THAT(graph.edges(), RangeEquals(edges));
     }
 
     SECTION("contains_{vertex,edge}")
@@ -115,11 +116,13 @@ TEST_CASE("CSRGraph (nonconsecutive vertices)", "[graph]")
 
     SECTION("{vertices,edges}")
     {
+        using Catch::Matchers::RangeEquals;
+
         const auto vertices = {0U, 1U, 2U, 3U, 4U, 5U};
-        CHECK(ranges::equal(graph.vertices(), vertices));
+        CHECK_THAT(graph.vertices(), RangeEquals(vertices));
 
         const auto edges = {0U, 1U, 2U};
-        CHECK(ranges::equal(graph.edges(), edges));
+        CHECK_THAT(graph.edges(), RangeEquals(edges));
     }
 
     SECTION("contains_vertex")
@@ -150,11 +153,13 @@ TEST_CASE("CSRGraph (unsorted edges)", "[graph]")
 
     SECTION("{vertices,edges}")
     {
+        using Catch::Matchers::RangeEquals;
+
         const auto vertices = {0U, 1U, 2U, 3U};
-        CHECK(ranges::equal(graph.vertices(), vertices));
+        CHECK_THAT(graph.vertices(), RangeEquals(vertices));
 
         const auto edges = {0U, 1U, 2U, 3U, 4U};
-        CHECK(ranges::equal(graph.edges(), edges));
+        CHECK_THAT(graph.edges(), RangeEquals(edges));
     }
 }
 

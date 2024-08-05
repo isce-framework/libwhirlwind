@@ -3,13 +3,15 @@
 #include <utility>
 
 #include <catch2/catch_test_macros.hpp>
-#include <range/v3/algorithm/equal.hpp>
+#include <catch2/matchers/catch_matchers_range_equals.hpp>
 #include <range/v3/view/transform.hpp>
 
 #include <whirlwind/graph/csr_graph.hpp>
 #include <whirlwind/graph/edge_list.hpp>
 #include <whirlwind/graph/forest.hpp>
 #include <whirlwind/graph/rectangular_grid_graph.hpp>
+
+#include "../string_conversions.hpp"
 
 namespace {
 
@@ -43,7 +45,7 @@ TEST_CASE("Forest (const)", "[graph]")
                 graph.vertices() | ranges::views::transform([&](const auto& vertex) {
                     return forest.predecessor_vertex(vertex);
                 });
-        CHECK(ranges::equal(pred_vertices, graph.vertices()));
+        CHECK_THAT(pred_vertices, Catch::Matchers::RangeEquals(graph.vertices()));
     }
 
     SECTION("edge_fill_value")

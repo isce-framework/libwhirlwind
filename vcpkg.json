@@ -1,6 +1,9 @@
 {
   "dependencies": [
-    "catch2"
+    {
+      "name": "catch2",
+      "version>=": "3.3.0"
+    }
   ],
   "vcpkg-configuration": {
     "default-registry": {
