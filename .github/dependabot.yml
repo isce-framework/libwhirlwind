@@ -8,3 +8,9 @@ updates:
       actions:
         patterns:
           - "*"
+    ignore:
+      # XXX dependabot tries to update this action to v1, but that tag doesn't seem to
+      # exist (yet). The most recent releases still have major version 0.
+      - dependency-name: "aminya/setup-cpp"
+        versions:
+          - "1"
