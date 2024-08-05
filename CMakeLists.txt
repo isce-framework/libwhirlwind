@@ -19,6 +19,10 @@ project(
 # project; otherwise OFF.
 option(WHIRLWIND_TEST "Build the test suite" ${PROJECT_IS_TOP_LEVEL})
 
+# Converts compiler warnings into errors. Enabled by default but may be disabled for
+# developing new features, testing new compilers, etc.
+option(WHIRLWIND_FATAL_WARNINGS "Turn warnings into errors" ON)
+
 # Add third-party submodules.
 add_subdirectory(ext SYSTEM)
 

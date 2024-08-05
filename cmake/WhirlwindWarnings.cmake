@@ -10,7 +10,6 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL GNU)
       -Wconversion
       -Wdouble-promotion
       -Wduplicated-branches
-      -Werror
       -Wextra
       -Wlogical-op
       -Wnon-virtual-dtor
@@ -35,7 +34,6 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "^(Apple)?Clang$")
       -Wduplicate-decl-specifier
       -Wduplicate-method-arg
       -Wduplicate-method-match
-      -Werror
       -Wextra
       -Wextra-semi
       -Wheader-hygiene
@@ -58,7 +56,16 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "^(Apple)?Clang$")
       -Wvector-conversion
   )
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL MSVC)
-  set(WHIRLWIND_CXX_WARNINGS /W3 /WX)
+  set(WHIRLWIND_CXX_WARNINGS /W3)
+endif()
+
+# Optionally treat warnings as errors.
+if(WHIRLWIND_FATAL_WARNINGS)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|(Apple)?Clang)$")
+    list(APPEND WHIRLWIND_CXX_WARNINGS -Werror)
+  elseif(CMAKE_CXX_COMPILER_ID STREQUAL MSVC)
+    list(APPEND WHIRLWIND_CXX_WARNINGS /WX)
+  endif()
 endif()
 
 # Define an interface-only target with a list of desired C++ compiler warning flags
