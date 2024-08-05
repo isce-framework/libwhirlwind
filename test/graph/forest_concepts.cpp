@@ -20,7 +20,7 @@ WHIRLWIND_CONSTEVAL void
 require_satisfies_mutable_forest_type() noexcept
 {}
 
-TEST_CASE("ForestType", "[graph]")
+CATCH_TEST_CASE("ForestType", "[graph]")
 {
     using Graph = ww::CSRGraph<>;
     using Distance = int;
@@ -28,7 +28,7 @@ TEST_CASE("ForestType", "[graph]")
     require_satisfies_forest_type<ww::ShortestPathForest<Distance, Graph>>();
 }
 
-TEST_CASE("MutableForestType", "[graph]")
+CATCH_TEST_CASE("MutableForestType", "[graph]")
 {
     using Graph = ww::CSRGraph<>;
     using Distance = int;

@@ -8,7 +8,6 @@ Checks: >
   -android-*,
   -boost-*,
   -cert-dcl58-cpp,
-  -cppcoreguidelines-macro-usage,
   -fuchsia-default-arguments-*,
   -fuchsia-overloaded-operator,
   -fuchsia-trailing-return,
@@ -23,7 +22,7 @@ CheckOptions:
   - key: bugprone-easily-swappable-parameters.MinimumLength
     value: 4
   - key: cppcoreguidelines-macro-usage.AllowedRegexp
-    value: "^WHIRLWIND_[A-Z_]+$"
+    value: "^(CATCH|WHIRLWIND)_[A-Z_]+$"
   - key: hicpp-multiway-paths-covered.WarnOnMissingElse
     value: true
   - key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic

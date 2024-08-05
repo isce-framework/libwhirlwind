@@ -18,6 +18,7 @@ target_link_libraries(
   test-whirlwind PRIVATE Catch2::Catch2WithMain whirlwind::warnings
                          whirlwind::whirlwind
 )
+target_compile_definitions(test-whirlwind PRIVATE CATCH_CONFIG_PREFIX_ALL)
 set_target_properties(test-whirlwind PROPERTIES CXX_SCAN_FOR_MODULES OFF)
 
 # Find and register test cases from `test-whirlwind` with CTest.

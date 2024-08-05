@@ -14,7 +14,7 @@ WHIRLWIND_CONSTEVAL void
 require_satisfies_graph_type() noexcept
 {}
 
-TEST_CASE("GraphType", "[graph]")
+CATCH_TEST_CASE("GraphType", "[graph]")
 {
     require_satisfies_graph_type<ww::CSRGraph<>>();
     require_satisfies_graph_type<ww::RectangularGridGraph<>>();
