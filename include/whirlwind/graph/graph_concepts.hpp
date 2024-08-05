@@ -9,17 +9,17 @@ WHIRLWIND_NAMESPACE_BEGIN
 namespace detail {
 
 template<class Graph, class Vertex, class Edge, class Size>
-concept GraphTypeImpl = requires(const Graph graph, Vertex vertex, Edge edge) {
+concept GraphTypeImpl = requires(const Graph g, const Vertex v, const Edge e) {
     requires std::same_as<Size, std::size_t>;
 
-    { graph.num_vertices() } -> std::same_as<Size>;
-    { graph.num_edges() } -> std::same_as<Size>;
-    { graph.get_vertex_id(vertex) } -> std::same_as<Size>;
-    { graph.get_edge_id(edge) } -> std::same_as<Size>;
+    { g.num_vertices() } -> std::common_reference_with<Size>;
+    { g.num_edges() } -> std::common_reference_with<Size>;
+    { g.get_vertex_id(v) } -> std::common_reference_with<Size>;
+    { g.get_edge_id(e) } -> std::common_reference_with<Size>;
 
-    graph.vertices();
-    graph.edges();
-    graph.outgoing_edges(vertex);
+    g.vertices();
+    g.edges();
+    g.outgoing_edges(v);
 };
 
 } // namespace detail
