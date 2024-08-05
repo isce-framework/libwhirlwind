@@ -2,6 +2,7 @@
 
 #include <concepts>
 #include <limits>
+#include <numbers>
 #include <type_traits>
 
 #include <whirlwind/common/compatibility.hpp>
@@ -58,7 +59,7 @@ template<std::floating_point Real>
 [[nodiscard]] WHIRLWIND_CONSTEVAL auto
 pi() noexcept -> Real
 {
-    return static_cast<Real>(3.141592653589793238462643383279502884L);
+    return std::numbers::pi_v<Real>;
 }
 
 /**

@@ -117,3 +117,20 @@ jobs:
       - uses: lukka/run-cmake@v10.7
         with:
           workflowPreset: ${{ matrix.preset }}
+
+  clang-tidy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.7
+        with:
+          fetch-depth: 0
+          submodules: true
+      - uses: aminya/setup-cpp@v0.37.0
+        with:
+          compiler: llvm-18
+          clangtidy: "18"
+      - uses: lukka/get-cmake@v3.30.2
+      - uses: lukka/run-vcpkg@v11.5
+      - uses: lukka/run-cmake@v10.7
+        with:
+          workflowPreset: clang-tidy

@@ -36,7 +36,9 @@ public:
     constexpr EdgeList() = default;
 
     /** Create a new `EdgeList` from a sequence of (tail,head) pairs. */
-    constexpr EdgeList(container_type<value_type> edges) : edges_(std::move(edges)) {}
+    explicit constexpr EdgeList(container_type<value_type> edges)
+        : edges_(std::move(edges))
+    {}
 
     /**
      * Create a new `EdgeList` from sequences of tail and head vertices.

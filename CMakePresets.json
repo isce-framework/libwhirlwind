@@ -29,6 +29,13 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
+    },
+    {
+      "name": "clang-tidy",
+      "inherits": "debug",
+      "cacheVariables": {
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy"
+      }
     }
   ],
   "buildPresets": [
@@ -39,6 +46,10 @@
     {
       "name": "debug",
       "configurePreset": "debug"
+    },
+    {
+      "name": "clang-tidy",
+      "configurePreset": "clang-tidy"
     }
   ],
   "testPresets": [
@@ -92,6 +103,19 @@
         {
           "type": "test",
           "name": "debug"
+        }
+      ]
+    },
+    {
+      "name": "clang-tidy",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "clang-tidy"
+        },
+        {
+          "type": "build",
+          "name": "clang-tidy"
         }
       ]
     }

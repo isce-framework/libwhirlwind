@@ -3,6 +3,7 @@
 #include <utility>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers.hpp>
 #include <catch2/matchers/catch_matchers_range_equals.hpp>
 #include <range/v3/view/transform.hpp>
 
@@ -11,7 +12,7 @@
 #include <whirlwind/graph/forest.hpp>
 #include <whirlwind/graph/rectangular_grid_graph.hpp>
 
-#include "../string_conversions.hpp"
+#include "../testing/string_conversions.hpp" // IWYU pragma: keep
 
 namespace {
 

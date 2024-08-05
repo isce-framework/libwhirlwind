@@ -6,8 +6,8 @@
 namespace std {
 
 template<class T1, class T2>
-ostream&
-operator<<(ostream& os, const pair<T1, T2>& value)
+auto
+operator<<(ostream& os, const pair<T1, T2>& value) -> ostream&
 {
     os << "(" << value.first << ", " << value.second << ")";
     return os;

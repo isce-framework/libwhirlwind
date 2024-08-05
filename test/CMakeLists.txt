@@ -1,6 +1,6 @@
 find_package(Catch2 3.3 CONFIG REQUIRED)
 
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/)
 include(WhirlwindWarnings)
 
 # Add test executable.

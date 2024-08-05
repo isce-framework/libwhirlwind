@@ -345,7 +345,7 @@ public:
      *     A view of the vertex's outgoing incident edges and successor vertices.
      */
     [[nodiscard]] auto
-    outgoing_edges(const vertex_type& vertex) const
+    outgoing_edges(vertex_type vertex) const
             -> std::generator<std::pair<edge_type, vertex_type>>
     {
         WHIRLWIND_ASSERT(contains_vertex(vertex));
@@ -464,7 +464,7 @@ protected:
         auto off1 = off0 + num_lr_edges;
         auto off2 = off1 + num_ud_edges;
 
-        return std::array{std::move(off0), std::move(off1), std::move(off2)};
+        return std::array{off0, off1, off2};
     }
 
     [[nodiscard]] constexpr auto

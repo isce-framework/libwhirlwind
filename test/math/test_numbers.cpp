@@ -3,6 +3,7 @@
 
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 
 #include <whirlwind/math/numbers.hpp>
@@ -13,7 +14,7 @@ namespace ww = whirlwind;
 
 TEST_CASE("zero", "[numbers]")
 {
-    STATIC_REQUIRE(ww::zero<float>() == 0.0f);
+    STATIC_REQUIRE(ww::zero<float>() == 0.0F);
     STATIC_REQUIRE(ww::zero<double>() == 0.0);
     STATIC_REQUIRE(ww::zero<int>() == 0);
     STATIC_REQUIRE(ww::zero<signed char>() == 0);
@@ -22,7 +23,7 @@ TEST_CASE("zero", "[numbers]")
 
 TEST_CASE("one", "[numbers]")
 {
-    STATIC_REQUIRE(ww::one<float>() == 1.0f);
+    STATIC_REQUIRE(ww::one<float>() == 1.0F);
     STATIC_REQUIRE(ww::one<double>() == 1.0);
     STATIC_REQUIRE(ww::one<int>() == 1);
     STATIC_REQUIRE(ww::one<signed char>() == 1);

@@ -1,0 +1,33 @@
+Checks: >
+  *,
+  -*-macro-to-enum,
+  -*-magic-numbers,
+  -*-named-parameter,
+  -abseil-*,
+  -altera-*,
+  -android-*,
+  -boost-*,
+  -cert-dcl58-cpp,
+  -cppcoreguidelines-macro-usage,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -fuchsia-default-arguments-*,
+  -fuchsia-overloaded-operator,
+  -fuchsia-trailing-return,
+  -google-readability-todo,
+  -llvm-*,
+  -llvmlibc-*,
+  -objc-*,
+  -readability-function-cognitive-complexity,
+  -readability-identifier-length,
+  -zircon-*,
+CheckOptions:
+  - key: bugprone-easily-swappable-parameters.MinimumLength
+    value: 4
+  - key: cppcoreguidelines-macro-usage.AllowedRegexp
+    value: "^WHIRLWIND_[A-Z_]+$"
+  - key: hicpp-multiway-paths-covered.WarnOnMissingElse
+    value: true
+  - key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
+    value: true
+WarningsAsErrors: "*"
+HeaderFilterRegex: "whirlwind/.*\\.hpp$"
