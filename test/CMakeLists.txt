@@ -23,6 +23,9 @@ target_link_libraries(
 # Configure Catch2 to prefix all test macros with `CATCH_`.
 target_compile_definitions(test-whirlwind PRIVATE CATCH_CONFIG_PREFIX_ALL)
 
+# Forbid vendor-specific language extensions.
+set_target_properties(test-whirlwind PROPERTIES CXX_EXTENSIONS OFF)
+
 # Don't scan sources for module dependencies unless/until we adopt C++20 modules.
 # Scanning for modules may require additional tools not found in common compiler
 # distributions.
