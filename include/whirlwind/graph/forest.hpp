@@ -5,7 +5,6 @@
 
 #include <range/v3/algorithm/copy.hpp>
 #include <range/v3/algorithm/fill.hpp>
-#include <range/v3/range/conversion.hpp>
 
 #include <whirlwind/common/assert.hpp>
 #include <whirlwind/common/namespace.hpp>
@@ -56,12 +55,19 @@ public:
      */
     explicit constexpr Forest(const graph_type& graph, edge_type edge_fill_value = {})
         : graph_(std::addressof(graph)),
-          pred_vertex_(graph.vertices() | ranges::to<container_type<vertex_type>>()),
+          // XXX This should preferably use `ranges::to` but GCC v12.4.0 warns about
+          // detecting UB  when compiling with `-Waggressive-loop-optimizations` so
+          // let's use this workaround instead for now.
+          pred_vertex_([&]() {
+              auto pred_vertex = container_type<vertex_type>(graph.num_vertices());
+              ranges::copy(graph.vertices(), std::begin(pred_vertex));
+              return pred_vertex;
+          }()),
           pred_edge_(graph.num_vertices(), edge_fill_value),
           edge_fill_value_(std::move(edge_fill_value))
     {
-        WHIRLWIND_DEBUG_ASSERT(std::size(pred_vertex_) == this->graph().num_vertices());
-        WHIRLWIND_DEBUG_ASSERT(std::size(pred_edge_) == this->graph().num_vertices());
+        WHIRLWIND_DEBUG_ASSERT(std::size(pred_vertex_) == graph.num_vertices());
+        WHIRLWIND_DEBUG_ASSERT(std::size(pred_edge_) == graph.num_vertices());
     }
 
     /** The underlying graph. */
