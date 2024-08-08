@@ -32,6 +32,9 @@ jobs:
         preset:
           - release
         include:
+          - runner: ubuntu-24.04
+            compiler: gcc-14
+            preset: release
           - runner: ubuntu-latest
             compiler: gcc
             preset: debug
