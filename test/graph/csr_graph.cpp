@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <type_traits>
+#include <utility>
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers.hpp>
@@ -7,6 +8,8 @@
 
 #include <whirlwind/graph/csr_graph.hpp>
 #include <whirlwind/graph/edge_list.hpp>
+
+#include "../testing/string_conversions.hpp" // IWYU pragma: keep
 
 namespace {
 
@@ -40,18 +43,17 @@ CATCH_TEST_CASE("CSRGraph", "[graph]")
 
     const auto graph = ww::CSRGraph(edgelist);
 
+    using Vertex = decltype(graph)::vertex_type;
+    using Edge = decltype(graph)::edge_type;
+    using Size = decltype(graph)::size_type;
+
     const auto vertices = {0U, 1U, 2U, 3U};
     const auto edges = {0U, 1U, 2U, 3U, 4U};
 
     CATCH_SECTION("{vertex,edge,size}_type")
     {
-        using Vertex = typename decltype(graph)::vertex_type;
         CATCH_STATIC_REQUIRE((std::is_same_v<Vertex, std::size_t>));
-
-        using Edge = typename decltype(graph)::edge_type;
         CATCH_STATIC_REQUIRE((std::is_same_v<Edge, std::size_t>));
-
-        using Size = typename decltype(graph)::size_type;
         CATCH_STATIC_REQUIRE((std::is_same_v<Size, std::size_t>));
     }
 
@@ -98,6 +100,14 @@ CATCH_TEST_CASE("CSRGraph", "[graph]")
         CATCH_CHECK(graph.outdegree(2U) == 1U);
         CATCH_CHECK(graph.outdegree(3U) == 1U);
     }
+
+    CATCH_SECTION("outgoing_edges")
+    {
+        using Pair = std::pair<Edge, Vertex>;
+        const auto outgoing_edges = {Pair(0U, 1U), Pair(1U, 2U), Pair(2U, 3U)};
+        using Catch::Matchers::RangeEquals;
+        CATCH_CHECK_THAT(graph.outgoing_edges(0U), RangeEquals(outgoing_edges));
+    }
 }
 
 CATCH_TEST_CASE("CSRGraph (nonconsecutive vertices)", "[graph]")
@@ -128,11 +138,19 @@ CATCH_TEST_CASE("CSRGraph (nonconsecutive vertices)", "[graph]")
 
     CATCH_SECTION("contains_vertex")
     {
-        CATCH_CHECK(graph.contains_vertex(3));
-        CATCH_CHECK_FALSE(graph.contains_vertex(6));
+        CATCH_CHECK(graph.contains_vertex(3U));
+        CATCH_CHECK_FALSE(graph.contains_vertex(6U));
     }
 
-    CATCH_SECTION("outdegree") { CATCH_CHECK(graph.outdegree(3) == 0); }
+    CATCH_SECTION("outdegree")
+    {
+        CATCH_CHECK(graph.outdegree(0U) == 1U);
+        CATCH_CHECK(graph.outdegree(1U) == 1U);
+        CATCH_CHECK(graph.outdegree(2U) == 0U);
+        CATCH_CHECK(graph.outdegree(3U) == 0U);
+        CATCH_CHECK(graph.outdegree(4U) == 1U);
+        CATCH_CHECK(graph.outdegree(5U) == 0U);
+    }
 }
 
 CATCH_TEST_CASE("CSRGraph (unsorted edges)", "[graph]")
@@ -162,6 +180,17 @@ CATCH_TEST_CASE("CSRGraph (unsorted edges)", "[graph]")
         const auto edges = {0U, 1U, 2U, 3U, 4U};
         CATCH_CHECK_THAT(graph.edges(), RangeEquals(edges));
     }
+
+    CATCH_SECTION("outgoing_edges")
+    {
+        using Edge = decltype(graph)::edge_type;
+        using Vertex = decltype(graph)::vertex_type;
+        using Pair = std::pair<Edge, Vertex>;
+        const auto outgoing_edges = {Pair(0U, 1U), Pair(1U, 2U), Pair(2U, 3U)};
+
+        using Catch::Matchers::RangeEquals;
+        CATCH_CHECK_THAT(graph.outgoing_edges(0U), RangeEquals(outgoing_edges));
+    }
 }
 
 CATCH_TEST_CASE("CSRGraph (parallel edges)", "[graph]")
@@ -178,7 +207,11 @@ CATCH_TEST_CASE("CSRGraph (parallel edges)", "[graph]")
         CATCH_CHECK(graph.num_edges() == 2U);
     }
 
-    CATCH_SECTION("outdegree") { CATCH_CHECK(graph.outdegree(0U) == 2U); }
+    CATCH_SECTION("outdegree")
+    {
+        CATCH_CHECK(graph.outdegree(0U) == 2U);
+        CATCH_CHECK(graph.outdegree(1U) == 0U);
+    }
 }
 
 CATCH_TEST_CASE("CSRGraph (self loops)", "[graph]")
@@ -204,6 +237,18 @@ CATCH_TEST_CASE("CSRGraph (self loops)", "[graph]")
     }
 
     CATCH_SECTION("outdegree") { CATCH_CHECK(graph.outdegree(1U) == 4U); }
+
+    CATCH_SECTION("outgoing_edges")
+    {
+        using Edge = decltype(graph)::edge_type;
+        using Vertex = decltype(graph)::vertex_type;
+        using Pair = std::pair<Edge, Vertex>;
+        const auto outgoing_edges = {Pair(0U, 0U), Pair(1U, 1U), Pair(2U, 1U),
+                                     Pair(3U, 2U)};
+
+        using Catch::Matchers::RangeEquals;
+        CATCH_CHECK_THAT(graph.outgoing_edges(1U), RangeEquals(outgoing_edges));
+    }
 }
 
 } // namespace

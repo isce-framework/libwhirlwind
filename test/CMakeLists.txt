@@ -12,6 +12,7 @@ add_executable(
   graph/forest.cpp
   graph/forest_concepts.cpp
   graph/graph_concepts.cpp
+  graph/shortest_path_forest.cpp
   math/test_math.cpp
   math/test_numbers.cpp
 )

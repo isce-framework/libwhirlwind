@@ -207,8 +207,10 @@ public:
         WHIRLWIND_DEBUG_ASSERT(rstart < std::size(c_));
         WHIRLWIND_DEBUG_ASSERT(rstop <= std::size(c_));
         const auto cdata = c_.data();
+        // NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         const auto cstart = cdata + rstart;
         const auto cstop = cdata + rstop;
+        // NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         auto heads = std::span(cstart, cstop);
 
         auto to_pair = [](const auto& pair_like) {

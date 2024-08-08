@@ -1,9 +1,11 @@
+#include <iterator>
 #include <memory>
 #include <type_traits>
 #include <utility>
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers.hpp>
+#include <catch2/matchers/catch_matchers_quantifiers.hpp>
 #include <catch2/matchers/catch_matchers_range_equals.hpp>
 #include <range/v3/view/transform.hpp>
 
@@ -23,18 +25,16 @@ CATCH_TEST_CASE("Forest (const)", "[graph]")
     const auto graph = ww::RectangularGridGraph<>(4U, 4U);
     const auto forest = ww::Forest(graph);
 
+    using Graph = decltype(forest)::graph_type;
+    using Vertex = decltype(forest)::vertex_type;
+    using Edge = decltype(forest)::edge_type;
+    using Pred = decltype(forest)::pred_type;
+
     CATCH_SECTION("{graph,vertex,edge,pred}_type")
     {
-        using Graph = typename decltype(forest)::graph_type;
         CATCH_STATIC_REQUIRE((std::is_same_v<Graph, ww::RectangularGridGraph<>>));
-
-        using Vertex = typename decltype(forest)::vertex_type;
         CATCH_STATIC_REQUIRE((std::is_same_v<Vertex, Graph::vertex_type>));
-
-        using Edge = typename decltype(forest)::edge_type;
         CATCH_STATIC_REQUIRE((std::is_same_v<Edge, Graph::edge_type>));
-
-        using Pred = typename decltype(forest)::pred_type;
         CATCH_STATIC_REQUIRE((std::is_same_v<Pred, std::pair<Vertex, Edge>>));
     }
 
@@ -52,9 +52,17 @@ CATCH_TEST_CASE("Forest (const)", "[graph]")
         CATCH_CHECK_THAT(pred_vertices, Catch::Matchers::RangeEquals(graph.vertices()));
     }
 
+    CATCH_SECTION("is_root_vertex")
+    {
+        const auto vertices_are_roots =
+                graph.vertices() | ranges::views::transform([&](const auto& vertex) {
+                    return forest.is_root_vertex(vertex);
+                });
+        CATCH_CHECK_THAT(vertices_are_roots, Catch::Matchers::AllTrue());
+    }
+
     CATCH_SECTION("edge_fill_value")
     {
-        using Edge = typename decltype(forest)::edge_type;
         CATCH_CHECK(forest.edge_fill_value() == Edge{});
     }
 }
@@ -66,7 +74,6 @@ CATCH_TEST_CASE("Forest (non-const)", "[graph]")
     edgelist.add_edge(2U, 3U);
 
     const auto graph = ww::CSRGraph(edgelist);
-
     auto forest = ww::Forest(graph);
 
     CATCH_SECTION("set_predecessor")
@@ -89,6 +96,21 @@ CATCH_TEST_CASE("Forest (non-const)", "[graph]")
         CATCH_CHECK_FALSE(forest.is_root_vertex(2U));
         forest.make_root_vertex(2U);
         CATCH_CHECK(forest.is_root_vertex(2U));
+    }
+
+    CATCH_SECTION("predecessors")
+    {
+        forest.set_predecessor(2U, 1U, 0U);
+        forest.set_predecessor(3U, 2U, 1U);
+
+        CATCH_CHECK(std::ranges::distance(forest.predecessors(0U)) == 0U);
+        CATCH_CHECK(std::ranges::distance(forest.predecessors(1U)) == 0U);
+        CATCH_CHECK(std::ranges::distance(forest.predecessors(2U)) == 1U);
+        CATCH_CHECK(std::ranges::distance(forest.predecessors(3U)) == 2U);
+
+        using Pred = decltype(forest)::pred_type;
+        const auto preds = {Pred(2U, 1U), Pred(1U, 0U)};
+        CATCH_CHECK_THAT(forest.predecessors(3U), Catch::Matchers::RangeEquals(preds));
     }
 
     CATCH_SECTION("reset")
