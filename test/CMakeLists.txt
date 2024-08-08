@@ -8,11 +8,11 @@ include(WhirlwindWarnings)
 add_executable(
   test-whirlwind # cmake-format: sortable
   common/test_version.cpp
-  graph/csr_graph.cpp
-  graph/forest.cpp
-  graph/forest_concepts.cpp
-  graph/graph_concepts.cpp
-  graph/shortest_path_forest.cpp
+  graph/test_csr_graph.cpp
+  graph/test_forest.cpp
+  graph/test_forest_concepts.cpp
+  graph/test_graph_concepts.cpp
+  graph/test_shortest_path_forest.cpp
   math/test_math.cpp
   math/test_numbers.cpp
 )
