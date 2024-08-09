@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <iterator>
 #include <span>
 #include <type_traits>
 #include <utility>
@@ -18,6 +19,19 @@
 #include "edge_list.hpp"
 
 WHIRLWIND_NAMESPACE_BEGIN
+
+template<class ContiguousRange, class Size>
+[[nodiscard]] constexpr auto
+subspan_of(ContiguousRange&& r, Size start, Size stop)
+{
+    const auto begin = std::begin(r);
+    using Difference = std::iterator_traits<decltype(begin)>::difference_type;
+    const auto first = begin + static_cast<Difference>(start);
+    const auto last = begin + static_cast<Difference>(stop);
+    WHIRLWIND_ASSERT(first < std::end(r));
+    WHIRLWIND_ASSERT(last <= std::end(r));
+    return std::span(first, last);
+}
 
 /**
  * A compressed sparse row (CSR) digraph.
@@ -203,15 +217,7 @@ public:
         const auto rstart = r_[vertex_id];
         const auto rstop = r_[vertex_id + 1];
         auto edges = ranges::views::iota(rstart, rstop);
-
-        WHIRLWIND_DEBUG_ASSERT(rstart < std::size(c_));
-        WHIRLWIND_DEBUG_ASSERT(rstop <= std::size(c_));
-        const auto cdata = c_.data();
-        // NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
-        const auto cstart = cdata + rstart;
-        const auto cstop = cdata + rstop;
-        // NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
-        auto heads = std::span(cstart, cstop);
+        auto heads = subspan_of(c_, rstart, rstop);
 
         auto to_pair = [](const auto& pair_like) {
             using std::get;
