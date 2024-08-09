@@ -8,6 +8,7 @@ Checks: >
   -android-*,
   -boost-*,
   -cert-dcl58-cpp,
+  -cppcoreguidelines-avoid-do-while,
   -cppcoreguidelines-missing-std-forward,
   -fuchsia-default-arguments-*,
   -fuchsia-overloaded-operator,

@@ -16,6 +16,7 @@
 #include <whirlwind/container/vector.hpp>
 #include <whirlwind/math/numbers.hpp>
 
+#include "forest_concepts.hpp"
 #include "graph_concepts.hpp"
 #include "shortest_path_forest.hpp"
 
@@ -36,7 +37,7 @@ get_max_admissible_arc_length(const Network& network) -> typename Network::cost_
 
             const auto arc_length = network.arc_reduced_cost(arc, tail, head);
             WHIRLWIND_ASSERT(!std::isnan(arc_length));
-            WHIRLWIND_ASSERT(arc_length >= zero<distance_type>());
+            WHIRLWIND_ASSERT(arc_length >= zero<Cost>());
             if (std::isinf(arc_length)) {
                 continue;
             }
@@ -52,12 +53,13 @@ template<class Distance,
          GraphType Graph,
          template<class> class Container = Vector,
          class Queue = Queue<typename Graph::vertex_type>,
-         class ShortestPathForest = ShortestPathForest<Distance, Graph, Container>>
-class Dial : public ShortestPathForest {
+         MutableShortestPathForestType ShortestPaths =
+                 ShortestPathForest<Distance, Graph, Container>>
+class Dial : public ShortestPaths {
     WHIRLWIND_STATIC_ASSERT(std::is_integral_v<Distance>);
 
 private:
-    using super_type = ShortestPathForest;
+    using base_type = ShortestPaths;
 
 public:
     using distance_type = Distance;
@@ -70,20 +72,20 @@ public:
     template<class T>
     using container_type = Container<T>;
 
-    using super_type::distance_to_vertex;
-    using super_type::graph;
-    using super_type::has_reached_vertex;
-    using super_type::has_visited_vertex;
-    using super_type::is_root_vertex;
-    using super_type::label_vertex_reached;
-    using super_type::label_vertex_visited;
-    using super_type::make_root_vertex;
-    using super_type::predecessor_vertex;
-    using super_type::set_distance_to_vertex;
-    using super_type::set_predecessor;
+    using base_type::distance_to_vertex;
+    using base_type::graph;
+    using base_type::has_reached_vertex;
+    using base_type::has_visited_vertex;
+    using base_type::is_root_vertex;
+    using base_type::label_vertex_reached;
+    using base_type::label_vertex_visited;
+    using base_type::make_root_vertex;
+    using base_type::predecessor_vertex;
+    using base_type::set_distance_to_vertex;
+    using base_type::set_predecessor;
 
-    constexpr Dial(const graph_type& graph, size_type num_buckets)
-        : super_type(graph), buckets_(num_buckets), current_bucket_id_{}
+    constexpr Dial(const graph_type& g, size_type num_buckets)
+        : base_type(g), buckets_(num_buckets)
     {
         WHIRLWIND_DEBUG_ASSERT(std::size(buckets_) == num_buckets);
         WHIRLWIND_DEBUG_ASSERT(current_bucket_id() == 0);
@@ -252,7 +254,7 @@ public:
     constexpr void
     reset()
     {
-        super_type::reset();
+        base_type::reset();
 
         // Clear the contents of each bucket and reset the current position to the
         // first bucket.
@@ -262,7 +264,7 @@ public:
 
 private:
     container_type<queue_type> buckets_;
-    size_type current_bucket_id_;
+    size_type current_bucket_id_ = {};
 };
 
 WHIRLWIND_NAMESPACE_END

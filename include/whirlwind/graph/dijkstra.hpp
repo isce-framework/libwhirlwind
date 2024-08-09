@@ -8,6 +8,7 @@
 #include <whirlwind/container/vector.hpp>
 #include <whirlwind/math/numbers.hpp>
 
+#include "forest_concepts.hpp"
 #include "graph_concepts.hpp"
 #include "shortest_path_forest.hpp"
 
@@ -17,10 +18,11 @@ template<class Distance,
          GraphType Graph,
          template<class> class Container = Vector,
          class Heap = BinaryHeap<typename Graph::vertex_type, Distance, Container>,
-         class ShortestPathForest = ShortestPathForest<Distance, Graph, Container>>
-class Dijkstra : public ShortestPathForest {
+         MutableShortestPathForestType ShortestPaths =
+                 ShortestPathForest<Distance, Graph, Container>>
+class Dijkstra : public ShortestPaths {
 private:
-    using super_type = ShortestPathForest;
+    using base_type = ShortestPaths;
 
 public:
     using distance_type = Distance;
@@ -29,19 +31,19 @@ public:
     using edge_type = typename graph_type::edge_type;
     using heap_type = Heap;
 
-    using super_type::distance_to_vertex;
-    using super_type::graph;
-    using super_type::has_reached_vertex;
-    using super_type::has_visited_vertex;
-    using super_type::is_root_vertex;
-    using super_type::label_vertex_reached;
-    using super_type::label_vertex_visited;
-    using super_type::make_root_vertex;
-    using super_type::predecessor_vertex;
-    using super_type::set_distance_to_vertex;
-    using super_type::set_predecessor;
+    using base_type::distance_to_vertex;
+    using base_type::graph;
+    using base_type::has_reached_vertex;
+    using base_type::has_visited_vertex;
+    using base_type::is_root_vertex;
+    using base_type::label_vertex_reached;
+    using base_type::label_vertex_visited;
+    using base_type::make_root_vertex;
+    using base_type::predecessor_vertex;
+    using base_type::set_distance_to_vertex;
+    using base_type::set_predecessor;
 
-    explicit constexpr Dijkstra(const graph_type& graph) : super_type(graph), heap_{}
+    explicit constexpr Dijkstra(const graph_type& g) : base_type(g), heap_{}
     {
         WHIRLWIND_DEBUG_ASSERT(std::empty(heap_));
     }
@@ -159,7 +161,7 @@ public:
     constexpr void
     reset()
     {
-        super_type::reset();
+        base_type::reset();
         heap_.clear();
         WHIRLWIND_DEBUG_ASSERT(std::empty(heap_));
     }
