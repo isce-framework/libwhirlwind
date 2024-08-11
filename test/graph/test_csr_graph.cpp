@@ -153,6 +153,25 @@ CATCH_TEST_CASE("CSRGraph (nonconsecutive vertices)", "[graph]")
     }
 }
 
+CATCH_TEST_CASE("CSRGraph.num_vertices", "[graph]")
+{
+    CATCH_SECTION("tail")
+    {
+        auto edgelist = ww::EdgeList();
+        edgelist.add_edge(99U, 0U);
+        const auto graph = ww::CSRGraph(edgelist);
+        CATCH_CHECK(graph.num_vertices() == 100U);
+    }
+
+    CATCH_SECTION("head")
+    {
+        auto edgelist = ww::EdgeList();
+        edgelist.add_edge(0U, 99U);
+        const auto graph = ww::CSRGraph(edgelist);
+        CATCH_CHECK(graph.num_vertices() == 100U);
+    }
+}
+
 CATCH_TEST_CASE("CSRGraph (unsorted edges)", "[graph]")
 {
     auto edgelist = ww::EdgeList();

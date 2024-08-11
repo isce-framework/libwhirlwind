@@ -55,13 +55,25 @@ public:
         WHIRLWIND_STATIC_ASSERT(std::is_same_v<typename Network::cost_type, Distance>);
     }
 
+    [[nodiscard]] constexpr auto
+    heap() const noexcept -> const heap_type&
+    {
+        return heap_;
+    }
+
+    [[nodiscard]] constexpr auto
+    heap() noexcept -> heap_type&
+    {
+        return heap_;
+    }
+
     constexpr void
     push_vertex(vertex_type vertex, distance_type distance)
     {
         WHIRLWIND_ASSERT(graph().contains_vertex(vertex));
         WHIRLWIND_ASSERT(distance >= zero<distance_type>());
         WHIRLWIND_DEBUG_ASSERT(has_reached_vertex(vertex));
-        heap_.emplace(std::move(vertex), std::move(distance));
+        heap().emplace(std::move(vertex), std::move(distance));
     }
 
     constexpr void
@@ -81,12 +93,12 @@ public:
     constexpr auto
     pop_next_unvisited_vertex()
     {
-        WHIRLWIND_ASSERT(!std::empty(heap_));
-        auto top = heap_.top();
+        WHIRLWIND_ASSERT(!std::empty(heap()));
+        auto top = heap().top();
         using std::get;
         WHIRLWIND_DEBUG_ASSERT(has_reached_vertex(get<0>(top)));
         WHIRLWIND_DEBUG_ASSERT(!has_visited_vertex(get<0>(top)));
-        heap_.pop();
+        heap().pop();
         return top;
     }
 
@@ -147,13 +159,13 @@ public:
         // TODO: Some heap implementations support modifying the priority of nodes in
         // the heap. In this case, each vertex should be inserted into the heap only
         // once, and `done()` could simply check whether the heap is empty.
-        while (!heap_.empty()) {
+        while (!heap().empty()) {
             using std::get;
-            const auto& vertex = get<0>(heap_.top());
+            const auto& vertex = get<0>(heap().top());
             if (!has_visited_vertex(vertex)) {
                 return false;
             }
-            heap_.pop();
+            heap().pop();
         }
         return true;
     }
@@ -162,8 +174,8 @@ public:
     reset()
     {
         base_type::reset();
-        heap_.clear();
-        WHIRLWIND_DEBUG_ASSERT(std::empty(heap_));
+        heap().clear();
+        WHIRLWIND_DEBUG_ASSERT(std::empty(heap()));
     }
 
 private:

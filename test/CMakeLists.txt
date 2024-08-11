@@ -9,6 +9,7 @@ add_executable(
   test-whirlwind # cmake-format: sortable
   common/test_version.cpp
   graph/test_csr_graph.cpp
+  graph/test_dijkstra.cpp
   graph/test_dijkstra_concepts.cpp
   graph/test_forest.cpp
   graph/test_forest_concepts.cpp
