@@ -22,7 +22,9 @@ WHIRLWIND_NAMESPACE_BEGIN
 
 template<class ContiguousRange, class Size>
 [[nodiscard]] constexpr auto
-subspan_of(ContiguousRange&& r, Size start, Size stop)
+subspan_of(ContiguousRange&& r, // NOLINT(cppcoreguidelines-missing-std-forward)
+           Size start,
+           Size stop)
 {
     const auto begin = std::begin(r);
     using Difference = std::iterator_traits<decltype(begin)>::difference_type;
