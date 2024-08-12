@@ -106,9 +106,21 @@ public:
     }
 
     [[nodiscard]] constexpr auto
+    buckets() const noexcept -> const container_type<queue_type>&
+    {
+        return buckets_;
+    }
+
+    [[nodiscard]] constexpr auto
+    buckets() noexcept -> container_type<queue_type>&
+    {
+        return buckets_;
+    }
+
+    [[nodiscard]] constexpr auto
     num_buckets() const noexcept -> size_type
     {
-        return std::size(buckets_);
+        return std::size(buckets());
     }
 
     [[nodiscard]] constexpr auto
@@ -124,6 +136,44 @@ public:
         return static_cast<size_type>(distance) % num_buckets();
     }
 
+    [[nodiscard]] constexpr auto
+    get_bucket(size_type bucket_id) const -> const queue_type&
+    {
+        WHIRLWIND_ASSERT(bucket_id < std::size(buckets_));
+        return buckets_[bucket_id];
+    }
+
+    [[nodiscard]] constexpr auto
+    get_bucket(size_type bucket_id) -> queue_type&
+    {
+        WHIRLWIND_ASSERT(bucket_id < std::size(buckets_));
+        return buckets_[bucket_id];
+    }
+
+    [[nodiscard]] constexpr auto
+    current_bucket() const -> const queue_type&
+    {
+        return get_bucket(current_bucket_id());
+    }
+
+    [[nodiscard]] constexpr auto
+    current_bucket() -> queue_type&
+    {
+        return get_bucket(current_bucket_id());
+    }
+
+    constexpr void
+    advance_current_bucket()
+    {
+        const auto n = num_buckets();
+        if (n == 0) WHIRLWIND_UNLIKELY {
+            return;
+        }
+
+        ++current_bucket_id_;
+        current_bucket_id_ %= n;
+    }
+
     constexpr void
     push_vertex(vertex_type vertex, const distance_type& distance)
     {
@@ -133,8 +183,7 @@ public:
         WHIRLWIND_DEBUG_ASSERT(has_reached_vertex(vertex));
 
         const auto bucket_id = get_bucket_id(distance);
-        WHIRLWIND_DEBUG_ASSERT(bucket_id < std::size(buckets_));
-        buckets_[bucket_id].push(std::move(vertex));
+        get_bucket(bucket_id).push(std::move(vertex));
     }
 
     constexpr void
@@ -142,7 +191,7 @@ public:
     {
         WHIRLWIND_ASSERT(graph().contains_vertex(source));
         WHIRLWIND_ASSERT(!has_reached_vertex(source));
-        WHIRLWIND_ASSERT(std::size(buckets_) > 0);
+        WHIRLWIND_ASSERT(num_buckets() > 0);
 
         make_root_vertex(source);
         WHIRLWIND_DEBUG_ASSERT(predecessor_vertex(source) == source);
@@ -155,8 +204,7 @@ public:
     constexpr auto
     pop_next_unvisited_vertex()
     {
-        WHIRLWIND_DEBUG_ASSERT(current_bucket_id() < std::size(buckets_));
-        auto& bucket = buckets_[current_bucket_id()];
+        auto& bucket = current_bucket();
         WHIRLWIND_ASSERT(!std::empty(bucket));
         auto front = bucket.front();
         WHIRLWIND_DEBUG_ASSERT(has_reached_vertex(front));
@@ -219,21 +267,19 @@ public:
     done() -> bool
     {
         // Handle the unlikely case where the array of buckets is empty.
-        const auto n = num_buckets();
-        if (n == 0) WHIRLWIND_UNLIKELY {
+        if (num_buckets() == 0) WHIRLWIND_UNLIKELY {
             return true;
         }
 
         // Cycle through the ring buffer (updating `current_bucket_id_` along the
         // way) until the first non-empty bucket is found or we arrive back at our
         // initial position.
-        const auto old_bucket_id = current_bucket_id_;
+        const auto old_bucket_id = current_bucket_id();
         do {
             // If the current bucket is not empty, check each vertex in the bucket
             // until the first unvisited vertex is found or the bucket's contents
             // are exhausted. Visited vertices are removed from the bucket.
-            WHIRLWIND_DEBUG_ASSERT(current_bucket_id_ < std::size(buckets_));
-            auto& bucket = buckets_[current_bucket_id()];
+            auto& bucket = current_bucket();
             while (!std::empty(bucket)) {
                 if (!has_visited_vertex(bucket.front())) {
                     return false;
@@ -242,10 +288,10 @@ public:
             }
 
             // Advance to the next bucket in the ring buffer.
-            ++current_bucket_id_;
-            current_bucket_id_ %= n;
+            advance_current_bucket();
+            WHIRLWIND_DEBUG_ASSERT(current_bucket_id() < num_buckets());
 
-        } while (current_bucket_id_ != old_bucket_id);
+        } while (current_bucket_id() != old_bucket_id);
 
         // If we reach this point, all buckets are empty.
         return true;
@@ -258,13 +304,13 @@ public:
 
         // Clear the contents of each bucket and reset the current position to the
         // first bucket.
-        ranges::for_each(buckets_, [](auto& bucket) { bucket.clear(); });
+        ranges::for_each(buckets(), [](auto& bucket) { bucket.clear(); });
         current_bucket_id_ = 0;
     }
 
 private:
     container_type<queue_type> buckets_;
-    size_type current_bucket_id_ = {};
+    size_type current_bucket_id_ = 0;
 };
 
 WHIRLWIND_NAMESPACE_END

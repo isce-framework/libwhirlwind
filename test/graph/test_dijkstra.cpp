@@ -89,7 +89,6 @@ CATCH_TEST_CASE("Dijkstra", "[graph]")
     {
         const auto vertex = 0U;
         const auto distance = 0;
-
         dijkstra.add_source(vertex);
         CATCH_CHECK(std::size(dijkstra.heap()) == 1U);
         const auto& [vertex1, distance1] = dijkstra.heap().top();
