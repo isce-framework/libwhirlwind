@@ -36,7 +36,7 @@ struct BinaryHeapTraits {
 template<class T, class Key, template<class> class Container = Vector>
 class BinaryHeap : public detail::BinaryHeapTraits<T, Key, Container>::queue_type {
 private:
-    using super_type = detail::BinaryHeapTraits<T, Key, Container>::queue_type;
+    using super_type = typename detail::BinaryHeapTraits<T, Key, Container>::queue_type;
 
 protected:
     using super_type::c;

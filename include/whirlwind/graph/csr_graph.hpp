@@ -27,7 +27,7 @@ subspan_of(ContiguousRange&& r, // NOLINT(cppcoreguidelines-missing-std-forward)
            Size stop)
 {
     const auto begin = std::begin(r);
-    using Difference = std::iterator_traits<decltype(begin)>::difference_type;
+    using Difference = typename std::iterator_traits<decltype(begin)>::difference_type;
     const auto first = begin + static_cast<Difference>(start);
     const auto last = begin + static_cast<Difference>(stop);
     WHIRLWIND_ASSERT(first < std::end(r));
