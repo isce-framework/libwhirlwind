@@ -3,6 +3,8 @@
 
 #include <whirlwind/common/compatibility.hpp>
 #include <whirlwind/graph/csr_graph.hpp>
+#include <whirlwind/graph/dial.hpp>
+#include <whirlwind/graph/dijkstra.hpp>
 #include <whirlwind/graph/forest.hpp>
 #include <whirlwind/graph/forest_concepts.hpp>
 #include <whirlwind/graph/shortest_path_forest.hpp>
@@ -47,12 +49,19 @@ CATCH_TEST_CASE("MutableForestType", "[graph]")
     require_satisfies_mutable_forest_type<ww::ShortestPathForest<Distance, Graph>>();
 }
 
-CATCH_TEMPLATE_TEST_CASE("ShortestPathForestType", "[graph]", int, float)
+CATCH_TEMPLATE_TEST_CASE("ShortestPathForestType", "[graph]", int, unsigned long long)
 {
     using Distance = TestType;
     using Graph = ww::CSRGraph<>;
-    using Forest = ww::ShortestPathForest<Distance, Graph>;
-    require_satisfies_shortest_path_forest_type<Forest>();
+
+    using ShortestPathForest = ww::ShortestPathForest<Distance, Graph>;
+    require_satisfies_shortest_path_forest_type<ShortestPathForest>();
+
+    using Dijkstra = ww::Dijkstra<Distance, Graph>;
+    require_satisfies_shortest_path_forest_type<Dijkstra>();
+
+    using Dial = ww::Dial<Distance, Graph>;
+    require_satisfies_shortest_path_forest_type<Dial>();
 }
 
 CATCH_TEMPLATE_TEST_CASE("MutableShortestPathForestType", "[graph]", int, float)

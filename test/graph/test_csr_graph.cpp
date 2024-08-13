@@ -9,10 +9,12 @@
 #include <whirlwind/graph/csr_graph.hpp>
 #include <whirlwind/graph/edge_list.hpp>
 
+#include "../testing/matchers/graph_matchers.hpp"
 #include "../testing/string_conversions.hpp" // IWYU pragma: keep
 
 namespace {
 
+namespace CM = Catch::Matchers;
 namespace ww = whirlwind;
 
 CATCH_TEST_CASE("CSRGraph (empty)", "[graph]")
@@ -27,8 +29,8 @@ CATCH_TEST_CASE("CSRGraph (empty)", "[graph]")
 
     CATCH_SECTION("contains_{vertex,edge}")
     {
-        CATCH_CHECK_FALSE(graph.contains_vertex(0U));
-        CATCH_CHECK_FALSE(graph.contains_edge(0U));
+        CATCH_CHECK_THAT(graph, !ww::testing::ContainsVertex(0U));
+        CATCH_CHECK_THAT(graph, !ww::testing::ContainsEdge(0U));
     }
 }
 
@@ -75,22 +77,23 @@ CATCH_TEST_CASE("CSRGraph", "[graph]")
 
     CATCH_SECTION("{vertices,edges}")
     {
-        using Catch::Matchers::RangeEquals;
-        CATCH_CHECK_THAT(graph.vertices(), RangeEquals(vertices));
-        CATCH_CHECK_THAT(graph.edges(), RangeEquals(edges));
+        CATCH_CHECK_THAT(graph.vertices(), CM::RangeEquals(vertices));
+        CATCH_CHECK_THAT(graph.edges(), CM::RangeEquals(edges));
     }
 
     CATCH_SECTION("contains_{vertex,edge}")
     {
-        CATCH_CHECK(graph.contains_vertex(0U));
-        CATCH_CHECK(graph.contains_vertex(3U));
-        CATCH_CHECK_FALSE(graph.contains_vertex(999U));
-        CATCH_CHECK_FALSE(graph.contains_vertex(4U));
+        using ww::testing::ContainsVertex;
+        CATCH_CHECK_THAT(graph, ContainsVertex(0U));
+        CATCH_CHECK_THAT(graph, ContainsVertex(3U));
+        CATCH_CHECK_THAT(graph, !ContainsVertex(999U));
+        CATCH_CHECK_THAT(graph, !ContainsVertex(4U));
 
-        CATCH_CHECK(graph.contains_edge(0U));
-        CATCH_CHECK(graph.contains_edge(4U));
-        CATCH_CHECK_FALSE(graph.contains_edge(999U));
-        CATCH_CHECK_FALSE(graph.contains_edge(5U));
+        using ww::testing::ContainsEdge;
+        CATCH_CHECK_THAT(graph, ContainsEdge(0U));
+        CATCH_CHECK_THAT(graph, ContainsEdge(4U));
+        CATCH_CHECK_THAT(graph, !ContainsEdge(999U));
+        CATCH_CHECK_THAT(graph, !ContainsEdge(5U));
     }
 
     CATCH_SECTION("outdegree")
@@ -105,8 +108,7 @@ CATCH_TEST_CASE("CSRGraph", "[graph]")
     {
         using Pair = std::pair<Edge, Vertex>;
         const auto outgoing_edges = {Pair(0U, 1U), Pair(1U, 2U), Pair(2U, 3U)};
-        using Catch::Matchers::RangeEquals;
-        CATCH_CHECK_THAT(graph.outgoing_edges(0U), RangeEquals(outgoing_edges));
+        CATCH_CHECK_THAT(graph.outgoing_edges(0U), CM::RangeEquals(outgoing_edges));
     }
 }
 
@@ -127,19 +129,18 @@ CATCH_TEST_CASE("CSRGraph (nonconsecutive vertices)", "[graph]")
 
     CATCH_SECTION("{vertices,edges}")
     {
-        using Catch::Matchers::RangeEquals;
-
         const auto vertices = {0U, 1U, 2U, 3U, 4U, 5U};
-        CATCH_CHECK_THAT(graph.vertices(), RangeEquals(vertices));
-
         const auto edges = {0U, 1U, 2U};
-        CATCH_CHECK_THAT(graph.edges(), RangeEquals(edges));
+
+        CATCH_CHECK_THAT(graph.vertices(), CM::RangeEquals(vertices));
+        CATCH_CHECK_THAT(graph.edges(), CM::RangeEquals(edges));
     }
 
     CATCH_SECTION("contains_vertex")
     {
-        CATCH_CHECK(graph.contains_vertex(3U));
-        CATCH_CHECK_FALSE(graph.contains_vertex(6U));
+        using ww::testing::ContainsVertex;
+        CATCH_CHECK_THAT(graph, ContainsVertex(3U));
+        CATCH_CHECK_THAT(graph, !ContainsVertex(6U));
     }
 
     CATCH_SECTION("outdegree")
@@ -191,13 +192,11 @@ CATCH_TEST_CASE("CSRGraph (unsorted edges)", "[graph]")
 
     CATCH_SECTION("{vertices,edges}")
     {
-        using Catch::Matchers::RangeEquals;
-
         const auto vertices = {0U, 1U, 2U, 3U};
-        CATCH_CHECK_THAT(graph.vertices(), RangeEquals(vertices));
-
         const auto edges = {0U, 1U, 2U, 3U, 4U};
-        CATCH_CHECK_THAT(graph.edges(), RangeEquals(edges));
+
+        CATCH_CHECK_THAT(graph.vertices(), CM::RangeEquals(vertices));
+        CATCH_CHECK_THAT(graph.edges(), CM::RangeEquals(edges));
     }
 
     CATCH_SECTION("outgoing_edges")
@@ -207,8 +206,7 @@ CATCH_TEST_CASE("CSRGraph (unsorted edges)", "[graph]")
         using Pair = std::pair<Edge, Vertex>;
         const auto outgoing_edges = {Pair(0U, 1U), Pair(1U, 2U), Pair(2U, 3U)};
 
-        using Catch::Matchers::RangeEquals;
-        CATCH_CHECK_THAT(graph.outgoing_edges(0U), RangeEquals(outgoing_edges));
+        CATCH_CHECK_THAT(graph.outgoing_edges(0U), CM::RangeEquals(outgoing_edges));
     }
 }
 
@@ -251,8 +249,9 @@ CATCH_TEST_CASE("CSRGraph (self loops)", "[graph]")
 
     CATCH_SECTION("contains_vertex")
     {
-        CATCH_CHECK(graph.contains_vertex(0U));
-        CATCH_CHECK(graph.contains_vertex(2U));
+        using ww::testing::ContainsVertex;
+        CATCH_CHECK_THAT(graph, ContainsVertex(0U));
+        CATCH_CHECK_THAT(graph, ContainsVertex(2U));
     }
 
     CATCH_SECTION("outdegree") { CATCH_CHECK(graph.outdegree(1U) == 4U); }
@@ -265,8 +264,7 @@ CATCH_TEST_CASE("CSRGraph (self loops)", "[graph]")
         const auto outgoing_edges = {Pair(0U, 0U), Pair(1U, 1U), Pair(2U, 1U),
                                      Pair(3U, 2U)};
 
-        using Catch::Matchers::RangeEquals;
-        CATCH_CHECK_THAT(graph.outgoing_edges(1U), RangeEquals(outgoing_edges));
+        CATCH_CHECK_THAT(graph.outgoing_edges(1U), CM::RangeEquals(outgoing_edges));
     }
 }
 

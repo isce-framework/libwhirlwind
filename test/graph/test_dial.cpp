@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <limits>
 #include <memory>
 #include <type_traits>
 #include <vector>
@@ -16,27 +17,33 @@
 #include <whirlwind/graph/edge_list.hpp>
 #include <whirlwind/graph/rectangular_grid_graph.hpp>
 
+#include "../testing/matchers/forest_matchers.hpp"
+#include "../testing/matchers/range_matchers.hpp"
+
 namespace {
 
+namespace CM = Catch::Matchers;
 namespace ww = whirlwind;
 
 CATCH_TEST_CASE("Dial", "[graph]")
 {
-    using D = int;
-    using G = ww::CSRGraph<>;
+    using Distance = int;
+    using Graph = ww::CSRGraph<>;
+
+    constexpr auto max_distance = std::numeric_limits<Distance>::max();
 
     auto edgelist = ww::EdgeList();
     edgelist.add_edge(0U, 1U);
     edgelist.add_edge(1U, 2U);
     edgelist.add_edge(2U, 3U);
 
-    const auto graph = G(edgelist);
+    const auto graph = Graph(edgelist);
     const auto num_buckets = 101U;
 
-    auto dial = ww::Dial<D, G>(graph, num_buckets);
+    auto dial = ww::Dial<Distance, Graph>(graph, num_buckets);
 
-    using Distance = decltype(dial)::distance_type;
-    using Graph = decltype(dial)::graph_type;
+    using Distance_ = decltype(dial)::distance_type;
+    using Graph_ = decltype(dial)::graph_type;
     using Vertex = decltype(dial)::vertex_type;
     using Edge = decltype(dial)::edge_type;
     using Size = decltype(dial)::size_type;
@@ -45,20 +52,29 @@ CATCH_TEST_CASE("Dial", "[graph]")
     {
         CATCH_CHECK(std::addressof(dial.graph()) == std::addressof(graph));
         CATCH_CHECK(dial.num_buckets() == num_buckets);
+
         CATCH_CHECK(std::size(dial.buckets()) == num_buckets);
-        using Catch::Matchers::AllMatch;
-        using Catch::Matchers::IsEmpty;
-        CATCH_CHECK_THAT(dial.buckets(), AllMatch(IsEmpty()));
+        CATCH_CHECK_THAT(dial.buckets(), CM::AllMatch(CM::IsEmpty()));
         CATCH_CHECK(dial.current_bucket_id() == 0U);
+
         CATCH_CHECK(dial.done());
+
+        using ww::testing::WasReachedBy;
+        CATCH_CHECK_THAT(graph.vertices(), CM::NoneMatch(WasReachedBy(dial)));
+
+        const auto distances =
+                graph.vertices() | ranges::views::transform([&](const auto& vertex) {
+                    return dial.distance_to_vertex(vertex);
+                });
+        CATCH_CHECK_THAT(distances, ww::testing::AllEqualTo(max_distance));
     }
 
     CATCH_SECTION("{distance,graph,vertex,edge}_type")
     {
-        CATCH_STATIC_REQUIRE((std::is_same_v<Distance, D>));
-        CATCH_STATIC_REQUIRE((std::is_same_v<Graph, G>));
-        CATCH_STATIC_REQUIRE((std::is_same_v<Vertex, G::vertex_type>));
-        CATCH_STATIC_REQUIRE((std::is_same_v<Edge, G::edge_type>));
+        CATCH_STATIC_REQUIRE((std::is_same_v<Distance_, Distance>));
+        CATCH_STATIC_REQUIRE((std::is_same_v<Graph_, Graph>));
+        CATCH_STATIC_REQUIRE((std::is_same_v<Vertex, Graph::vertex_type>));
+        CATCH_STATIC_REQUIRE((std::is_same_v<Edge, Graph::edge_type>));
         CATCH_STATIC_REQUIRE((std::is_same_v<Size, std::size_t>));
     }
 
@@ -90,9 +106,7 @@ CATCH_TEST_CASE("Dial", "[graph]")
             bucket.pop();
         }
 
-        using Catch::Matchers::AllMatch;
-        using Catch::Matchers::IsEmpty;
-        CATCH_CHECK_THAT(dial.buckets(), AllMatch(IsEmpty()));
+        CATCH_CHECK_THAT(dial.buckets(), CM::AllMatch(CM::IsEmpty()));
     }
 
     CATCH_SECTION("pop_next_unvisited_vertex")
@@ -106,7 +120,7 @@ CATCH_TEST_CASE("Dial", "[graph]")
 
         const auto [vertex1, distance1] = dial.pop_next_unvisited_vertex();
         CATCH_CHECK(dial.current_bucket_id() == 0U);
-        CATCH_CHECK_THAT(dial.current_bucket(), Catch::Matchers::IsEmpty());
+        CATCH_CHECK_THAT(dial.current_bucket(), CM::IsEmpty());
         CATCH_CHECK(vertex1 == vertex0);
         CATCH_CHECK(distance1 == distance0);
     }
@@ -120,24 +134,18 @@ CATCH_TEST_CASE("Dial", "[graph]")
 
         CATCH_CHECK(dial.current_bucket_id() == 0U);
         CATCH_CHECK(std::size(dial.current_bucket()) == std::size(sources));
+        CATCH_CHECK_THAT(sources, CM::AllMatch(ww::testing::WasReachedBy(dial)));
 
-        const auto has_reached_sources =
-                sources | ranges::views::transform([&](const auto& source) {
-                    return dial.has_reached_vertex(source);
-                });
-        CATCH_CHECK_THAT(has_reached_sources, Catch::Matchers::AllTrue());
-
-        using Catch::Matchers::Contains;
         const auto [vertex0, distance0] = dial.pop_next_unvisited_vertex();
-        CATCH_CHECK_THAT(sources, Contains(vertex0));
+        CATCH_CHECK_THAT(sources, CM::Contains(vertex0));
         CATCH_CHECK(distance0 == 0);
 
         const auto [vertex1, distance1] = dial.pop_next_unvisited_vertex();
-        CATCH_CHECK_THAT(sources, Contains(vertex1));
+        CATCH_CHECK_THAT(sources, CM::Contains(vertex1));
         CATCH_CHECK(distance1 == 0);
 
         CATCH_CHECK(dial.current_bucket_id() == 0U);
-        CATCH_CHECK_THAT(dial.current_bucket(), Catch::Matchers::IsEmpty());
+        CATCH_CHECK_THAT(dial.current_bucket(), CM::IsEmpty());
         CATCH_CHECK(vertex0 != vertex1);
     }
 
@@ -147,19 +155,20 @@ CATCH_TEST_CASE("Dial", "[graph]")
         const auto distance0 = 0;
         dial.add_source(vertex0);
 
-        CATCH_CHECK_FALSE(dial.has_visited_vertex(vertex0));
+        using ww::testing::WasVisitedBy;
+        CATCH_CHECK_THAT(vertex0, !WasVisitedBy(dial));
         dial.visit_vertex(vertex0, distance0);
-        CATCH_CHECK(dial.has_visited_vertex(vertex0));
+        CATCH_CHECK_THAT(vertex0, WasVisitedBy(dial));
         CATCH_CHECK(dial.distance_to_vertex(vertex0) == distance0);
 
         const auto edge = 0U;
         const auto vertex1 = 1U;
         const auto distance1 = 10;
         dial.relax_edge(edge, vertex0, vertex1, distance1);
-        CATCH_CHECK_FALSE(dial.has_visited_vertex(vertex1));
+        CATCH_CHECK_THAT(vertex1, !WasVisitedBy(dial));
 
         dial.visit_vertex(vertex1, distance1);
-        CATCH_CHECK(dial.has_visited_vertex(vertex1));
+        CATCH_CHECK_THAT(vertex1, WasVisitedBy(dial));
         CATCH_CHECK(dial.distance_to_vertex(vertex1) == distance1);
     }
 
@@ -178,8 +187,8 @@ CATCH_TEST_CASE("Dial", "[graph]")
         const auto length = 10;
         dial.relax_edge(edge, tail, head, distance + length);
 
-        CATCH_CHECK(dial.has_reached_vertex(head));
-        CATCH_CHECK_FALSE(dial.has_visited_vertex(head));
+        CATCH_CHECK_THAT(head, ww::testing::WasReachedBy(dial));
+        CATCH_CHECK_THAT(head, !ww::testing::WasVisitedBy(dial));
         CATCH_CHECK(dial.distance_to_vertex(head) == distance + length);
 
         const auto bucket_id = dial.get_bucket_id(distance + length);
@@ -216,11 +225,19 @@ CATCH_TEST_CASE("Dial", "[graph]")
         }
 
         dial.reset();
-        using Catch::Matchers::AllMatch;
-        using Catch::Matchers::IsEmpty;
-        CATCH_CHECK_THAT(dial.buckets(), AllMatch(IsEmpty()));
+
+        CATCH_CHECK_THAT(dial.buckets(), CM::AllMatch(CM::IsEmpty()));
         CATCH_CHECK(dial.current_bucket_id() == 0U);
         CATCH_CHECK(dial.done());
+
+        using ww::testing::WasReachedBy;
+        CATCH_CHECK_THAT(graph.vertices(), CM::NoneMatch(WasReachedBy(dial)));
+
+        const auto distances =
+                graph.vertices() | ranges::views::transform([&](const auto& vertex) {
+                    return dial.distance_to_vertex(vertex);
+                });
+        CATCH_CHECK_THAT(distances, ww::testing::AllEqualTo(max_distance));
     }
 }
 

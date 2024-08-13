@@ -8,6 +8,8 @@
 
 namespace {
 
+namespace CM = Catch::Matchers;
+
 CATCH_TEST_CASE("WHIRLWIND_VERSION_EPOCH", "[version]")
 {
     using T = decltype(WHIRLWIND_VERSION_EPOCH);
@@ -24,8 +26,7 @@ CATCH_TEST_CASE("WHIRLWIND_VERSION_PATCH", "[version]")
 
 CATCH_TEST_CASE("WHIRLWIND_VERSION_STRING", "[version]")
 {
-    using Catch::Matchers::Matches;
-    CATCH_CHECK_THAT(WHIRLWIND_VERSION_STRING, Matches(R"(^\d{8}\.\d+$)"));
+    CATCH_CHECK_THAT(WHIRLWIND_VERSION_STRING, CM::Matches(R"(^\d{8}\.\d+$)"));
 }
 
 } // namespace

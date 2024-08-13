@@ -14,10 +14,12 @@
 #include <whirlwind/graph/forest.hpp>
 #include <whirlwind/graph/rectangular_grid_graph.hpp>
 
+#include "../testing/matchers/forest_matchers.hpp"
 #include "../testing/string_conversions.hpp" // IWYU pragma: keep
 
 namespace {
 
+namespace CM = Catch::Matchers;
 namespace ww = whirlwind;
 
 CATCH_TEST_CASE("Forest (const)", "[graph]")
@@ -49,16 +51,13 @@ CATCH_TEST_CASE("Forest (const)", "[graph]")
                 graph.vertices() | ranges::views::transform([&](const auto& vertex) {
                     return forest.predecessor_vertex(vertex);
                 });
-        CATCH_CHECK_THAT(pred_vertices, Catch::Matchers::RangeEquals(graph.vertices()));
+        CATCH_CHECK_THAT(pred_vertices, CM::RangeEquals(graph.vertices()));
     }
 
     CATCH_SECTION("is_root_vertex")
     {
-        const auto vertices_are_roots =
-                graph.vertices() | ranges::views::transform([&](const auto& vertex) {
-                    return forest.is_root_vertex(vertex);
-                });
-        CATCH_CHECK_THAT(vertices_are_roots, Catch::Matchers::AllTrue());
+        using ww::testing::IsRootVertexIn;
+        CATCH_CHECK_THAT(graph.vertices(), CM::AllMatch(IsRootVertexIn(forest)));
     }
 
     CATCH_SECTION("edge_fill_value")
@@ -91,11 +90,16 @@ CATCH_TEST_CASE("Forest (non-const)", "[graph]")
 
     CATCH_SECTION("make_root_vertex")
     {
-        CATCH_CHECK(forest.is_root_vertex(2U));
-        forest.set_predecessor(2U, 1U, 0U);
-        CATCH_CHECK_FALSE(forest.is_root_vertex(2U));
-        forest.make_root_vertex(2U);
-        CATCH_CHECK(forest.is_root_vertex(2U));
+        const auto vertex = 2U;
+        const auto pred_vertex = 1U;
+        const auto pred_edge = 0U;
+
+        using ww::testing::IsRootVertexIn;
+        CATCH_CHECK_THAT(vertex, IsRootVertexIn(forest));
+        forest.set_predecessor(vertex, pred_vertex, pred_edge);
+        CATCH_CHECK_THAT(vertex, !IsRootVertexIn(forest));
+        forest.make_root_vertex(vertex);
+        CATCH_CHECK_THAT(vertex, IsRootVertexIn(forest));
     }
 
     CATCH_SECTION("predecessors")
@@ -110,18 +114,20 @@ CATCH_TEST_CASE("Forest (non-const)", "[graph]")
 
         using Pred = decltype(forest)::pred_type;
         const auto preds = {Pred(2U, 1U), Pred(1U, 0U)};
-        CATCH_CHECK_THAT(forest.predecessors(3U), Catch::Matchers::RangeEquals(preds));
+        CATCH_CHECK_THAT(forest.predecessors(3U), CM::RangeEquals(preds));
     }
 
     CATCH_SECTION("reset")
     {
         forest.set_predecessor(2U, 1U, 0U);
         forest.set_predecessor(3U, 2U, 1U);
-        CATCH_CHECK_FALSE(forest.is_root_vertex(2U));
-        CATCH_CHECK_FALSE(forest.is_root_vertex(3U));
+
+        using ww::testing::IsRootVertexIn;
+        CATCH_CHECK_THAT(2U, !IsRootVertexIn(forest));
+        CATCH_CHECK_THAT(3U, !IsRootVertexIn(forest));
         forest.reset();
-        CATCH_CHECK(forest.is_root_vertex(2U));
-        CATCH_CHECK(forest.is_root_vertex(3U));
+        CATCH_CHECK_THAT(2U, IsRootVertexIn(forest));
+        CATCH_CHECK_THAT(3U, IsRootVertexIn(forest));
     }
 }
 

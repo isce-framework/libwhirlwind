@@ -1,4 +1,3 @@
-#include <cmath>
 #include <iterator>
 #include <limits>
 #include <type_traits>
@@ -11,63 +10,48 @@
 
 #include <whirlwind/graph/csr_graph.hpp>
 #include <whirlwind/graph/edge_list.hpp>
-#include <whirlwind/graph/forest_concepts.hpp>
 #include <whirlwind/graph/rectangular_grid_graph.hpp>
 #include <whirlwind/graph/shortest_path_forest.hpp>
 
+#include "../testing/matchers/forest_matchers.hpp"
+#include "../testing/matchers/range_matchers.hpp"
+#include "../testing/string_conversions.hpp" // IWYU pragma: keep
+
 namespace {
 
+namespace CM = Catch::Matchers;
 namespace ww = whirlwind;
-
-[[nodiscard]] constexpr auto
-is_each_vertex_unreached(const ww::ShortestPathForestType auto& shortest_paths)
-{
-    return shortest_paths.graph().vertices() |
-           ranges::views::transform([&](const auto& vertex) {
-               return !shortest_paths.has_reached_vertex(vertex);
-           });
-}
-
-template<class ShortestPathForest>
-[[nodiscard]] constexpr auto
-is_each_vertex_unvisited(const ShortestPathForest& shortest_paths)
-{
-    return shortest_paths.graph().vertices() |
-           ranges::views::transform([&](const auto& vertex) {
-               return !shortest_paths.has_visited_vertex(vertex);
-           });
-}
 
 CATCH_TEST_CASE("ShortestPathForest (const)", "[graph]")
 {
-    using D = float;
-    using G = ww::RectangularGridGraph<>;
-    const auto graph = G(4U, 4U);
-    const auto shortest_paths = ww::ShortestPathForest<D, G>(graph);
+    using Distance = float;
+    using Graph = ww::RectangularGridGraph<>;
+    const auto graph = Graph(4U, 4U);
+    const auto shortest_paths = ww::ShortestPathForest<Distance, Graph>(graph);
 
-    using Distance = decltype(shortest_paths)::distance_type;
-    using Graph = decltype(shortest_paths)::graph_type;
+    using Distance_ = decltype(shortest_paths)::distance_type;
+    using Graph_ = decltype(shortest_paths)::graph_type;
     using Vertex = decltype(shortest_paths)::vertex_type;
     using Edge = decltype(shortest_paths)::edge_type;
 
     CATCH_SECTION("{distance,graph,vertex,edge}_type")
     {
-        CATCH_STATIC_REQUIRE((std::is_same_v<Distance, D>));
-        CATCH_STATIC_REQUIRE((std::is_same_v<Graph, G>));
-        CATCH_STATIC_REQUIRE((std::is_same_v<Vertex, G::vertex_type>));
-        CATCH_STATIC_REQUIRE((std::is_same_v<Edge, G::edge_type>));
+        CATCH_STATIC_REQUIRE((std::is_same_v<Distance_, Distance>));
+        CATCH_STATIC_REQUIRE((std::is_same_v<Graph_, Graph>));
+        CATCH_STATIC_REQUIRE((std::is_same_v<Vertex, Graph::vertex_type>));
+        CATCH_STATIC_REQUIRE((std::is_same_v<Edge, Graph::edge_type>));
     }
 
     CATCH_SECTION("has_reached_vertex")
     {
-        using Catch::Matchers::AllTrue;
-        CATCH_CHECK_THAT(is_each_vertex_unreached(shortest_paths), AllTrue());
+        using ww::testing::WasReachedBy;
+        CATCH_CHECK_THAT(graph.vertices(), CM::NoneMatch(WasReachedBy(shortest_paths)));
     }
 
     CATCH_SECTION("has_visited_vertex")
     {
-        using Catch::Matchers::AllTrue;
-        CATCH_CHECK_THAT(is_each_vertex_unvisited(shortest_paths), AllTrue());
+        using ww::testing::WasVisitedBy;
+        CATCH_CHECK_THAT(graph.vertices(), CM::NoneMatch(WasVisitedBy(shortest_paths)));
     }
 
     CATCH_SECTION("{reached,visited}_vertices")
@@ -78,12 +62,12 @@ CATCH_TEST_CASE("ShortestPathForest (const)", "[graph]")
 
     CATCH_SECTION("distance_to_vertex")
     {
-        const auto distances_are_inf =
-                shortest_paths.graph().vertices() |
-                ranges::views::transform([&](const auto& vertex) {
-                    return std::isinf(shortest_paths.distance_to_vertex(vertex));
+        const auto distances =
+                graph.vertices() | ranges::views::transform([&](const auto& vertex) {
+                    return shortest_paths.distance_to_vertex(vertex);
                 });
-        CATCH_CHECK_THAT(distances_are_inf, Catch::Matchers::AllTrue());
+        constexpr auto inf = std::numeric_limits<Distance>::infinity();
+        CATCH_CHECK_THAT(distances, ww::testing::AllEqualTo(inf));
     }
 }
 
@@ -101,41 +85,38 @@ CATCH_TEST_CASE("ShortestPathForest (non-const)", "[graph]")
 
     CATCH_SECTION("label_vertex_reached")
     {
-        CATCH_CHECK_FALSE(shortest_paths.has_reached_vertex(0U));
-        CATCH_CHECK_FALSE(shortest_paths.has_reached_vertex(1U));
+        using ww::testing::WasReachedBy;
+        CATCH_CHECK_THAT(graph.vertices(), CM::NoneMatch(WasReachedBy(shortest_paths)));
 
-        shortest_paths.label_vertex_reached(0U);
-        shortest_paths.label_vertex_reached(1U);
+        const auto vertices = {0U, 1U};
+        for (const auto& vertex : vertices) {
+            shortest_paths.label_vertex_reached(vertex);
+        }
 
-        CATCH_CHECK(shortest_paths.has_reached_vertex(0U));
-        CATCH_CHECK(shortest_paths.has_reached_vertex(1U));
-
-        const auto reached = {0U, 1U};
-        using Catch::Matchers::RangeEquals;
-        CATCH_CHECK_THAT(shortest_paths.reached_vertices(), RangeEquals(reached));
+        CATCH_CHECK_THAT(vertices, CM::AllMatch(WasReachedBy(shortest_paths)));
+        CATCH_CHECK_THAT(2U, !WasReachedBy(shortest_paths));
+        CATCH_CHECK_THAT(shortest_paths.reached_vertices(), CM::RangeEquals(vertices));
     }
 
     CATCH_SECTION("label_vertex_visited")
     {
-        CATCH_CHECK_FALSE(shortest_paths.has_visited_vertex(0U));
-        CATCH_CHECK_FALSE(shortest_paths.has_visited_vertex(1U));
+        using ww::testing::WasVisitedBy;
+        CATCH_CHECK_THAT(graph.vertices(), CM::NoneMatch(WasVisitedBy(shortest_paths)));
 
-        for (auto&& vertex : shortest_paths.graph().vertices()) {
+        for (auto&& vertex : graph.vertices()) {
             shortest_paths.label_vertex_reached(vertex);
         }
 
-        CATCH_CHECK_FALSE(shortest_paths.has_visited_vertex(0U));
-        CATCH_CHECK_FALSE(shortest_paths.has_visited_vertex(1U));
+        const auto vertices = {0U, 1U};
+        CATCH_CHECK_THAT(vertices, NoneMatch(WasVisitedBy(shortest_paths)));
 
-        shortest_paths.label_vertex_visited(0U);
-        shortest_paths.label_vertex_visited(1U);
+        for (const auto& vertex : vertices) {
+            shortest_paths.label_vertex_visited(vertex);
+        }
 
-        CATCH_CHECK(shortest_paths.has_visited_vertex(0U));
-        CATCH_CHECK(shortest_paths.has_visited_vertex(1U));
-
-        const auto visited = {0U, 1U};
-        using Catch::Matchers::RangeEquals;
-        CATCH_CHECK_THAT(shortest_paths.visited_vertices(), RangeEquals(visited));
+        CATCH_CHECK_THAT(vertices, CM::AllMatch(WasVisitedBy(shortest_paths)));
+        CATCH_CHECK_THAT(2U, !WasVisitedBy(shortest_paths));
+        CATCH_CHECK_THAT(shortest_paths.visited_vertices(), CM::RangeEquals(vertices));
     }
 
     CATCH_SECTION("set_distance_to_vertex")
@@ -168,16 +149,16 @@ CATCH_TEST_CASE("ShortestPathForest (non-const)", "[graph]")
 
         shortest_paths.reset();
 
-        using Catch::Matchers::AllTrue;
-        CATCH_CHECK_THAT(is_each_vertex_unreached(shortest_paths), AllTrue());
-        CATCH_CHECK_THAT(is_each_vertex_unvisited(shortest_paths), AllTrue());
+        using ww::testing::WasReachedBy;
+        using ww::testing::WasVisitedBy;
+        CATCH_CHECK_THAT(graph.vertices(), CM::NoneMatch(WasReachedBy(shortest_paths)));
+        CATCH_CHECK_THAT(graph.vertices(), CM::NoneMatch(WasVisitedBy(shortest_paths)));
 
-        const auto distances_are_max =
-                shortest_paths.graph().vertices() |
-                ranges::views::transform([&](const auto& vertex) {
-                    return shortest_paths.distance_to_vertex(vertex) == max_distance;
+        const auto distances =
+                graph.vertices() | ranges::views::transform([&](const auto& vertex) {
+                    return shortest_paths.distance_to_vertex(vertex);
                 });
-        CATCH_CHECK_THAT(distances_are_max, AllTrue());
+        CATCH_CHECK_THAT(distances, ww::testing::AllEqualTo(max_distance));
     }
 }
 

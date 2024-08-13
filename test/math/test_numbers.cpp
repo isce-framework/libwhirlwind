@@ -10,6 +10,7 @@
 
 namespace {
 
+namespace CM = Catch::Matchers;
 namespace ww = whirlwind;
 
 CATCH_TEST_CASE("zero", "[numbers]")
@@ -32,9 +33,8 @@ CATCH_TEST_CASE("one", "[numbers]")
 
 CATCH_TEST_CASE("pi", "[numbers]")
 {
-    using Catch::Matchers::WithinAbs;
-    CATCH_CHECK_THAT(ww::pi<float>(), WithinAbs(3.141'592'7, 1e-7));
-    CATCH_CHECK_THAT(ww::pi<double>(), WithinAbs(3.141'592'653'589'793'2, 1e-16));
+    CATCH_CHECK_THAT(ww::pi<float>(), CM::WithinAbs(3.141'592'7, 1e-7));
+    CATCH_CHECK_THAT(ww::pi<double>(), CM::WithinAbs(3.141'592'653'589'793'2, 1e-16));
 }
 
 CATCH_TEST_CASE("pi (consteval)", "[numbers]")
@@ -45,9 +45,8 @@ CATCH_TEST_CASE("pi (consteval)", "[numbers]")
 
 CATCH_TEST_CASE("tau", "[numbers]")
 {
-    using Catch::Matchers::WithinAbs;
-    CATCH_CHECK_THAT(ww::tau<float>(), WithinAbs(6.283'185'3, 2e-7));
-    CATCH_CHECK_THAT(ww::tau<double>(), WithinAbs(6.283'185'307'179'586'4, 1e-16));
+    CATCH_CHECK_THAT(ww::tau<float>(), CM::WithinAbs(6.283'185'3, 2e-7));
+    CATCH_CHECK_THAT(ww::tau<double>(), CM::WithinAbs(6.283'185'307'179'586'4, 1e-16));
 }
 
 CATCH_TEST_CASE("tau (consteval)", "[numbers]")
