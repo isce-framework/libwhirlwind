@@ -3,7 +3,7 @@ ci:
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: "v4.6.0"
+    rev: "v5.0.0"
     hooks:
       - id: check-added-large-files
       - id: check-case-conflict
@@ -14,7 +14,7 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/sirosen/texthooks
-    rev: "0.6.6"
+    rev: "0.6.7"
     hooks:
       - id: fix-ligatures
       - id: fix-smartquotes
@@ -28,7 +28,7 @@ repos:
         additional_dependencies: [pyyaml]
 
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: "v18.1.8"
+    rev: "v19.1.2"
     hooks:
       - id: clang-format
         types_or: [c++, c, cuda]
